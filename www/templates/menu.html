@@ -1,0 +1,52 @@
+<ion-side-menus enable-menu-with-back-views="false">
+  <ion-side-menu-content>
+    <ion-nav-bar class="bar-dark">
+      <ion-nav-back-button>
+      </ion-nav-back-button>
+
+      <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-nav-view name="menuContent"></ion-nav-view>
+  </ion-side-menu-content>
+
+  <ion-side-menu side="left">
+    <ion-header-bar class="bar-dark">
+      <h1 class="title">Menu</h1>
+    </ion-header-bar>
+    <ion-content>
+      <ion-list>
+        <ion-item item-icon-left nav-clear menu-close href="#/app/map">
+          <i class="icon ion-map">
+            Map
+          </i>
+        </ion-item>
+        <ion-item item-icon-left nav-clear menu-close ng-click="openLoginModal()">
+          <i class="icon ion-person-add">
+            Login/Sign Up
+          </i>
+        </ion-item>
+        <ion-item item-icon-left nav-clear menu-close href="#/app/settings">
+          <i class="icon ion-gear-a">
+            Settings
+          </i>
+        </ion-item>
+        <!-- COMSYS -->
+        <ion-item item-icon-left nav-clear menu-close href="#app/squadManag">
+          <i class="icon ion-ios-people">
+            Squad Management
+          </i>
+        </ion-item>
+
+        <!-- COMSYS -->
+        <ion-item item-icon-left nav-clear menu-close href="#app/tacticalActions">
+          <i class="icon ion-pinpoint">
+            Tactical Actions Management
+          </i>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-side-menu>
+</ion-side-menus>

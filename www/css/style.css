@@ -1,0 +1,24 @@
+/* Empty. Add your own CSS if you like */
+#map-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.scroll {
+    height: 100%;
+}
+#notification_count
+{
+    width: 15px;
+    height: 15px;
+    background: #cc0000;
+    color: #ffffff;
+    font-weight: bold;
+    line-height: 50px;
+    border-radius: 25px;
+    position: absolute;
+    margin-top: -30px;
+    margin-left: 18px;
+    font-size: 9px;
+    text-align: center;
+}

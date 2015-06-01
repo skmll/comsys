@@ -1,0 +1,86 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-dark">
+        <h1 class="title">Sign Up</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeSignUpModal()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <form>
+            <div class="list">
+                <div class="item item-divider">
+                    Login credentials
+                </div>
+                <label class="item item-input">
+                    <span class="input-label">Username</span>
+                    <input type="text" placeholder="Use this to login" ng-model="signUpData.username">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input type="password" ng-model="signUpData.password">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Repeat Password</span>
+                    <input type="password" ng-model="signUpData.repeatPassword">
+                </label>
+                <div class="item item-divider">
+                    Game options
+                </div>
+                <label class="item item-input">
+                    <span class="input-label">Nickname</span>
+                    <input type="text" placeholder="This is how other players will see you" ng-model="signUpData.nickname">
+                </label>
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Country
+                    </div>
+                    <select ng-model="signUpData.country">
+                        <option value="NLT" selected>Not listed</option>
+                        <option value="BEL">Belgium</option>
+                        <option value="BG">Bulgaria</option>
+                        <option value="GB">British Army</option>
+                        <option value="CA">Canada</option>
+                        <option value="HR">Croacia</option>
+                        <option value="CZ">Czech Republic</option>
+                        <option value="DK">Denmark</option>
+                        <option value="EE">Estonia</option>
+                        <option value="FR">France</option>
+                        <option value="DE">Germany</option>
+                        <option value="GR">Greece</option>
+                        <option value="HU">Hungary</option>
+                        <option value="IS">Iceland</option>
+                        <option value="IT">Italy</option>
+                        <option value="LV">Latvia</option>
+                        <option value="LT">Lithuania</option>
+                        <option value="NL">Netherlands</option>
+                        <option value="NO">Norway</option>
+                        <option value="PL">Poland</option>
+                        <option value="PT">Portugal</option>
+                        <option value="RO">Romania</option>
+                        <option value="SI">Slovenia</option>
+                        <option value="ES">Spain</option>
+                        <option value="TR">Turkey</option>
+                        <option value="US">United States</option>
+                    </select>
+                </label>
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Rank
+                    </div>
+                    <select ng-model="signUpData.rank">
+                        <option value="1" selected>Private</option>
+                        <option value="2">Private First Class</option>
+                        <option value="3">Specialist</option>
+                        <option value="4">Corporal</option>
+                        <option value="5">Sergeant</option>
+                        <option value="6">Staff Sergeant</option>
+                    </select>
+                </label>
+                <label class="item">
+                    <button class="button button-block button-positive" ng-click="doSignUp()">Sign Up</button>
+                    <!-- <button class="button button-block button-positive" type="submit">Log in</button> -->
+                </label>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

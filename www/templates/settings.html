@@ -1,0 +1,21 @@
+<ion-view view-title="Settings">
+    <ion-content>
+        <ion-list>
+            <div class="item item-divider">
+                Server options
+            </div>
+            <label class="item item-input">
+                <span class="input-label">Firebase IP</span>
+                <input type="number" ng-model="settingsData.firebase">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Laravel IP</span>
+                <input type="number" ng-model="settingsData.laravel">
+            </label>
+            <label class="item">
+                <button class="button button-block button-positive" ng-click="saveIPs()">Save</button>
+                <!-- <button class="button button-block button-positive" type="submit">Log in</button> -->
+            </label>
+        </ion-list>
+    </ion-content>
+</ion-view>
