@@ -1,7 +1,7 @@
 /**
  * Created by joaosilva on 28/05/15.
  */
-app.service('OperatorInfo', function($ionicLoading, GeneralFunctions, OperatorStubService, EventsInfo) {
+app.service('OperatorInfo', function($ionicLoading, GeneralFunctions, OperatorStubService /*,EventsInfo*/) {
     var isLogged = 0;
     var nickname= "undefined";
     var country= "NLT";
@@ -171,7 +171,7 @@ app.service('OperatorInfo', function($ionicLoading, GeneralFunctions, OperatorSt
                     // Closes the modal view
                     //scope.closeLoginModal();
 
-                    EventsInfo.fetchAllEvents(scope);
+                    //EventsInfo.fetchAllEvents(scope);
                 }
             })
             .error(function (error) {
