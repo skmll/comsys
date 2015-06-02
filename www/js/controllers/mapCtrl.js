@@ -3,6 +3,17 @@
  */
 app.controller('MapCtrl', function ($scope, $ionicLoading) {
 
+    $scope.teste = false;
+
+    $scope.notifications = function () {
+        if($scope.teste == true){
+            $scope.teste = false;
+        }else {
+            $scope.teste = true;
+        }
+        console.log("Teste: " + $scope.teste);
+    };
+
     $scope.initialize = function () {
         var myLatlng = new google.maps.LatLng(43.07493, -89.381388);
 

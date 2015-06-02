@@ -1,37 +1,25 @@
 /**
  * Created by joaosilva on 26/05/15.
  */
-app.controller('MenuCtrl', function ($scope, $ionicModal) {
+app.controller('MenuCtrl', function ($scope, $ionicModal, OperatorInfo) {
+    // Set userLogged - 0:Not logged 1:Logged
+    $scope.isLogged = OperatorInfo.getIsLogged();
+
     // Form data for the login modal
     $scope.loginData = {
-        username:{
-
-        },
-        password:{
-
-        }
+        username:"",
+        password:""
     };
 
     // Form data for the sign up modal
     $scope.signUpData = {
-        username:{
-
-        },
-        password:{
-
-        },
-        repeatPassword:{
-
-        },
-        nickname:{
-
-        },
-        country:{
-
-        },
-        rank:{
-
-        }
+        username:"",
+        password:"",
+        repeatPassword:"",
+        nickname:"",
+        country:"NLT",
+        rank:1,
+        specialisation:1
     };
 
     // Create the login modal that we will use later
@@ -53,8 +41,11 @@ app.controller('MenuCtrl', function ($scope, $ionicModal) {
 
     // Perform the login action when the user submits the login form
     $scope.doLogin = function () {
-        console.log('Doing login', $scope.loginData);
-        $scope.closeLoginModal();
+        var loadingLogin = $ionicLoading.show({
+            content: 'Saving login information',
+            showBackdrop: false
+        });
+        OperatorInfo.doLogin($scope.loginData.username, $scope.loginData.password, $scope);
     };
 
     // Create the sign up modal that we will use later
@@ -76,8 +67,14 @@ app.controller('MenuCtrl', function ($scope, $ionicModal) {
 
     // Perform the sign up action when the user submits the login form
     $scope.doSignUp = function () {
+        var loadingSignUP = $ionicLoading.show({
+            content: 'Saving sign up information',
+            showBackdrop: false
+        });
         console.log('Doing Sign Up', $scope.signUpData);
-        $scope.closeSignUpModal();
-        $scope.closeLoginModal();
+
+        OperatorInfo.doSignUp($scope.signUpData.password, $scope.signUpData.repeatPassword,
+            $scope.signUpData.username, $scope.signUpData.nickname, $scope.signUpData.country,
+            $scope.signUpData.rank, $scope.signUpData.specialisation, scope);
     };
 });
