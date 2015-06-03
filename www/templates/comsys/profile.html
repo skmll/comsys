@@ -1,0 +1,49 @@
+<ion-view view-title="Profile">
+    <ion-nav-buttons side="right">
+        <button class="button button-clear" ng-click="logout()">Logout</button>
+    </ion-nav-buttons>
+    <ion-content>
+        <ion-list>
+            <div class="item item-divider">
+                Personal options
+            </div>
+            <ion-item style="text-align: center">
+                {{profileData.nickname}}
+            </ion-item>
+            <div class="item item-divider">
+                Squad options
+            </div>
+            <ion-item class="item-avatar-right">
+                <img ng-src="img/NatoRanks/{{profileData.country}}/FLAG.png"/>
+                <h2>Country:</h2>
+                <p>{{profileData.country}}</p>
+            </ion-item>
+            <ion-item class="item-avatar-right">
+                <img ng-src="img/NatoRanks/{{profileData.country}}/OR-0{{profileData.rank}}.png"/>
+                <h2>Rank:</h2>
+                <p>{{profileData.rank}}</p>
+            </ion-item>
+            <ion-item class="item-avatar-right">
+                <h2>Specialisation:</h2>
+                <p>{{profileData.specialisation}}</p>
+            <div class="item item-divider">
+                Layout options
+            </div>
+            <ion-item class="item-icon-right">
+                Display MapGrid over Map
+                <i class="icon ion-ios-checkmark-outline" ng-if="profileData.mapGrid==1"></i>
+                <i class="icon ion-ios-circle-outline" ng-if="profileData.mapGrid==0"></i>
+            </ion-item>
+            <ion-item class="item-avatar-right">
+                <h2>Coordinates input format:</h2>
+                <p>{{profileData.coordInpFormatText}}</p>
+            </ion-item>
+            <ion-item>
+                <button class="button button-block button-positive" ng-click="openEditProfileModal()">Edit</button>
+            </ion-item>
+            <ion-item>
+                <button class="button button-block button-positive" ng-click="openChangePasswordModal()">Change password</button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

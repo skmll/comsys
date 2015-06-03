@@ -2,13 +2,20 @@
  * Created by joaosilva on 25/05/15.
  */
 app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicModal, $timeout, $ionicPopup,
-                                        $ionicLoading, ComsysStubService, ComsysInfo) {
+                                        $ionicLoading, AppService, OperatorStubService, OperatorInfo) {
 
     // Set userLogged - 0:Not logged 1:Logged
-    $scope.isLogged = ComsysInfo.getIsLogged();
+    $scope.isLogged = AppService.getIsLogged();
 
     // Form data for the edit profile modal
     $scope.profileData = {
+        nickname: OperatorInfo.getNickname(),
+        country: OperatorInfo.getCountry(),
+        rank: OperatorInfo.getRank(),
+        coordInpFormat: OperatorInfo.getCoordInpFormat(),
+        coordInpFormatText: OperatorInfo.getCoordInpFormatText(),
+        mapGrid: OperatorInfo.getMapGrid(),
+        specialisation: OperatorInfo.getSpecialisation()
     };
 
     // Form data for the edit profile modal
@@ -22,7 +29,7 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
     };
 
     // Create the edit profile modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/comsys/editProfile.html', {
+    $ionicModal.fromTemplateUrl('templates/operator/editProfile.html', {
         scope: $scope
     }).then(function (modalEditProfile) {
         $scope.modalEditProfile = modalEditProfile;
@@ -38,8 +45,20 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
         $scope.modalEditProfile.show();
     };
 
+    // Perform the edit profile action when the user submits the joinSquad form
+    $scope.doEditProfile = function () {
+        var loadingEditProfile = $ionicLoading.show({
+            content: 'Saving new profile information',
+            showBackdrop: false
+        });
+
+        OperatorInfo.editProfileData($scope.editProfileData.mapGrid, $scope.editProfileData.coordInpFormat,
+            $scope.editProfileData.nickname, $scope.editProfileData.country, $scope.editProfileData.rank,
+            $scope.editProfileData.specialisation);
+    };
+
     // Create the change password modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/comsys/changePassword.html', {
+    $ionicModal.fromTemplateUrl('templates/operator/changePassword.html', {
         scope: $scope
     }).then(function (modalChangePassword) {
         $scope.modalChangePassword = modalChangePassword;
@@ -62,7 +81,7 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
             showBackdrop: false
         });
 
-        ComsysInfo.changeUserPassword($scope.changePasswordData.newPassword,
+        OperatorInfo.changeUserPassword($scope.changePasswordData.newPassword,
             $scope.changePasswordData.newRepeatPassword, $scope.changePasswordData.oldPassword);
     };
 
@@ -73,6 +92,6 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
             showBackdrop: false
         });
 
-        ComsysInfo.userLogout();
+        OperatorInfo.userLogout();
     };
 });

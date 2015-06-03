@@ -233,7 +233,7 @@ app.service('OperatorInfo', function($ionicLoading, GeneralFunctions, OperatorSt
                         // closes loading spin
                         $ionicLoading.hide();
 
-                        // Bad result
+                        // TODO: change to error messages from the server
                         GeneralFunctions.buildAlertPopUp('Unable to sign up',
                             'Unable to sign up. Please check your internet connection.');
                     }else {

@@ -1,9 +1,6 @@
-/**
- * Created by joaosilva on 26/05/15.
- */
-app.controller('MenuCtrl', function ($scope, $ionicModal, OperatorInfo) {
+app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo) {
     // Set userLogged - 0:Not logged 1:Logged
-    $scope.isLogged = OperatorInfo.getIsLogged();
+    $scope.isLogged = ComsysInfo.getIsLogged();
 
     // Form data for the login modal
     $scope.loginData = {
@@ -16,10 +13,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, OperatorInfo) {
         username:"",
         password:"",
         repeatPassword:"",
-        nickname:"",
-        country:"NLT",
-        rank:1,
-        specialisation:1
+        nickname:""
     };
 
     // Create the login modal that we will use later
@@ -40,12 +34,13 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, OperatorInfo) {
     };
 
     // Perform the login action when the user submits the login form
-    $scope.doLogin = function () {
+    $scope.loginComsys = function () {
         var loadingLogin = $ionicLoading.show({
             content: 'Saving login information',
             showBackdrop: false
         });
-        OperatorInfo.doLogin($scope.loginData.username, $scope.loginData.password, $scope);
+        // TODO: add parameters etc
+        ComsysInfo.loginComsys($scope.loginData.username, $scope.loginData.password, $scope);
     };
 
     // Create the sign up modal that we will use later
@@ -66,15 +61,13 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, OperatorInfo) {
     };
 
     // Perform the sign up action when the user submits the login form
-    $scope.doSignUp = function () {
+    $scope.createComsys = function () {
         var loadingSignUP = $ionicLoading.show({
             content: 'Saving sign up information',
             showBackdrop: false
         });
         console.log('Doing Sign Up', $scope.signUpData);
 
-        OperatorInfo.doSignUp($scope.signUpData.password, $scope.signUpData.repeatPassword,
-            $scope.signUpData.username, $scope.signUpData.nickname, $scope.signUpData.country,
-            $scope.signUpData.rank, $scope.signUpData.specialisation, scope);
+        ComsysInfo.createComsys();
     };
 });
