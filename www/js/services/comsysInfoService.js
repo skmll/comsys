@@ -2,8 +2,8 @@ app.service('ComsysInfo', function($ionicLoading, $ionicPopup, ComsysStubService
     var userID = 0;
     var self = this;
 
-    // return isLogged
-    this.getIsLogged = function() {
+    // return userID
+    this.getUserID = function() {
 
     };
 
