@@ -1,6 +1,6 @@
 app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo) {
     // Set userLogged - 0:Not logged 1:Logged
-    $scope.isLogged = ComsysInfo.getIsLogged();
+    $scope.isLogged = ComsysInfo.getUserID();
 
     // Form data for the login modal
     $scope.loginData = {
