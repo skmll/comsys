@@ -1,62 +1,43 @@
-app.service('ComsysInfo', function($ionicLoading, $ionicPopup, ComsysStubService) {
-    var userID = 0;
-    var self = this;
+app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService) {
 
-    // return userID
-    this.getUserID = function() {
+	var isLogged = 0;
 
-    };
+	return {
 
-    // create comsys
-    this.createComsys = function() {
-        
-    };
+		getIsLogged: function() {
+			return isLogged;
+		},
 
-    // create comsys
-    this.setUserID = function(newUserID) {
-        userID = newUserID;
-    };
+		loginComsys: function (username, password, scope) {
+			ComsysStubService.loginComsys(username, password)
+			.success(function (data) {
+				// Check response
+				console.log(data);
+				// closes loading spin
+				scope.closeLoginModal();
+				if(data.response==0){
+					// Show errors
+					this.buildAlertPopUp('Unable to login',
+					'Errors: ' + data.errors);
+				}else {
+					// Change state
+					isLogged = data.response;
+				}
+			})
+			.error(function (error) {
+				// Show errors
+				this.buildAlertPopUp('Unable to login',
+						'Unable to login: ' + error.message);
+			});
+		},
 
-    // do login
-    this.loginComsys = function (username, password, scope) {
-        ComsysStubService.loginComsys(username, password)
-        .success(function (data) {
-            console.log(data);
+		buildAlertPopUp: function (title, template) {
+			var alertBadRequestPopup = $ionicPopup.alert({
+				title: title,
+				template: template
+			});
+		}
 
-                if(data.response==0){
-                    // closes loading spin
-                    $ionicLoading.hide();
+	};
 
-                    // TODO: Server errors
-                    self.buildAlertPopUp('Unable to login',
-                        'TODO: Server errors');
-                }else {
-                    // Change the variable isLogged to is logged state
-                    self.setUserID(data.response);
-
-                    scope.isLogged = data.response;
-
-                    $ionicLoading.hide();
-                    scope.closeLoginModal();
-                    // Fetch comsys data
-                    //self.getComsysPersonalConfig(scope);
-                }
-        })
-        .error(function (error) {
-            // closes loading spin
-                $ionicLoading.hide();
-
-                // Bad result
-                self.buildAlertPopUp('Unable to login',
-                    'Unable to login: ' + error.message);
-        });
-    };
-
-
-    this.buildAlertPopUp = function (title, template) {
-        var alertBadRequestPopup = $ionicPopup.alert({
-            title: title,
-            template: template
-        });
-    };
 });
