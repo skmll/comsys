@@ -69,6 +69,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'SettingsCtrl'
           }
         }
+      })
+      
+      .state('app.profile', {
+        url: "/profile",
+        views: {
+          'menuContent': {
+            templateUrl: "templates/comsys/profile.html",
+            controller: 'ProfileCtrl'
+          }
+        }
       });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/map');

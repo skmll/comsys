@@ -2,17 +2,24 @@
  * Created by joaosilva on 25/05/15.
  */
 app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicModal, $timeout, $ionicPopup,
-                                        $ionicLoading, ComsysStubService, ComsysInfo) {
+    $ionicLoading, ComsysStubService, ComsysInfo) {
 
-    // Set userLogged - 0:Not logged 1:Logged
-    $scope.isLogged = ComsysInfo.getIsLogged();
+    // Set logged user ID
+    $scope.userID = ComsysInfo.getUserID();
 
-    // Form data for the edit profile modal
+    // Get data to fill profile
     $scope.profileData = {
+        nickname: ComsysInfo.getNickname(),
+        coordInpFormat: ComsysInfo.getCoordInpFormat(),
+        coordInpFormatText: ComsysInfo.getCoordInpFormatText(),
+        mapGrid: ComsysInfo.getMapGrid()
     };
 
-    // Form data for the edit profile modal
-    $scope.editProfileData = $scope.profileData;
+    $scope.editProfileData = {
+        nickname: ComsysInfo.getNickname(),
+        coordInpFormat: ComsysInfo.getCoordInpFormat(),
+        mapGrid: ComsysInfo.getMapGrid()
+    };
 
     // Form data for the change password modal
     $scope.changePasswordData = {
@@ -75,4 +82,34 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
 
         ComsysInfo.userLogout();
     };
+    
+    
+    
+    /***** The functions below this line are revised and confirmed to be necessary *****/
+     
+    // Save profile changes
+    $scope.doEditProfile = function (newNickname, newMapGrid, newCoordInpFormat) {
+        
+        $scope.profileData.nickname = newNickname;
+        $scope.profileData.mapGrid = newMapGrid;
+        $scope.profileData.coordInpFormat = newCoordInpFormat;
+        $scope.profileData.coordInpFormatText = ComsysInfo.getCoordInpFormatTextFromID(parseInt($scope.profileData.coordInpFormat));
+        $scope.updateComsysPersonalConfig();
+    };
+
+    // Send profile changes to server
+    $scope.updateComsysPersonalConfig = function () {
+        var displayGrid = -1;
+        if ($scope.profileData.mapGrid) displayGrid = 1;
+        else displayGrid = 0;
+        
+        ComsysStubService.updateComsysPersonalConfig($scope.profileData.nickname, displayGrid, $scope.profileData.coordInpFormat)
+            .success(function (data) {
+            console.log(data);
+            $scope.closeEditProfileModal();
+        })
+            .error(function (error) {
+            console.log(error);
+        });
+    }
 });

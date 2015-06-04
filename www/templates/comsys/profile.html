@@ -7,25 +7,10 @@
             <div class="item item-divider">
                 Personal options
             </div>
-            <ion-item style="text-align: center">
-                {{profileData.nickname}}
+            <ion-item style="text-align: left">
+                <h2>Nickname</h2>
+                <p>{{profileData.nickname}}</p>
             </ion-item>
-            <div class="item item-divider">
-                Squad options
-            </div>
-            <ion-item class="item-avatar-right">
-                <img ng-src="img/NatoRanks/{{profileData.country}}/FLAG.png"/>
-                <h2>Country:</h2>
-                <p>{{profileData.country}}</p>
-            </ion-item>
-            <ion-item class="item-avatar-right">
-                <img ng-src="img/NatoRanks/{{profileData.country}}/OR-0{{profileData.rank}}.png"/>
-                <h2>Rank:</h2>
-                <p>{{profileData.rank}}</p>
-            </ion-item>
-            <ion-item class="item-avatar-right">
-                <h2>Specialisation:</h2>
-                <p>{{profileData.specialisation}}</p>
             <div class="item item-divider">
                 Layout options
             </div>
