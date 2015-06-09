@@ -1,6 +1,18 @@
 app.service('ComsysInfo', function($ionicLoading, $ionicPopup, ComsysStubService) {
-    var userID = 0;
     var self = this;
+    var userID = 0;
+
+    // TODO: change this test data
+    var eventID = 10;
+    var factionID = 1;
+
+    this.getEventID = function(){
+        return eventID;
+    };
+
+    this.getFactionID = function(){
+        return factionID;
+    };
 
     // return userID
     this.getUserID = function() {
@@ -51,7 +63,6 @@ app.service('ComsysInfo', function($ionicLoading, $ionicPopup, ComsysStubService
                     'Unable to login: ' + error.message);
         });
     };
-
 
     this.buildAlertPopUp = function (title, template) {
         var alertBadRequestPopup = $ionicPopup.alert({
