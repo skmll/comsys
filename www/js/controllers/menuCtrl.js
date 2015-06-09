@@ -1,7 +1,12 @@
-app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo) {
+app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, ComsysStubService) {
+
+$scope.isLogged = ComsysInfo.getIsLogged();
     
-	// Set userLogged - 0:Not logged 1:Logged
+	$scope.refreshMenu = function() {
+	// User Statos (0 - not logged, 1 - logged)
     $scope.isLogged = ComsysInfo.getIsLogged();
+    alert('entrei');
+	}
 
     // Form data for the login modal
     $scope.loginData = {
@@ -36,12 +41,22 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
     // Perform the login action when the user submits the login form
     $scope.loginComsys = function () {
+    	/*
         var loadingLogin = $ionicLoading.show({
             content: 'Saving login information',
             showBackdrop: false
         });
+        */
         // TODO: add parameters etc
-        ComsysInfo.loginComsys($scope.loginData.username, $scope.loginData.password, $scope);
+        ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
+		.success(function (data) {
+		console.log(data);
+			ComsysInfo.loginComsys(data.response);
+			$scope.closeLoginModal();
+	})
+		.error(function (error) {
+		$scope.loginComsysResult = 'Unable to load data: ' + error;
+	});
     };
 
     // Create the sign up modal that we will use later

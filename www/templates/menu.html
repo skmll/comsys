@@ -5,7 +5,7 @@
       </ion-nav-back-button>
 
       <ion-nav-buttons side="left">
-        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left" ng-click="refreshMenu()">
         </button>
       </ion-nav-buttons>
     </ion-nav-bar>
@@ -28,33 +28,28 @@
             Login/Sign Up
           </i>
         </ion-item>
-        <ion-item item-icon-left nav-clear menu-close href="#/app/settings">
+        <ion-item item-icon-left nav-clear menu-close href="#/app/settings" ng-if="isLogged == 1">
           <i class="icon ion-gear-a">
             Settings
           </i>
         </ion-item>
         <!-- COMSYS -->
-        <ion-item item-icon-left nav-clear menu-close href="#app/squadManag">
+        <ion-item item-icon-left nav-clear menu-close href="#app/squadManag" ng-if="isLogged == 1">
           <i class="icon ion-ios-people">
             Squad Management
           </i>
         </ion-item>
-
-        <!-- COMSYS -->
-        <ion-item item-icon-left nav-clear menu-close href="#app/tacticalActions">
+        <ion-item item-icon-left nav-clear menu-close href="#app/tacticalActions" ng-if="isLogged == 1">
           <i class="icon ion-pinpoint">
             Tactical Actions Management
           </i>
         </ion-item>
-        
-        <!-- COMSYS -->
-        <ion-item item-icon-left nav-clear menu-close href="#app/profile">
+        <ion-item item-icon-left nav-clear menu-close href="#app/profile" ng-if="isLogged == 1">
           <i class="icon ion-ios-people">
             Profile
           </i>
         </ion-item>
       </ion-list>
-      {{ isLogged }}
     </ion-content>
   </ion-side-menu>
 </ion-side-menus>

@@ -10,10 +10,15 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var mapGrid = 0;
 
     factory.getIsLogged = function() {
-			return userID;
+		alert(userID);	
+    	return userID;
 	};
 
-	factory.loginComsys = function (username, password, scope) {
+	factory.loginComsys = function (response) {
+		//username, password, scope
+		userID = response;
+		factory.getIsLogged();	    
+		/*
 		ComsysStubService.loginComsys(username, password)
 		.success(function (data) {
 			// Check response
@@ -43,6 +48,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
         factory.buildAlertPopUp('Unable to login',
             'Unable to login = ' + error.message);
 		});
+		*/
 	};
     
     // Login was successful -> Get COMSYS personal configuration
