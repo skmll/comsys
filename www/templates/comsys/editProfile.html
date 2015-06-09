@@ -14,79 +14,7 @@
                 <span class="input-label">Nickname</span>
                 <input type="text" placeholder="This is how other players will see you" ng-model="editProfileData.nickname">
             </ion-item>
-            <ion-item class="item-divider">
-                Squad options
-            </ion-item>
-            <ion-item class="item-input item-select">
-                <div class="input-label">
-                    Country
-                </div>
-                <select ng-model="editProfileData.country">
-                    <option value="NLT" selected>Not listed</option>
-                    <option value="BEL">Belgium</option>
-                    <option value="BG">Bulgaria</option>
-                    <option value="GB">British Army</option>
-                    <option value="CA">Canada</option>
-                    <option value="HR">Croacia</option>
-                    <option value="CZ">Czech Republic</option>
-                    <option value="DK">Denmark</option>
-                    <option value="EE">Estonia</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
-                    <option value="GR">Greece</option>
-                    <option value="HU">Hungary</option>
-                    <option value="IS">Iceland</option>
-                    <option value="IT">Italy</option>
-                    <option value="LV">Latvia</option>
-                    <option value="LT">Lithuania</option>
-                    <option value="NL">Netherlands</option>
-                    <option value="NO">Norway</option>
-                    <option value="PL">Poland</option>
-                    <option value="PT">Portugal</option>
-                    <option value="RO">Romania</option>
-                    <option value="SI">Slovenia</option>
-                    <option value="ES">Spain</option>
-                    <option value="TR">Turkey</option>
-                    <option value="US">United States</option>
-                </select>
-            </ion-item>
-            <ion-item class="item-input item-select">
-                <div class="input-label">
-                    Rank
-                </div>
-                <select ng-model="editProfileData.rank">
-                    <option value="1" selected>Private</option>
-                    <option value="2">Private First Class</option>
-                    <option value="3">Specialist</option>
-                    <option value="4">Corporal</option>
-                    <option value="5">Sergeant</option>
-                    <option value="6">Staff Sergeant</option>
-                </select>
-            </ion-item>
-            <label class="item item-input item-select">
-                <div class="input-label">
-                    Specialisation
-                </div>
-                <select ng-model="editProfileData.specialisation">
-                    <option value="1" selected>Anti Tank</option>
-                    <option value="2">Armored</option>
-                    <option value="3">Artellery</option>
-                    <option value="4">Bridging</option>
-                    <option value="5">Engineer</option>
-                    <option value="6">Infantary Light</option>
-                    <option value="7">Infantary Heavy</option>
-                    <option value="8">Infantary Sniper</option>
-                    <option value="9">Maintenance</option>
-                    <option value="10">Medic</option>
-                    <option value="11">Mortar</option>
-                    <option value="12">Radar</option>
-                    <option value="13">Recon</option>
-                    <option value="14">Special Force</option>
-                    <option value="15">Signals</option>
-                    <option value="16">SOF</option>
-                    <option value="17">Transportation</option>
-                </select>
-            </label>
+            
             <ion-item class="item-divider">
                 Layout options
             </ion-item>
@@ -96,16 +24,17 @@
                 <div class="input-label">
                     Coordinates input format
                 </div>
-                <select ng-model="editProfileData.coordInpFormat">
-                    <option value="1" selected>Lat/Long</option>
-                    <option value="2">DMS</option>
-                    <option value="3">UTM</option>
-                    <option value="4">MGRS</option>
+                <select ng-model="editProfileData.coordInpFormat"> 
+                    <option value="0" selected>Lat/Long</option>
+                    <option value="1">DMS</option>
+                    <option value="2">UTM</option>
+                    <option value="3">MGRS</option>
                 </select>
             </ion-item>
             <ion-item>
-                <button class="button button-block button-positive" ng-click="doEditProfile()">Save</button>
-                <!-- <button class="button button-block button-positive" type="submit">Log in</button> -->
+                <button class="button button-block button-positive" ng-click="
+                    doEditProfile(editProfileData.nickname, editProfileData.mapGrid, editProfileData.coordInpFormat)
+                ">Save</button>
             </ion-item>
         </ion-list>
     </ion-content>
