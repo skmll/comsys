@@ -2,8 +2,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
     var factory = {};
     var serverError = 0;
-    var undefined = "undefined";
-    var userID = 0;
+    var userID = 1;
     var nickname = undefined;
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
@@ -11,7 +10,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     
 
     // TODO: change this test data
-    var eventID = 10;
+    var eventID = 1;
     var factionID = 1;
 
     factory.getEventID = function(){
