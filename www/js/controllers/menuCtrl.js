@@ -1,4 +1,7 @@
-app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo) {
+app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, $q) {
+
+    $scope.factionsId = [];
+    $scope.deferred = $q.defer();
     
 	// Set userLogged - 0:Not logged 1:Logged
     $scope.isLogged = ComsysInfo.getIsLogged();
@@ -70,5 +73,50 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
         console.log('Doing Sign Up', $scope.signUpData);
 
         ComsysInfo.createComsys();
+    };
+
+    $scope.retrieveFactions = function() {
+        var ref = new Firebase("https://socom-bo-estg-2015.firebaseio.com/events_in_progress/1/factions/");
+        ref.on("value", function(snapshot) {
+            $scope.factionsId = snapshot.val();
+            
+            $scope.deferred.resolve();
+            return $scope.deferred.promise;
+        }, 
+        function(error, snapshot) { 
+            console.log("ola");
+            $scope.deferred.reject();
+        });
+    };
+    
+    $scope.sendSystemHack = function() {
+        $scope.retrieveFactions();
+
+        $scope.deferred.promise.then(
+            function(success) {
+                for(var id in $scope.factionsId) {
+                    $scope.pushFirebase(id);
+                }
+            },
+            function(error) {
+                alert("Something wrong: " + error);
+            });
+    };
+
+    $scope.pushFirebase = function(id) {
+        var special_actRef = new Firebase("https://socom-bo-estg-2015.firebaseio.com/events_in_progress/1/factions/" + id + "/special_actions");
+        special_actRef.push({action: "systemhack", timestamp: Firebase.ServerValue.TIMESTAMP},
+            function(error) {   
+                if(error) {
+                    alert("Problem: " + error);
+                } else {
+                    alert("Success!");
+                }
+            });
+    };
+    
+    $scope.activateSystemHack = function() {
+
+        $location.path('/systemhack');
     };
 });

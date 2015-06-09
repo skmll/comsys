@@ -1,10 +1,7 @@
 /**
  * Created by joaosilva on 26/05/15.
  */
-app.controller('MapCtrl', function ($scope, $ionicLoading, $location, $q) {
-
-$scope.factionsId = [];
-$scope.deferred = $q.defer();
+app.controller('MapCtrl', function ($scope, $ionicLoading) {
 
     $scope.teste = false;
 
@@ -62,50 +59,5 @@ $scope.deferred = $q.defer();
             alert('Unable to get location: ' + error.message);
         });
     };
-	
-		$scope.retrieveFactions = function() {
-				var ref = new Firebase("https://socom-bo-estg-2015.firebaseio.com/events_in_progress/1/factions/");
-				ref.on("value", function(snapshot) {
-			$scope.factionsId = snapshot.val();
-			
-			$scope.deferred.resolve();
-			return $scope.deferred.promise;
-	}, 
-		function(error, snapshot) { 
-		console.log("ola");
-		$scope.deferred.reject();
-		});
-	};
-	
-	$scope.sendSystemHack = function() {
-				$scope.retrieveFactions();
-				
-				$scope.deferred.promise.then(
-					function(success) {
-						for(var id in $scope.factionsId) {
-							$scope.pushFirebase(id);
-						}
-					},
-					function(error) {
-						alert("Something wrong: " + error);
-					});
-};
-		
-		$scope.pushFirebase = function(id) {
-				var special_actRef = new Firebase("https://socom-bo-estg-2015.firebaseio.com/events_in_progress/1/factions/" + id + "/special_actions");
-					special_actRef.push({action: "systemhack"},
-					function(error) {	
-						if(error) {
-							alert("Problem: " + error);
-						} else {
-							alert("Success!");
-						}
-					});
-		};
-	
-	$scope.activateSystemHack = function() {
-
-			$location.path('/systemhack');
-	};
 
 });
