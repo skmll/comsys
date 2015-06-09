@@ -59,4 +59,5 @@ app.controller('MapCtrl', function ($scope, $ionicLoading) {
             alert('Unable to get location: ' + error.message);
         });
     };
+
 });

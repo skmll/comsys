@@ -8,9 +8,21 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
     var mapGrid = 0;
+    
+
+    // TODO: change this test data
+    var eventID = 10;
+    var factionID = 1;
+
+    factory.getEventID = function(){
+        return eventID;
+    };
+
+    factory.getFactionID = function(){
+        return factionID;
+    };
 
     factory.getIsLogged = function() {
-		alert(userID);	
     	return userID;
 	};
 
@@ -144,7 +156,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     factory.setMapGrid = function (newMapGrid) {
         mapGrid = newMapGrid;
     };
-
+    
     // Build alert
 	factory.buildAlertPopUp = function (title, template) {
 		var alertBadRequestPopup = $ionicPopup.alert({

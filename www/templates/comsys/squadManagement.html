@@ -1,22 +1,21 @@
 <ion-view view-title="Squad">
     <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-plus-round" ng-click="openSquadNameDialog()"></a>
     </ion-nav-buttons>
     <ion-content>
 
         <ion-list>
-            <div ng-repeat="group in groups">
-                <ion-item class="item-stable"
-                          ng-click="toggleGroup(group)"
-                          ng-class="{active: isGroupShown(group)}">
-                    <i class="icon" ng-class="isGroupShown(group) ? 'ion-minus' : 'ion-plus'"></i>
+            <div ng-repeat="squad in squads">
+                <ion-item class="item-stable" ng-click="toggleSquad(squad)" ng-class="{active: isSquadShown(squad)}">
+                    <i class="icon" ng-class="isSquadShown(squad) ? 'ion-minus' : 'ion-plus'"></i>
                     &nbsp;
-                    Group {{group.name}}
+                    Squad {{squad.name}}
                 </ion-item>
                 <ion-item class="item-accordion"
-                          ng-repeat="item in group.items"
-                          ng-click="teste(group)"
-                          ng-show="isGroupShown(group)">
-                    {{item}}
+                          ng-repeat="operator in squad.operators"
+                          ng-click="openSquadSelectionDialog(operator, $parent.$parent.$index)"
+                          ng-show="isSquadShown(squad)">
+                    {{operator.nickname}}
                 </ion-item>
             </div>
         </ion-list>
