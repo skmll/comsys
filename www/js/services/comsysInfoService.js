@@ -1,6 +1,6 @@
-app.service('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService) {
+app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService) {
 
-    var self = this;
+    var factory = {};
     var serverError = 0;
     var undefined = "undefined";
     var userID = 0;
@@ -8,48 +8,45 @@ app.service('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
     var mapGrid = 0;
-    
-    // create comsys
-    this.createComsys = function () {
 
-    };
+    factory.getIsLogged = function() {
+			return userID;
+	};
 
+	factory.loginComsys = function (username, password, scope) {
+		ComsysStubService.loginComsys(username, password)
+		.success(function (data) {
+			// Check response
+			console.log(data);
 
-
-    // Login COMSYS
-    this.loginComsys = function (username, password, scope) {
-        ComsysStubService.loginComsys(username, password)
-            .success(function (data) {
-            console.log(data);
-
-            if (data.response == 0) {
-                // closes loading spin
-                $ionicLoading.hide();
-
-                // TODO: Server errors
-                self.buildAlertPopUp('Unable to login',
-                    'TODO: Server errors');
-            } else {
-                // Change the variable isLogged to is logged state
-                self.setUserID(data.response);
-                scope.isLogged = data.response;
-
-                // Fetch comsys data
-                self.getComsysPersonalConfig(scope);
-            }
-        })
-            .error(function (error) {
+        if (data.response == 0) {
             // closes loading spin
             $ionicLoading.hide();
 
-            // Bad result
-            self.buildAlertPopUp('Unable to login',
-                'Unable to login: ' + error.message);
-        });
-    };
+            // TODO: Server errors
+            factory.buildAlertPopUp('Unable to login',
+                'TODO: Server errors');
+        } else {
+            // Change the variable isLogged to is logged state
+            factory.setUserID(data.response);
+            scope.isLogged = data.response;
 
+            // Fetch comsys data
+            factory.getComsysPersonalConfig(scope);
+        }
+    })
+		.error(function (error) {
+			// closes loading spin
+        $ionicLoading.hide();
+
+        // Bad result
+        factory.buildAlertPopUp('Unable to login',
+            'Unable to login = ' + error.message);
+		});
+	};
+    
     // Login was successful -> Get COMSYS personal configuration
-    this.getComsysPersonalConfig = function (scope) {
+    factory.getComsysPersonalConfig = function (scope) {
 
         ComsysStubService.getComsysPersonalConfig()
             .success(function (data) {
@@ -62,17 +59,17 @@ app.service('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
                 $ionicLoading.hide();
     
                 // Display alert
-                self.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
+                factory.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
 
             } else {
                 // Operation successful -> Fill profile variables
-                self.setNickname(data.list.nickname);
-                self.setCoordInpFormat(data.list.coord_format);
-                self.setMapGrid(data.list.display_grid);
-                coordInpFormatText = self.getCoordInpFormatTextFromID(parseInt(data.list.coord_format));
+                factory.setNickname(data.list.nickname);
+                factory.setCoordInpFormat(data.list.coord_format);
+                factory.setMapGrid(data.list.display_grid);
+                coordInpFormatText = factory.getCoordInpFormatTextFromID(parseInt(data.list.coord_format));
                 if(coordInpFormatText == undefined) {
-                    self.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
-                    self.setCoordInpFormatText("Lat/Long");
+                    factory.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
+                    factory.setCoordInpFormatText("Lat/Long");
                 }
 
                 // Stop loading animation and close modal view
@@ -88,70 +85,70 @@ app.service('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
             $ionicLoading.hide();
 
             // Display alert
-            self.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
+            factory.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
         });
     };
     
     // Get userID
-    this.getUserID = function () {
+    factory.getUserID = function () {
         return userID;
     };
     
     // Set userID
-    this.setUserID = function (newUserID) {
+    factory.setUserID = function (newUserID) {
         userID = newUserID;
     };
     
     // Get nickname
-    this.getNickname = function () {
+    factory.getNickname = function () {
         return nickname;
     };
     
     // Set nickname
-    this.setNickname = function (newNickname) {
+    factory.setNickname = function (newNickname) {
         nickname = newNickname;
     };
     
     // Get coordInpFormat
-    this.getCoordInpFormat = function () {
+    factory.getCoordInpFormat = function () {
         return coordInpFormat;
     };
     
     // Set coordInpFormat
-    this.setCoordInpFormat = function (newCoordInpFormat) {
+    factory.setCoordInpFormat = function (newCoordInpFormat) {
         coordInpFormat = newCoordInpFormat;
     };
     
     // Get coordInpFormatText
-    this.getCoordInpFormatText = function () {
+    factory.getCoordInpFormatText = function () {
         return coordInpFormatText;
     };
     
     // Set coordInpFormatText
-    this.setCoordInpFormatText = function (newCoordInpFormatText) {
+    factory.setCoordInpFormatText = function (newCoordInpFormatText) {
         coordInpFormatText = newCoordInpFormatText;
     };
     
     // Get mapGrid
-    this.getMapGrid = function (d) {
+    factory.getMapGrid = function (d) {
         return mapGrid;
     };
     
     // Set mapGrid
-    this.setMapGrid = function (newMapGrid) {
+    factory.setMapGrid = function (newMapGrid) {
         mapGrid = newMapGrid;
     };
 
     // Build alert
-    this.buildAlertPopUp = function (title, template) {
-        var alertBadRequestPopup = $ionicPopup.alert({
-            title: title,
-            template: template
-        });
-    };
-
-    // Get coordinate input format text based on ID
-    this.getCoordInpFormatTextFromID = function (coordFormat) {
+	factory.buildAlertPopUp = function (title, template) {
+		var alertBadRequestPopup = $ionicPopup.alert({
+			title: title,
+			template: template
+		});
+	};
+    
+     // Get coordinate input format text based on ID
+    factory.getCoordInpFormatTextFromID = function (coordFormat) {
         
         switch (coordFormat) {
             case 0:
@@ -170,4 +167,7 @@ app.service('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
                 return undefined;
         }
     };
+
+    return factory;
+		
 });
