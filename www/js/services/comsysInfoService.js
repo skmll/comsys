@@ -3,6 +3,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var factory = {};
     var serverError = 0;
     var userID = 1;
+    var und = "undefined";
     var nickname = undefined;
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
@@ -84,7 +85,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
                 factory.setCoordInpFormat(data.list.coord_format);
                 factory.setMapGrid(data.list.display_grid);
                 coordInpFormatText = factory.getCoordInpFormatTextFromID(parseInt(data.list.coord_format));
-                if(coordInpFormatText == undefined) {
+                if(coordInpFormatText == und) {
                     factory.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
                     factory.setCoordInpFormatText("Lat/Long");
                 }
@@ -181,7 +182,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
                 return "MGRS";
                 break;
             default:
-                return undefined;
+                return und;
         }
     };
 
