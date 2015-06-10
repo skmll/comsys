@@ -1,6 +1,8 @@
 app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, ComsysStubService) {
 
 	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
+	// Contain all enemies
+	var operators = [];
 
 	// User Statos (0 - not logged, 1 - logged)
 	$scope.isLogged = ComsysInfo.getIsLogged();
@@ -8,6 +10,8 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 	$scope.refreshMenu = function() {
 		// User Statos (0 - not logged, 1 - logged)
 		$scope.isLogged = ComsysInfo.getIsLogged();
+		// Contain all enemies
+		$scope.operators = operators;
 	}
 
 	/* Login */
@@ -100,7 +104,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		var factionsId = [];
 		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
 				+ ComsysInfo.getEventID() + "/factions/");
-
 		ref.once("value", function(snapshot) {
 			factionsId = snapshot.val();
 			for(var id in factionsId) {
@@ -122,6 +125,36 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 	$scope.activateSystemHack = function() {
 		$location.path('/systemhack');
+	};
+
+
+	/* Get all enemies */
+
+	$scope.getFactionIds = function() {
+		operators = []; 
+		var factionsId = [];
+		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
+				+ ComsysInfo.getEventID() + "/factions/");
+		ref.once("value", function(snapshot) {
+			factionsId = snapshot.val();
+			for(var id in factionsId) {
+				if(id != ComsysInfo.getFactionID()){
+					getAllOperators(id);
+				}
+			}
+		});
+	};
+
+	function getAllOperators(factionID) {
+		var result = [];
+		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
+				+ ComsysInfo.getEventID() + "/factions/" + factionID + "/operators/");
+		ref.once("value", function(snapshot) {
+			result = snapshot.val();
+			for (var op in result) {
+				operators.push(op);	
+			}				
+		});
 	};
 
 });
