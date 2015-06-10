@@ -2,6 +2,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
 
+	// User Statos (0 - not logged, 1 - logged)
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
 	$scope.refreshMenu = function() {
@@ -50,15 +51,14 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		.success(function (data) {
 			console.log(data);
 			ComsysInfo.loginComsys(data.response);
-			$ionicLoading.hide();
 		})
 		.error(function (error) {
 			//console.log(error);
-			$ionicLoading.hide();
 			ComsysInfo.buildAlertPopUp('Unable to login',
             'Unable to login = ' /*+ error.message*/);
 		});
 		$ionicLoading.hide();
+		$scope.closeLoginModal();
 	};
 
 	// Create the sign up modal that we will use later
@@ -84,8 +84,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 			content: 'Saving sign up information',
 			showBackdrop: false
 		});
-		console.log('Doing Sign Up', $scope.signUpData);
-
 		ComsysInfo.createComsys();
 	};
 
@@ -110,14 +108,11 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 				action: "systemhack", 
 				timestamp: Firebase.ServerValue.TIMESTAMP
 			});
-
 		};
 	};
 
-
-
 	$scope.activateSystemHack = function() {
-
 		$location.path('/systemhack');
 	};
+	
 });

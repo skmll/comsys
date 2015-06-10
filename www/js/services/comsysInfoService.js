@@ -154,7 +154,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     };
 
     factory.userLogout = function() {
-   alert('logout');
    userID = 0;
     };
     

@@ -72,13 +72,13 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
 
     // Change the variables to not logged state
     $scope.logout = function () {
-        //var loadingLogout = $ionicLoading.show({
-//            content: 'Saving logout information',
-            //showBackdrop: false
-        //});
+        var loadingLogout = $ionicLoading.show({
+      content: 'Saving logout information',
+            showBackdrop: false
+        });
         ComsysInfo.userLogout();
-        //$ionicLoading.hide();
-        $location.path('/app');
+        $ionicLoading.hide();
+        $location.path('/app/map');
     };
     
     
