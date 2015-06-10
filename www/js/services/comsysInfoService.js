@@ -2,8 +2,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
     var factory = {};
     var serverError = 0;
-    var undefined = "undefined";
-    var userID = 0;
+    var userID = 1;
+    var und = "undefined";
     var nickname = undefined;
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
@@ -11,7 +11,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     
 
     // TODO: change this test data
-    var eventID = 10;
+    var eventID = 1;
     var factionID = 1;
 
     factory.getEventID = function(){
@@ -27,41 +27,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.loginComsys = function (response) {
-		//username, password, scope
 		userID = response;
-		factory.getIsLogged();	    
-		/*
-		ComsysStubService.loginComsys(username, password)
-		.success(function (data) {
-			// Check response
-			console.log(data);
-
-        if (data.response == 0) {
-            // closes loading spin
-            $ionicLoading.hide();
-
-            // TODO: Server errors
-            factory.buildAlertPopUp('Unable to login',
-                'TODO: Server errors');
-        } else {
-            // Change the variable isLogged to is logged state
-            factory.setUserID(data.response);
-            scope.isLogged = data.response;
-
-            // Fetch comsys data
-            factory.getComsysPersonalConfig(scope);
-        }
-    })
-		.error(function (error) {
-			// closes loading spin
-        $ionicLoading.hide();
-
-        // Bad result
-        factory.buildAlertPopUp('Unable to login',
-            'Unable to login = ' + error.message);
-		});
-		*/
-	};
+};
     
     // Login was successful -> Get COMSYS personal configuration
     factory.getComsysPersonalConfig = function (scope) {
@@ -85,7 +52,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
                 factory.setCoordInpFormat(data.list.coord_format);
                 factory.setMapGrid(data.list.display_grid);
                 coordInpFormatText = factory.getCoordInpFormatTextFromID(parseInt(data.list.coord_format));
-                if(coordInpFormatText == undefined) {
+                if(coordInpFormatText == und) {
                     factory.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
                     factory.setCoordInpFormatText("Lat/Long");
                 }
@@ -182,7 +149,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
                 return "MGRS";
                 break;
             default:
-                return undefined;
+                return und;
         }
     };
 

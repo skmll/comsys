@@ -1,10 +1,8 @@
-app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, $q, ComsysStubService) {
+app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, ComsysStubService) {
+
+	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
 
 	$scope.isLogged = ComsysInfo.getIsLogged();
-
-	$scope.factionsId = [];
-
-	$scope.deferred = $q.defer();
 
 	$scope.refreshMenu = function() {
 		// User Statos (0 - not logged, 1 - logged)
@@ -44,22 +42,23 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 	// Perform the login action when the user submits the login form
 	$scope.loginComsys = function () {
-		/*
         var loadingLogin = $ionicLoading.show({
             content: 'Saving login information',
             showBackdrop: false
         });
-		 */
 		ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
 		.success(function (data) {
 			console.log(data);
 			ComsysInfo.loginComsys(data.response);
-			$scope.closeLoginModal();
+			$ionicLoading.hide();
 		})
 		.error(function (error) {
-			$scope.loginComsysResult = 'Unable to load data: ' + error;
+			//console.log(error);
+			$ionicLoading.hide();
+			ComsysInfo.buildAlertPopUp('Unable to login',
+            'Unable to login = ' /*+ error.message*/);
 		});
-		
+		$ionicLoading.hide();
 	};
 
 	// Create the sign up modal that we will use later
@@ -90,45 +89,32 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		ComsysInfo.createComsys();
 	};
 
-	$scope.retrieveFactions = function() {
-		var ref = new Firebase("https://socom-bo-estg-2015.firebaseio.com/events_in_progress/1/factions/");
-		ref.on("value", function(snapshot) {
-			$scope.factionsId = snapshot.val();
-
-			$scope.deferred.resolve();
-			return $scope.deferred.promise;
-		}, 
-		function(error, snapshot) { 
-			console.log("ola");
-			$scope.deferred.reject();
-		});
-	};
-
 	$scope.sendSystemHack = function() {
-		$scope.retrieveFactions();
+		var factionsId = [];
+		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
+			+ ComsysInfo.getEventID() + "/factions/");
 
-		$scope.deferred.promise.then(
-				function(success) {
-					for(var id in $scope.factionsId) {
-						$scope.pushFirebase(id);
-					}
-				},
-				function(error) {
-					alert("Something wrong: " + error);
-				});
-	};
-
-	$scope.pushFirebase = function(id) {
-		var special_actRef = new Firebase("https://socom-bo-estg-2015.firebaseio.com/events_in_progress/1/factions/" + id + "/special_actions");
-		special_actRef.push({action: "systemhack", timestamp: Firebase.ServerValue.TIMESTAMP},
-				function(error) {   
-			if(error) {
-				alert("Problem: " + error);
-			} else {
-				alert("Success!");
+		ref.once("value", function(snapshot) {
+			factionsId = snapshot.val();
+			for(var id in factionsId) {
+				if(id != ComsysInfo.getFactionID()){
+					pushFirebase(id);
+				}
 			}
 		});
+
+		function pushFirebase(id) {
+			var special_actRef = new Firebase(firebaseUrl + "events_in_progress/"
+				+ ComsysInfo.getEventID() + "/factions/" + id + "/special_actions");
+			special_actRef.push({
+				action: "systemhack", 
+				timestamp: Firebase.ServerValue.TIMESTAMP
+			});
+
+		};
 	};
+
+
 
 	$scope.activateSystemHack = function() {
 
