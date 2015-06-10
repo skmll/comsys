@@ -23,7 +23,7 @@
             Map
           </i>
         </ion-item>
-        <ion-item item-icon-left nav-clear menu-close ng-click="openLoginModal()">
+        <ion-item item-icon-left nav-clear menu-close ng-click="openLoginModal()" ng-if="isLogged == 0">
           <i class="icon ion-person-add">
             Login/Sign Up
           </i>

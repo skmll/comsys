@@ -50,7 +50,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
             showBackdrop: false
         });
 		 */
-		// TODO: add parameters etc
 		ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
 		.success(function (data) {
 			console.log(data);
@@ -60,6 +59,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		.error(function (error) {
 			$scope.loginComsysResult = 'Unable to load data: ' + error;
 		});
+		
 	};
 
 	// Create the sign up modal that we will use later
