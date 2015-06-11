@@ -1,6 +1,7 @@
 app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, ComsysStubService) {
 
 	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
+	
 
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
@@ -52,6 +53,15 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		.success(function (data) {
 			console.log(data);
 			ComsysInfo.loginComsys(data.response);
+			//If login is successful register reference to notifications
+			if(data.response != 0){
+				var notificationsRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
+					+ ComsysInfo.getFactionID() + '/comsys_users/' + data.response + '/comsys_notifications');
+				notificationsRef.on('child_added', function(childSnapshot, prevChildName){
+					console.log(childSnapshot.val());
+					//TODO: add to list to present in view
+				});
+			}
 			$ionicLoading.hide();
 		})
 		.error(function (error) {
@@ -115,10 +125,38 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		};
 	};
 
-
-
 	$scope.activateSystemHack = function() {
 
 		$location.path('/systemhack');
 	};
+
+	$scope.sendNotification = function(receiver, text) {
+		// TEST DATA
+		/*
+		var receiver = {
+			id: 1,
+			name: 'Whatever',
+			type: 'comsys'
+		};
+		var text = 'aasdasd';
+		var available_responses_list = {};
+		var responses_list = {};
+		var sender = ComsysInfo.getIsLogged();
+		*/
+
+		if(receiver.type == 'comsys'){
+			ComsysStubService.sendNotificationToComsys(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
+				available_responses_list, responses_list, sender, text);
+		}else if(receiver.type == 'squad'){
+			ComsysStubService.sendNotificationToSquad(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
+				available_responses_list, responses_list, sender, text);
+		}else if(receiver.type == 'faction'){
+			ComsysStubService.sendNotificationToFaction(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), 
+				available_responses_list, responses_list, sender, text);
+		}else if(reciver.type == 'operator'){
+			ComsysStubService.sendNotificationToOperator(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
+				available_responses_list, responses_list, sender, text);
+		}
+	};
+
 });

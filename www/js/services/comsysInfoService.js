@@ -2,7 +2,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
     var factory = {};
     var serverError = 0;
-    var userID = 1;
+    var userID = 0;
     var und = "undefined";
     var nickname = undefined;
     var coordInpFormat = 0;
