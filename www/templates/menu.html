@@ -23,7 +23,7 @@
             Map
           </i>
         </ion-item>
-        <ion-item item-icon-left nav-clear menu-close ng-click="openLoginModal()">
+        <ion-item item-icon-left nav-clear menu-close ng-click="openLoginModal()" ng-if="isLogged == 0">
           <i class="icon ion-person-add">
             Login/Sign Up
           </i>
@@ -57,6 +57,11 @@
         <ion-item item-icon-left nav-clear menu-close ng-click="sendSystemHack()">
           <i class="icon ion-ios-people">
             sendSystemHack
+          </i>
+        </ion-item>
+        <ion-item item-icon-left nav-clear menu-close ng-click="getFactionIds()">
+          <i class="icon ion-ios-people">
+            GetAllEnemies
           </i>
         </ion-item>
       </ion-list>

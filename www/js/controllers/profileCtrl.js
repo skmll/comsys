@@ -1,8 +1,5 @@
-/**
- * Created by joaosilva on 25/05/15.
- */
 app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicModal, $timeout, $ionicPopup,
-    $ionicLoading, ComsysStubService, ComsysInfo) {
+    $ionicLoading, ComsysStubService, ComsysInfo, $location) {
 
     // Set logged user ID
     $scope.userID = ComsysInfo.getUserID();
@@ -76,11 +73,12 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
     // Change the variables to not logged state
     $scope.logout = function () {
         var loadingLogout = $ionicLoading.show({
-            content: 'Saving logout information',
+      content: 'Saving logout information',
             showBackdrop: false
         });
-
         ComsysInfo.userLogout();
+        $ionicLoading.hide();
+        $location.path('/app/map');
     };
     
     

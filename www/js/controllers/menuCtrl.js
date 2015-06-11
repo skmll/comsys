@@ -1,27 +1,25 @@
 app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, ComsysStubService) {
 
 	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
-	
+	// Contain all enemies
+	var operators = [];
 
+	// User Statos (0 - not logged, 1 - logged)
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
 	$scope.refreshMenu = function() {
 		// User Statos (0 - not logged, 1 - logged)
 		$scope.isLogged = ComsysInfo.getIsLogged();
+		// Contain all enemies
+		$scope.operators = operators;
 	}
+
+	/* Login */
 
 	// Form data for the login modal
 	$scope.loginData = {
 			username:"",
 			password:""
-	};
-
-	// Form data for the sign up modal
-	$scope.signUpData = {
-			username:"",
-			password:"",
-			repeatPassword:"",
-			nickname:""
 	};
 
 	// Create the login modal that we will use later
@@ -43,12 +41,10 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 	// Perform the login action when the user submits the login form
 	$scope.loginComsys = function () {
-		
-        var loadingLogin = $ionicLoading.show({
-            content: 'Saving login information',
-            showBackdrop: false
-        });
-		 
+		var loadingLogin = $ionicLoading.show({
+			content: 'Saving login information',
+			showBackdrop: false
+		});
 		ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
 		.success(function (data) {
 			console.log(data);
@@ -66,10 +62,21 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		})
 		.error(function (error) {
 			//console.log(error);
-			$ionicLoading.hide();
 			ComsysInfo.buildAlertPopUp('Unable to login',
-            'Unable to login = ' /*+ error.message*/);
+			'Unable to login = ' /*+ error.message*/);
 		});
+		$ionicLoading.hide();
+		$scope.closeLoginModal();
+	};
+
+	/* Sign up */
+
+	$scope.signUpData = {
+			// Form data for the sign up modal
+			username:"",
+			password:"",
+			repeatPassword:"",
+			nickname:""
 	};
 
 	// Create the sign up modal that we will use later
@@ -95,16 +102,18 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 			content: 'Saving sign up information',
 			showBackdrop: false
 		});
-		console.log('Doing Sign Up', $scope.signUpData);
-
 		ComsysInfo.createComsys();
+		$ionicLoading.hide();
+		$scope.closeSignUpModal();
 	};
+
+
+	/* System Hack */
 
 	$scope.sendSystemHack = function() {
 		var factionsId = [];
 		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
-			+ ComsysInfo.getEventID() + "/factions/");
-
+				+ ComsysInfo.getEventID() + "/factions/");
 		ref.once("value", function(snapshot) {
 			factionsId = snapshot.val();
 			for(var id in factionsId) {
@@ -116,18 +125,46 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 		function pushFirebase(id) {
 			var special_actRef = new Firebase(firebaseUrl + "events_in_progress/"
-				+ ComsysInfo.getEventID() + "/factions/" + id + "/special_actions");
+					+ ComsysInfo.getEventID() + "/factions/" + id + "/special_actions");
 			special_actRef.push({
 				action: "systemhack", 
 				timestamp: Firebase.ServerValue.TIMESTAMP
 			});
-
 		};
 	};
 
 	$scope.activateSystemHack = function() {
-
 		$location.path('/systemhack');
+	};
+
+
+	/* Get all enemies */
+
+	$scope.getFactionIds = function() {
+		operators = []; 
+		var factionsId = [];
+		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
+				+ ComsysInfo.getEventID() + "/factions/");
+		ref.once("value", function(snapshot) {
+			factionsId = snapshot.val();
+			for(var id in factionsId) {
+				if(id != ComsysInfo.getFactionID()){
+					getAllOperators(id);
+				}
+			}
+		});
+	};
+
+	function getAllOperators(factionID) {
+		var result = [];
+		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
+				+ ComsysInfo.getEventID() + "/factions/" + factionID + "/operators/");
+		ref.once("value", function(snapshot) {
+			result = snapshot.val();
+			for (var op in result) {
+				operators.push(op);	
+			}				
+		});
 	};
 
 	$scope.sendNotification = function(receiver, text) {
