@@ -1,0 +1,19 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-dark">
+        <h1 class="title">See All Notifications</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeModalNotificationSeeAll()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+
+        <ion-list>
+            <ion-item ng-repeat="notifiAll in notificationAll">
+                {{notifiAll}}
+
+            </ion-item>
+        </ion-list>
+
+
+    </ion-content>
+</ion-modal-view>

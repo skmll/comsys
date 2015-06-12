@@ -1,8 +1,6 @@
 app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, ComsysStubService) {
 
 	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
-	// Contain all enemies
-	var operators = [];
 
 	// User Statos (0 - not logged, 1 - logged)
 	$scope.isLogged = ComsysInfo.getIsLogged();
@@ -10,8 +8,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 	$scope.refreshMenu = function() {
 		// User Statos (0 - not logged, 1 - logged)
 		$scope.isLogged = ComsysInfo.getIsLogged();
-		// Contain all enemies
-		$scope.operators = operators;
 	}
 
 	/* Login */
@@ -41,6 +37,9 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 	// Perform the login action when the user submits the login form
 	$scope.loginComsys = function () {
+		registerFirebaseReferences();
+		ComsysInfo.loginComsys(1);
+		/*
 		var loadingLogin = $ionicLoading.show({
 			content: 'Saving login information',
 			showBackdrop: false
@@ -49,24 +48,20 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		.success(function (data) {
 			console.log(data);
 			ComsysInfo.loginComsys(data.response);
-			//If login is successful register reference to notifications
 			if(data.response != 0){
-				var notificationsRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
-					+ ComsysInfo.getFactionID() + '/comsys_users/' + data.response + '/comsys_notifications');
-				notificationsRef.on('child_added', function(childSnapshot, prevChildName){
-					console.log(childSnapshot.val());
-					//TODO: add to list to present in view
-				});
+				//If login is successful register firebase references
+				registerFirebaseReferences();
 			}
-			$ionicLoading.hide();
+			$ionicLoading.hide(); 
 		})
 		.error(function (error) {
-			//console.log(error);
+			$ionicLoading.hide();
 			ComsysInfo.buildAlertPopUp('Unable to login',
-			'Unable to login = ' /*+ error.message*/);
+			'Unable to login = ');
 		});
-		$ionicLoading.hide();
+		*/
 		$scope.closeLoginModal();
+		
 	};
 
 	/* Sign up */
@@ -107,9 +102,44 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		$scope.closeSignUpModal();
 	};
 
+	/* UAV */
+
+	$scope.useUAV = function() {
+		var factionsId = [];
+		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
+				+ ComsysInfo.getEventID() + "/factions/");
+		ref.once("value", function(snapshot) {
+			factionsId = snapshot.val();
+			for(var id in factionsId) {
+				if(id != ComsysInfo.getFactionID()){
+					getAllOperators(id);
+				}
+			}
+		});
+
+		function getAllOperators(factionID) {
+			var operators = [];
+			var ref = new Firebase(firebaseUrl + "events_in_progress/" 
+					+ ComsysInfo.getEventID() + "/factions/" + factionID + "/operators/");
+			ref.once("value", function(snapshot) {
+				operators = snapshot.val();
+				for (var id in operators) {
+					console.log(operators[id]);
+					var special_actRef = new Firebase(firebaseUrl + "events_in_progress/"
+						+ ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/special_actions");
+					special_actRef.push({
+						action: "enemy",
+						gps_lat: operators[id].gps_lat,
+						gps_lng: operators[id].gps_lng,
+						timestamp: Firebase.ServerValue.TIMESTAMP
+					});
+				}				
+			});
+		};
+	};
+
 
 	/* System Hack */
-
 	$scope.sendSystemHack = function() {
 		var factionsId = [];
 		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
@@ -133,53 +163,49 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		};
 	};
 
-	$scope.activateSystemHack = function() {
-		$location.path('/systemhack');
-	};
 
-
-	/* Get all enemies */
-
-	$scope.getFactionIds = function() {
-		operators = []; 
-		var factionsId = [];
-		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
-				+ ComsysInfo.getEventID() + "/factions/");
-		ref.once("value", function(snapshot) {
-			factionsId = snapshot.val();
-			for(var id in factionsId) {
-				if(id != ComsysInfo.getFactionID()){
-					getAllOperators(id);
-				}
-			}
+	function registerFirebaseReferences(){
+		var notificationsRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
+			+ ComsysInfo.getFactionID() + '/comsys_users/' + ComsysInfo.getIsLogged() + '/comsys_notifications');
+		notificationsRef.on('child_added', function(childSnapshot, prevChildName){
+			console.log(childSnapshot.val());
+			//TODO: add to list to present in view
 		});
-	};
+		var specActRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
+			+ ComsysInfo.getFactionID() + '/special_actions/');
+		specActRef.on('child_added', function(childSnapshot, prevChildName){
+			console.log(childSnapshot.val());
+			var specialAction = childSnapshot.val();
 
-	function getAllOperators(factionID) {
-		var result = [];
-		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
-				+ ComsysInfo.getEventID() + "/factions/" + factionID + "/operators/");
-		ref.once("value", function(snapshot) {
-			result = snapshot.val();
-			for (var op in result) {
-				operators.push(op);	
-			}				
+			var diffMilSec = new Date().getTime() - specialAction.timestamp;
+			//TODO: change this actionDuration to the one specific to the action
+			var actionDuration = 600000;
+
+			if(specialAction.action == 'systemhack' && diffMilSec < actionDuration){
+				$location.path('/systemhack');
+			}else if(specialAction.action == 'enemy' && diffMilSec < actionDuration){
+				//TODO: call map method to add ping visually
+				console.log('enemy', specialAction);
+			}
 		});
 	};
 
 	$scope.sendNotification = function(receiver, text) {
 		// TEST DATA
-		/*
 		var receiver = {
 			id: 1,
 			name: 'Whatever',
 			type: 'comsys'
 		};
-		var text = 'aasdasd';
+		var text = Math.random().toString(36).replace(/[^a-z]+/g, '');
 		var available_responses_list = {};
 		var responses_list = {};
-		var sender = ComsysInfo.getIsLogged();
-		*/
+		var sender = {
+			id: ComsysInfo.getIsLogged(),
+			name: 'WhateverWorks',
+			type: 'comsys'
+		};
+		
 
 		if(receiver.type == 'comsys'){
 			ComsysStubService.sendNotificationToComsys(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 

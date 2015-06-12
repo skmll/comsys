@@ -1,7 +1,28 @@
 <ion-view view-title="Map">
     <ion-nav-buttons side="right">
-        <a class="button button-icon icon ion-ios-navigate-outline" id="buttonLocation" ng-click="centerOnMe()"></a>
-        <a class="button button-icon icon ion-ios-email-outline" ng-click=""><span id="notification_count">3</span></a>
+        <a class="button button-icon icon ion-ios-navigate-outline" id="buttonLocation" ng-click="centerOnMe(); teste = false"></a>
+        <a class="button button-icon icon ion-ios-email-outline" ng-click="teste = !teste"><span id="notification_count">{{notifications.length}}</span></a>
+        <div  id="notificationContainer" ng-show="teste">
+		    <div id="notificationTitle" ng-click="showBody = !showBody">
+		        Notifications 
+		        <a class="button-icon icon ion-plus-circled" id="iconPlus" ng-click="showBody = !showBody; openNotificationsModal()"></a>
+		    </div>
+		    <div id="notificationsBody" ng-show="showBody">
+		        <ion-list>
+				    <ion-item class="item" ng-repeat="notifi in notifications" ng-click="openAnswerNotificationsModal(notifi)">
+				      <h2>{{notifi.sender.name}} - {{notifi.time}}</h2>
+				      <p>{{notifi.text}}</p>
+				    </ion-item>
+		        </ion-list>
+
+		    </div>
+		    <div id="notificationFooter" ng-show="showBody">
+                <a class="button" ng-click="teste = false">Close</a>
+                <a class="button" ng-click="openModalNotificationSeeAll()">Old Messages</a>
+		        <a class="button" ng-click="dismissAll()">Dismiss All</a>
+		        <a class="button" ng-click="unDismissAll()">UnDismiss All (Test)</a>
+            </div>
+		</div>
     </ion-nav-buttons>
     <ion-content>
         <div id="map-canvas" data-tap-disabled="true">

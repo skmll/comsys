@@ -14,6 +14,12 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var eventID = 1;
     var factionID = 1;
 
+    var afterLogginMapCallback;
+
+    factory.setAfterLogginMapCallback = function(func){
+        afterLogginMapCallback = func;
+    };
+
     factory.getEventID = function(){
         return eventID;
     };
@@ -28,6 +34,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.loginComsys = function (response) {
 		userID = response;
+
+        afterLogginMapCallback();
 	};
 
 	// Login was successful -> Get COMSYS personal configuration

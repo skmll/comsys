@@ -14,9 +14,9 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
     var lastSquads;
     var lastOperators;
 
-    // Get a database reference to our posts
+    // Get a database reference to our squads
     var ref = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/squads");
-    // Attach an asynchronous callback to read the data at our posts reference
+    // Attach an asynchronous callback to read the data at our squads reference
     ref.on("value", function(snapshot) {
         console.log(snapshot.val());
         lastSquads = snapshot.val();
@@ -26,7 +26,7 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
     });
 
     var ref2 = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/operators");
-    // Attach an asynchronous callback to read the data at our posts reference
+    // Attach an asynchronous callback to read the data at our operators reference
     ref2.on("value", function(snapshot) {
         console.log(snapshot.val());
         lastOperators = snapshot.val();

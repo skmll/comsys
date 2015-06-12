@@ -1,0 +1,48 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-dark">
+        <h1 class="title">New Message</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeNotificationsModal()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+
+        <form>
+            <div class="list">
+                <div class="item item-divider">
+                    Message
+                </div>
+                
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        To:
+                    </div>
+                    <select>
+                        <option>Operator 01 </option>
+                        <option selected>Operator 02</option>
+                        <option>Operator 03</option>
+                    </select>
+                </label>
+
+                <label class="item item-input">
+                    <span class="input-label">Message</span>
+                    <input type="text" placeholder="Write your message here">
+                </label>
+
+                <div class="item item-divider">
+                    Available Responses
+                </div>
+
+                <ion-toggle ng-repeat="item in typeNotification"
+                            ng-checked="item.checked">
+                    {{ item.text }}
+                </ion-toggle>
+
+                <label class="item">
+                    <button class="button button-block button-positive">Confirm</button>
+                </label>
+
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

@@ -60,16 +60,15 @@
     font-weight: bold;
     padding: 8px;
     font-size: 13px;
-    color: black;
-    background-color: #ffffff;
-    position: fixed;
+    color: #fff;
+    background-color: #444;
     z-index: 1000;
-    width: 384px;
+    width: auto;
     border-bottom: 1px solid #dddddd;
 }
 #notificationsBody
 {
-    padding: 33px 0px 0px 0px !important;
+    padding: 0px 0px 0px 0px !important;
     color: black;
     min-height:300px;
 }
@@ -81,4 +80,9 @@
     padding: 8px;
     font-size: 12px;
     border-top: 1px solid #dddddd;
+}
+
+#iconPlus{
+   margin-left: 260px;
+    cursor: pointer;
 }
