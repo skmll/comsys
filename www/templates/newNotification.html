@@ -13,34 +13,28 @@
                     Message
                 </div>
                 
-                <label class="item item-input item-select">
-                    <div class="input-label">
+                <div class="item item-input item-select">
+                    <span class="input-label">
                         To:
-                    </div>
-                    <select>
-                        <option>Operator 01 </option>
-                        <option selected>Operator 02</option>
-                        <option>Operator 03</option>
-                    </select>
-                </label>
+                    </span>
+                    <select ng-model="selectedItem" ng-options="item as item.name for item in possibleReceivers" ng-change="test()">   <option value="">-- Choose one --</option>
+                    </select>{{selectedItem.name}}
+                </div>
 
-                <label class="item item-input">
+                <div class="item item-input">
                     <span class="input-label">Message</span>
-                    <input type="text" placeholder="Write your message here">
-                </label>
+                    <input type="text" ng-model="longMessage" placeholder="Write your message here">
+                    <button class="button button-positive" id="sendButton" ng-click="sendNotification(longMessage, selectedItem); longMessage= ''; selectedItem.name = ''">Send</button>
+                </div>
 
-                <div class="item item-divider">
+                <div class="item item-divider" ng-click="showItemsCreate = !showItemsCreate">
                     Available Responses
                 </div>
 
-                <ion-toggle ng-repeat="item in typeNotification"
+                <ion-toggle ng-repeat="item in typeNotification" ng-show="showItemsCreate"
                             ng-checked="item.checked">
                     {{ item.text }}
                 </ion-toggle>
-
-                <label class="item">
-                    <button class="button button-block button-positive">Confirm</button>
-                </label>
 
             </div>
         </form>

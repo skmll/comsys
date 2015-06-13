@@ -86,3 +86,12 @@
    margin-left: 260px;
     cursor: pointer;
 }
+
+#dismissIcon{
+    margin-left: 280px;
+    cursor: pointer;
+}
+
+#sendButton{
+    margin-right: 10px;
+}

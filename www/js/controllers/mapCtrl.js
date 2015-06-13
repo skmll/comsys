@@ -1,7 +1,21 @@
-app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo) {
+app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, ComsysStubService) {
 
     $scope.notifications = [];
     $scope.notificationsOld = [];
+
+    $scope.showBody = true;
+    $scope.showItemsAnswer = true;
+    $scope.showItemsCreate = true;
+
+    $scope.typeNotification = [
+        {text: "OK", checked: true},
+        {text: "WILCO" , checked: true},
+        {text: "ROGER", checked: true},
+        {text: "Radio Check", checked: true},
+        {text: "Positive", checked: true},
+        {text: "Negative", checked: true}
+    ];
+
 
     var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/events_in_progress/";
     
@@ -27,16 +41,16 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysIn
             if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
                 $scope.$apply(function () {
                     if(notifs[id].seen == undefined || notifs[id].seen == 'false'){
-                        $scope.notifications.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate});
+                        $scope.notifications.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate, available_responses_list: notifs[id].available_responses_list});
                     }else {
-                        $scope.notificationsOld.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate});
+                        $scope.notificationsOld.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate, available_responses_list: notifs[id].available_responses_list});
                     }
                });
             }else {
                 if(notifs[id].seen == undefined || notifs[id].seen == 'false'){
-                    $scope.notifications.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate});
+                    $scope.notifications.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate, available_responses_list: notifs[id].available_responses_list});
                 }else {
-                    $scope.notificationsOld.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate});
+                    $scope.notificationsOld.push({id: id, sender: notifs[id].sender, text: notifs[id].text, time: myDate, available_responses_list: notifs[id].available_responses_list});
                 }} 
         }
 
@@ -77,17 +91,40 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysIn
         $scope.notifications = [];
     };
 
-    $scope.showBody = true;
 
+    $scope.sendNotification = function(text, receiver) {
+        var available_responses_list = [];
 
-    $scope.typeNotification = [
-        {text: "OK", checked: true},
-        {text: "WILCO" , checked: true},
-        {text: "ROGER", checked: true},
-        {text: "Radio Check", checked: true},
-        {text: "Positive", checked: true},
-        {text: "Negative", checked: true}
-    ];
+        for (var i = 0; i < $scope.typeNotification.length; i++) {
+            if($scope.typeNotification[i].checked){
+                available_responses_list.push($scope.typeNotification[i].text);
+            }
+        };
+
+        //TODO: change name to real nickname from service
+        var sender = {
+            id: ComsysInfo.getIsLogged(),
+            name: 'Comsys01',
+            type: 'comsys'
+        };
+        
+
+        if(receiver.type == 'comsys'){
+            ComsysStubService.sendNotificationToComsys(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
+                available_responses_list, sender, text);
+        }else if(receiver.type == 'squad'){
+            ComsysStubService.sendNotificationToSquad(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
+                available_responses_list, sender, text);
+        }else if(receiver.type == 'faction'){
+            ComsysStubService.sendNotificationToFaction(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), 
+                available_responses_list, sender, text);
+        }else if(receiver.type == 'operator'){
+            ComsysStubService.sendNotificationToOperator(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
+                available_responses_list, sender, text);
+        }
+        $scope.closeAnswerNotificationsModal();
+        $scope.closeNotificationsModal();
+    };
 
 
     $ionicModal.fromTemplateUrl('templates/newNotification.html', {
@@ -115,7 +152,25 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysIn
 
     // Open the notifications Modal
     $scope.openNotificationsModal = function () {
+        if(ComsysInfo.getIsLogged() == 0){
+            ComsysInfo.buildAlertPopUp("Can't send notifications!", 'You need to login first.');
+            return;
+        }
         $scope.modalNewNotifications.show();
+        $scope.loading = $ionicLoading.show({
+            content: 'Getting current location...',
+            showBackdrop: false
+        });
+
+        ComsysStubService.getComsysAllowedNotifReceiver(ComsysInfo.getEventID(), ComsysInfo.getFactionID(),
+         ComsysInfo.getIsLogged(), function(array){
+            //$scope.$apply(function () {
+                $scope.possibleReceivers = array.reverse();
+                console.log($scope.possibleReceivers);
+                $ionicLoading.hide();
+            //});
+        });
+
     };
 
     /// Close the answer notifications Modal
@@ -125,9 +180,9 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysIn
 
     // Open the answer notifications Modal
     $scope.openAnswerNotificationsModal = function (notifi) {
-        console.log("Texto Notificação: " + notifi)
+        console.log("Texto Notificação: ", notifi);
         $scope.modalNotifications.show();
-        $scope.notifiText = notifi;
+        $scope.notifi = notifi;
     };
 
     // Triggered in the login modal to close it
@@ -137,6 +192,10 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysIn
 
     // Open the login modal
     $scope.openModalNotificationSeeAll = function () {
+        if($scope.notificationsOld.length == 0){
+            ComsysInfo.buildAlertPopUp('No notifications!', "You don't have old notifications.");
+            return;
+        }
         $scope.modalNotificationsSeeAll.show();
     };
 

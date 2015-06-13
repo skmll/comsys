@@ -125,14 +125,8 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 				operators = snapshot.val();
 				for (var id in operators) {
 					console.log(operators[id]);
-					var special_actRef = new Firebase(firebaseUrl + "events_in_progress/"
-						+ ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/special_actions");
-					special_actRef.push({
-						action: "enemy",
-						gps_lat: operators[id].gps_lat,
-						gps_lng: operators[id].gps_lng,
-						timestamp: Firebase.ServerValue.TIMESTAMP
-					});
+					ComsysStubService.addEnemyPing(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), 
+						operators[id].gps.lat, operators[id].gps.lng);
 				}				
 			});
 		};
@@ -190,16 +184,31 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		});
 	};
 
-	$scope.sendNotification = function(receiver, text) {
+	$scope.sendNotification = function(text, receiver) {
 		// TEST DATA
 		var receiver = {
 			id: 1,
-			name: 'Whatever',
 			type: 'comsys'
 		};
 		var text = Math.random().toString(36).replace(/[^a-z]+/g, '');
-		var available_responses_list = {};
-		var responses_list = {};
+
+	    var test_availArray = [
+	        {text: "OK", checked: true},
+	        {text: "WILCO" , checked: true},
+	        {text: "ROGER", checked: true},
+	        {text: "Radio Check", checked: true},
+	        {text: "Positive", checked: true},
+	        {text: "Negative", checked: true}
+	    ];
+
+        var available_responses_list = [];
+
+        for (var i = 0; i < test_availArray.length; i++) {
+            if(test_availArray[i].checked){
+                available_responses_list.push(test_availArray[i].text);
+            }
+        };
+
 		var sender = {
 			id: ComsysInfo.getIsLogged(),
 			name: 'WhateverWorks',
@@ -209,16 +218,16 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 		if(receiver.type == 'comsys'){
 			ComsysStubService.sendNotificationToComsys(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, responses_list, sender, text);
+				available_responses_list, sender, text);
 		}else if(receiver.type == 'squad'){
 			ComsysStubService.sendNotificationToSquad(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, responses_list, sender, text);
+				available_responses_list, sender, text);
 		}else if(receiver.type == 'faction'){
 			ComsysStubService.sendNotificationToFaction(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), 
-				available_responses_list, responses_list, sender, text);
+				available_responses_list, sender, text);
 		}else if(reciver.type == 'operator'){
 			ComsysStubService.sendNotificationToOperator(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, responses_list, sender, text);
+				available_responses_list, sender, text);
 		}
 	};
 
