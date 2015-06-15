@@ -9,10 +9,15 @@
 		    </div>
 			    <div id="notificationsBody" ng-show="showBody">
 			        <ion-list>
-					    <ion-item class="item" ng-repeat="notifi in notifications" ng-click="openAnswerNotificationsModal(notifi)">
-				    		<h2>{{notifi.sender.name}} - {{notifi.time}}</h2>
-					      	<p>{{notifi.text}}</p>
+					    <ion-item class="item" ng-repeat="notifi in notifications">
+					    	<div class="notification-container"  ng-click="openAnswerNotificationsModal(notifi)">
+					    		<h2>{{notifi.sender.name}} - {{notifi.time}}</h2>
+					      		<p>{{notifi.text}}</p>
+					    	</div>
+				    		
+					      	<a class="button-icon icon ion-checkmark-circled dismissIcon" ng-click="dismissNotif(notifi.id)" ></a>
 					    </ion-item>
+
 			        </ion-list>
 
 			    </div>
