@@ -91,6 +91,14 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysIn
         $scope.notifications = [];
     };
 
+    $scope.dismissNotif = function(id){
+        console.log(id);
+        var refNotif = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/comsys_users/"
+            + ComsysInfo.getIsLogged() + "/comsys_notifications/" + id);
+        refNotif.update({
+            seen: 'true'
+        });
+    };
 
     $scope.sendNotification = function(text, receiver) {
         var available_responses_list = [];

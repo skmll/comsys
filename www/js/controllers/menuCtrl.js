@@ -37,11 +37,11 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 	// Perform the login action when the user submits the login form
 	$scope.loginComsys = function () {
-		/*
+		
 		registerFirebaseReferences();
 		ComsysInfo.loginComsys(1);
-		*/
 		
+		/*
 		var loadingLogin = $ionicLoading.show({
 			content: 'Saving login information',
 			showBackdrop: false
@@ -61,7 +61,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 			ComsysInfo.buildAlertPopUp('Unable to login',
 			'Unable to login = ');
 		});
-		
+		*/
 		$scope.closeLoginModal();
 		
 	};

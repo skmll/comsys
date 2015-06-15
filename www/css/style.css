@@ -87,11 +87,19 @@
     cursor: pointer;
 }
 
-#dismissIcon{
-    margin-left: 280px;
+.dismissIcon{
     cursor: pointer;
+    top: 20px;
+    right: 10px;
+    position: absolute;
+    z-index: 999;
 }
 
 #sendButton{
     margin-right: 10px;
+}
+
+.notification-container {
+    cursor: pointer;
+    width: 90%;
 }
