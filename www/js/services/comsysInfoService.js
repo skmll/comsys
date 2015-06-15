@@ -8,6 +8,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
     var mapGrid = 0;
+var allEvents = [];
+var eventSelected = null;    
     
 
     // TODO: change this test data
@@ -164,6 +166,47 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	factory.userLogout = function() {
 		userID = 0;
 	};
+
+	
+	factory.fetchAllEvents = function () {
+        
+        CommonStubService.getAllEvents()
+            .success(function (data) {
+
+                console.log(data);
+
+                if (data.response == 0) {
+                    var aux = "";
+                    for (var key in data.errors) {
+                        if (data.errors.hasOwnProperty(key)) {
+                            aux = aux + data.errors[key];
+                        }
+                    }
+                    // Bad result
+                    ComsysInfo.buildAlertPopUp('Unable to get all events',
+                        'Unable to get all events: ' + aux);
+                }else{
+                    for(var i = 0; i < data.list.length; i++){
+                        events.push(data.list[i]);
+                    }
+                }
+            })
+            .error(function (error) {
+                // closes loading spin
+                //$ionicLoading.hide();
+
+                // Bad result
+                ComsysInfo.buildAlertPopUp('Unable to get all events',
+                    'Unable to get all events: ' + error);
+            })
+    };
+	factory.getAllEvents = function() {
+		return events;
+	};
+	
+	    factory.getEventSelected = function () {
+        return eventSelected;
+    };
 
 	return factory;
 
