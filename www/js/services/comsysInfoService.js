@@ -40,20 +40,15 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	// Login was successful -> Get COMSYS personal configuration
 	factory.getComsysPersonalConfig = function (scope) {
-
 		ComsysStubService.getComsysPersonalConfig()
 		.success(function (data) {
-
 			console.log(data); // DEBUG
-
 			if (data.response == serverError) {
 				// Server couldn't get COMSYS personal configuration -> Display alert
 				// Stop loading animation 
 				$ionicLoading.hide();
-
 				// Display alert
 				factory.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
-
 			} else {
 				// Operation successful -> Fill profile variables
 				factory.setNickname(data.list.nickname);
@@ -68,7 +63,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 				// Stop loading animation and close modal view
 				$ionicLoading.hide();
 				scope.closeLoginModal();
-
 				//EventsInfo.fetchAllEvents(scope);
 			}
 		})
