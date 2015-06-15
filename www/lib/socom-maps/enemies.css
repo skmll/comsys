@@ -1,0 +1,50 @@
+.button.activated{
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+.btn-direction {
+    font: normal 35px/normal captureit;
+    color: #219710;
+    height: 100%;
+    width: 100%;
+    border-radius: 0;
+    margin: 3px;
+    background: #000;
+}
+.btn-direction:active, .btn-direction:hover{
+    background: #000;
+    color: #fff;
+    text-shadow: 0 0 30px #219710, 0 0 60px #219710, 0 0 90px #219710, 0 0 90px #219710;
+}
+
+.btn-direction-cancel {
+    color: #B71C1C;
+}
+
+.btn-direction-cancel:active, .btn-direction-cancel:hover{
+    background: #000;
+    color: #fff;
+    text-shadow: 0 0 30px #B71C1C, 0 0 50px #B71C1C;
+}
+
+.row-directions {
+    height: 25%;
+    margin-bottom: 5px;
+}
+
+.container-directions {
+    height: 100%;
+    width: 100%;
+    background: black;
+}
+
+.modal-title{
+    font-family: captureit;
+    text-align: center;
+    color: white;
+    background: black;
+    padding: 10px 0;
+    margin: 0 !important;
+    height: 20%;
+}

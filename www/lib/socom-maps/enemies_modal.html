@@ -1,0 +1,11 @@
+<!--<link ng-repeat="stylesheet in stylesheets" ng-href="{{stylesheet.href}}" type="{{stylesheet.type}}" rel="stylesheet"/>-->
+<div class="modal {{templateClass}}">
+    <h1 class="modal-title">{{title}}</h1>
+    <div class="container-directions">
+        <div class="row row-directions" ng-repeat="row in btns">
+            <button class="button btn-direction {{btn.className}}" ng-click="onclick(btn.value)" ng-repeat="btn in row">
+                {{btn.hideLabel ? '' : btn.label}}
+            </button>
+        </div>
+    </div>
+</div>

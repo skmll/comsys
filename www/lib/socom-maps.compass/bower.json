@@ -1,0 +1,10 @@
+{
+	"name": "socom-maps.compass",
+	"main": ["socom-compass.js"],
+  	"dependencies": {
+		"cordova": ">=2.3.0",
+		"leaflet": "0.7.3"
+	},
+	"license": "MIT",
+	"ignore": ["./!(socom-compass.js)"]
+}

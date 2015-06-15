@@ -12,15 +12,46 @@
         <link href="css/ionic.app.css" rel="stylesheet">
         -->
 
-        <!-- ionic/angularjs js -->
-        <script src="lib/ionic/js/ionic.bundle.js"></script>
+        <!-- libs for socom-maps -->
+        <!-- IONIC CSS -->
+        <link rel="stylesheet" href="lib/ionic/css/ionic.min.css" type="text/css"><link>
+        <!-- LEAFLET CSS -->
+        <link href="lib/leaflet/dist/leaflet.css" rel="stylesheet"/>
+        <link href="lib/leaflet-draw/dist/leaflet.draw.css" rel="stylesheet"/>
+        <link href="lib/leaflet.markercluster/dist/MarkerCluster.Default.css" rel="stylesheet"/>
+        <!-- SOCOM CSS -->
+        <link href="lib/socom-maps/socom-maps.css" rel="stylesheet"/>
+        <link href="lib/socom-maps.compass/socom-compass.css" rel="stylesheet"/>
+        <link href="lib/socom-maps.view-mode/socom-maps-viewmode.css" rel="stylesheet"/>
+        <!-- IONIC-->
+        <script src="lib/ionic/js/ionic.bundle.js" type="text/javascript"></script>
+
+        <!-- GOOGLE MAPS IMPORT-->
+        <!-- Google Maps js -->
+        <!-- Key-iOS: AIzaSyBFBsgwET0eWQmpRkUpJBw8UcsQqgcvdKo -->
+        <!-- Key-Android: AIzaSyCX27UwtZi91KwTuN2To9MHFHPW0d8ZOiM -->
+        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBFBsgwET0eWQmpRkUpJBw8UcsQqgcvdKo&sensor=true"></script>
+
+
+
+        <!-- LEAFLET IMPORTS-->
+        <script src="lib/leaflet/dist/leaflet.js" type="text/javascript"></script>
+        <script src="lib/leaflet-draw/dist/leaflet.draw.js" type="text/javascript"></script>
+        <script src="lib/leaflet.markercluster/dist/leaflet.markercluster.js" type="text/javascript"></script>
+        <!-- SOCOM IMPORTS-->
+        <script src="lib/socom-maps/socom-maps.js" type="text/javascript"></script>
+        <script src="lib/socom-maps/leaflet-google.js" type="text/javascript"></script>
+        <script src="lib/socom-maps.compass/socom-compass.js" type="text/javascript"></script>
+        <script src="lib/socom-maps.view-mode/socom-maps-viewmode.js" type="text/javascript"></script>
+        <script src="lib/socom-maps/hudModule.js" type="text/javascript"></script>
+        <script src="lib/socom-maps/socom-maps.js" type="text/javascript"></script>
 
         <!-- cordova script (this will be a 404 during development) -->
         <script src="cordova.js"></script>
 
 	    <!-- Firebase -->
-        <script src="https://cdn.firebase.com/js/client/2.2.2/firebase.js"></script>
-        <!-- Angular Fire -->
+        <script src="https://cdn.firebase.com/js/client/2.2.6/firebase.js"></script>
+        <!-- Angular Fire is this needed? -->
         <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
 
         <!-- your app's js -->
@@ -38,13 +69,6 @@
         <script src="https://rawgit.com/skmll/socom_bo_operator/master/www/js/services/comsys-stub-service.js"></script>
         <script src="https://rawgit.com/skmll/socom_bo_operator/master/www/js/services/common-stub-service.js"></script>
 
-        <!-- Firebase -->
-        <script src="https://cdn.firebase.com/js/client/2.2.6/firebase.js"></script>
-
-        <!-- Google Maps js -->
-        <!-- Key-iOS: AIzaSyBFBsgwET0eWQmpRkUpJBw8UcsQqgcvdKo -->
-        <!-- Key-Android: AIzaSyCX27UwtZi91KwTuN2To9MHFHPW0d8ZOiM -->
-        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBFBsgwET0eWQmpRkUpJBw8UcsQqgcvdKo&sensor=true"></script>
     </head>
 
     <body ng-app="starter">

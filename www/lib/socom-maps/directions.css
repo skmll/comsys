@@ -1,0 +1,112 @@
+.enemies .button.activated{
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+.enemies .btn-direction {
+    height: 100%;
+    width: 100%;
+    /*border: 1px solid whitesmoke;*/
+    border-radius: 0;
+    margin: 3px;
+    background: transparent;
+    -webkit-transition: none;
+    transition: none;
+
+}
+
+.enemies .btn-direction-ne:after, .enemies .btn-direction-n:after, .enemies .btn-direction-nw:after,
+.enemies .btn-direction-e:after,.enemies .btn-direction-c:after,.enemies .btn-direction-w:after,
+.enemies .btn-direction-se:after,.enemies .btn-direction-s:after,.enemies .btn-direction-sw:after{
+    background: url("img/arrow.png") no-repeat center;
+    background-size: 80px;
+}
+.enemies .btn-direction-ne:active:after, .enemies .btn-direction-n:active:after, .enemies .btn-direction-nw:active:after,
+.enemies .btn-direction-ne:hover:after, .enemies .btn-direction-n:hover:after, .enemies .btn-direction-nw:hover:after,
+.enemies .btn-direction-e:active:after,.enemies .btn-direction-c:active:after,.enemies .btn-direction-w:active:after,
+.enemies .btn-direction-e:hover:after,.enemies .btn-direction-c:hover:after,.enemies .btn-direction-w:hover:after,
+.enemies .btn-direction-se:active:after,.enemies .btn-direction-s:active:after,.enemies .btn-direction-sw:active:after,
+.enemies .btn-direction-se:hover:after,.enemies .btn-direction-s:hover:after,.enemies .btn-direction-sw:hover:after,
+{
+    background: url("img/arrow_hover.png") no-repeat center;
+    background-size: 80px;
+}
+
+.enemies .btn-direction-c:after {
+    background: url("img/shield.png") no-repeat center;
+    background-size: 80px;
+}
+.enemies .btn-direction-c:active:after {
+    background: url("img/shield_hover.png") no-repeat center;
+    background-size: 80px;
+}
+
+.enemies .btn-direction-ne:after {
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+.enemies .btn-direction-e:after {
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.enemies .btn-direction-se:after {
+    -ms-transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+
+.enemies .btn-direction-sw:after {
+    -ms-transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+}
+
+.enemies .btn-direction-s:after {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.enemies .btn-direction-nw:after {
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.enemies .btn-direction-w:after {
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+.enemies .btn-cancel{
+    background-size:16px 16px;
+    font: normal 35px/normal captureit;
+    color: #B71C1C;
+}
+.enemies .btn-cancel:hover{
+    color: #fff;
+    text-shadow: 0 0 30px #B71C1C, 0 0 50px #B71C1C;
+}
+.enemies .row-directions {
+    height: 20%;
+    margin-bottom: 5px;
+}
+
+.enemies .container-directions {
+    height: 100%;
+    width: 100%;
+    background: black;
+}
+
+.enemies .modal-title{
+    font-family: captureit;
+    text-align: center;
+    color: white;
+    background: black;
+    padding: 10px 0;
+    margin: 0 !important;
+    height: 20%;
+}

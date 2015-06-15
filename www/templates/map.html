@@ -29,8 +29,9 @@
             </div>
 		</div>
     </ion-nav-buttons>
-    <ion-content>
-        <div id="map-canvas" data-tap-disabled="true">
-        </div>
+    
+    <ion-content scroll="false" data-tap-disabled="true">
+        <hud></hud>
+        <map mode="COMSYS" on-create="mapCreated(map)"></map>
     </ion-content>
 </ion-view>
