@@ -1,0 +1,458 @@
+/* Empty. Add your own CSS if you like */
+@font-face {
+    font-family: captureit;
+    src: url(captureit.ttf);
+}
+
+.popup-body {
+    overflow: auto;
+}
+
+.popup-head {
+    background-color: #1B5E20;
+}
+
+.popup-title {
+    color: white;
+    font-size: 20px;
+    text-align: start;
+}
+
+.xpto {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+map {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.scroll {
+    height: 100%;
+}
+
+.dialog-map .popup {
+    width: 95% !important;
+    max-width: 360px !important;
+}
+
+.login-label {
+    font-family: captureit;
+}
+
+.pnl-map-buttons {
+    width: 70px;
+    height: 100%;
+}
+
+.leaflet-map-pane {
+    z-index: 2 !important;
+}
+
+.leaflet-google-layer {
+    z-index: 1 !important;
+}
+
+.pin {
+    width: 70px;
+    height: 60px;
+    left: 50%;
+    /* right: 50%; */
+    top: 50%;
+    display: inline-block;
+    position: absolute;
+    text-align: center;
+    -webkit-box-shadow: 0 0 20px #fff;
+    -moz-box-shadow: 0 0 20px #fff;
+    box-shadow: 0 0 20px #fff;
+    background: #219710;
+    margin-left: -35px;
+    margin-top: -80px;
+}
+
+.pin:after {
+    content: '';
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    position: absolute;
+    left: 30%;
+    top: 70%;
+    border: 14px solid;
+    border-color: transparent #219710 #219710 transparent;
+    margin-top: 3px;
+}
+
+.pin:before {
+    content: attr(nickname);
+    font-family: captureit;
+    color: white;
+    /* transform: rotate(45deg); */
+    white-space: nowrap;
+    /*margin-left: -50%;*/
+    min-width: 70px;
+    /*margin-right: -50%;*/
+    /*position: absolute;*/
+    text-align: center;
+    /*left: -25%;*/
+    /* top: -50%; */
+}
+
+.pin-orange {
+    background: #FF5D00 !important;
+}
+
+.pin-orange:after {
+    border-color: transparent #FF5D00 #FF5D00 transparent;
+}
+
+.pin-hostile {
+    font-size: 35px;
+    height: 85px;
+    background-color: #F00;
+    margin-top: -105px;
+}
+
+.pin-hostile:before {
+    border-color: transparent #f00 #f00 transparent;
+    display: block;
+    margin-top: 45px;
+}
+.pin-hostile:after {
+    margin: 11px 0;
+    border-color: transparent #f00 #f00 transparent;
+}
+
+.pin-hostile-direction{
+    background: url("img/hostile/direction_n.png") no-repeat top transparent;
+    background-size: 60px;
+    width: 70px;
+    height: 60px;
+    margin-top: -97px;
+}
+.pin-hostile-direction-c {
+    background: url("img/shield.png") no-repeat top #F00;
+    background-size: 60px;
+}
+.pin-hostile-direction-ne {
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+}
+.pin-hostile-direction-nw {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+}
+.pin-hostile-direction-e {
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+}
+.pin-hostile-direction-w {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+}
+.pin-hostile-direction-se {
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+    -ms-transform: rotate(-135deg);
+}
+.pin-hostile-direction-s {
+    -webkit-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+}
+.pin-hostile-direction-sw {
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+    -ms-transform: rotate(135deg);
+}
+
+.custom-popup .leaflet-popup {
+    bottom: 80px !important;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+    border: 3px solid #000;
+    background: #000;
+    color: #fff;
+    font-size: 16px;
+    line-height: 24px;
+    border-radius: 0;
+    margin-bottom: -13px;
+}
+
+.custom-popup .leaflet-popup-content-wrapper a, .custom-popup .leaflet-popup-content-wrapper p {
+    color: #fff;
+}
+
+.custom-popup .leaflet-popup-tip-container {
+    width: 85px;
+    height: 28px;
+    margin-top: 13px;
+}
+
+.custom-popup .leaflet-popup-tip {
+    z-index: 1;
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    border: 15px solid #000;
+    /*border-left:15px solid transparent;*/
+    /*border-right:15px solid transparent;*/
+    /*border-top:15px solid #2c3e50;*/
+}
+
+/*TODO: check if the class below doesn't affect the behaviour of modals*/
+.modal {
+    display: block;
+    position: absolute;
+    z-index: 10;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+/*DIRECTIONS*/
+.directions .button.activated {
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+.directions .btn-direction {
+    border: none;
+    height: 100%;
+    width: 100%;
+    /*border: 1px solid whitesmoke;*/
+    border-radius: 0;
+    margin: 3px;
+    background: transparent;
+    -webkit-transition: none;
+    transition: none;
+
+}
+
+.directions .btn-direction-ne:after, .directions .btn-direction-n:after, .directions .btn-direction-nw:after,
+.directions .btn-direction-e:after, .directions .btn-direction-c:after, .directions .btn-direction-w:after,
+.directions .btn-direction-se:after, .directions .btn-direction-s:after, .directions .btn-direction-sw:after {
+    background: url("img/arrow.png") no-repeat center;
+    background-size: 80px;
+}
+
+.directions .btn-direction-ne:active:after, .directions .btn-direction-n:active:after, .directions .btn-direction-nw:active:after,
+.directions .btn-direction-ne:hover:after, .directions .btn-direction-n:hover:after, .directions .btn-direction-nw:hover:after,
+.directions .btn-direction-e:active:after, .directions .btn-direction-c:active:after, .directions .btn-direction-w:active:after,
+.directions .btn-direction-e:hover:after, .directions .btn-direction-c:hover:after, .directions .btn-direction-w:hover:after,
+.directions .btn-direction-se:active:after, .directions .btn-direction-s:active:after, .directions .btn-direction-sw:active:after,
+.directions .btn-direction-se:hover:after, .directions .btn-direction-s:hover:after, .directions .btn-direction-sw:hover:after,
+{
+    background: url("img/arrow_hover.png") no-repeat center;
+    background-size: 80px;
+}
+
+.directions .btn-direction-c:after {
+    background: url("img/shield.png") no-repeat center;
+    background-size: 80px;
+}
+
+.directions .btn-direction-c:active:after {
+    background: url("img/shield_hover.png") no-repeat center;
+    background-size: 80px;
+}
+
+.directions .btn-direction-ne:after {
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.directions .btn-direction-e:after {
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.directions .btn-direction-se:after {
+    -ms-transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+
+.directions .btn-direction-sw:after {
+    -ms-transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+}
+
+.directions .btn-direction-s:after {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.directions .btn-direction-nw:after {
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.directions .btn-direction-w:after {
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.directions .btn-cancel {
+    background-size: 16px 16px;
+    font: normal 35px/normal captureit;
+    color: #B71C1C;
+}
+
+.directions .btn-cancel:hover {
+    color: #fff;
+    text-shadow: 0 0 30px #B71C1C, 0 0 50px #B71C1C;
+}
+
+.directions .row-directions {
+    height: 20%;
+    margin-bottom: 5px;
+}
+
+.directions .container-directions {
+    height: 100%;
+    width: 100%;
+    background: black;
+}
+
+.directions .modal-title {
+    font-family: captureit;
+    text-align: center;
+    color: white;
+    background: black;
+    padding: 10px 0;
+    margin: 0 !important;
+    height: 20%;
+}
+
+/*ENEMIES*/
+.enemies .button.activated {
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+.enemies .btn-direction {
+    font: normal 35px/normal captureit;
+    color: #219710;
+    height: 100%;
+    width: 100%;
+    border-radius: 0;
+    margin: 3px;
+    background: #000;
+    border: none;
+}
+
+.enemies .btn-direction:active, .enemies .btn-direction:hover {
+    background: #000;
+    color: #fff;
+    text-shadow: 0 0 30px #219710, 0 0 60px #219710, 0 0 90px #219710, 0 0 90px #219710;
+}
+
+.enemies .btn-direction-cancel {
+    color: #B71C1C;
+}
+
+.enemies .btn-direction-cancel:active, .enemies .btn-direction-cancel:hover {
+    background: #000;
+    color: #fff;
+    text-shadow: 0 0 30px #B71C1C, 0 0 50px #B71C1C;
+}
+
+.enemies .row-directions {
+    height: 20%;
+    margin-bottom: 5px;
+}
+
+.enemies .container-directions {
+    height: 100%;
+    width: 100%;
+    background: black;
+}
+
+.enemies .modal-title {
+    font-family: captureit;
+    text-align: center;
+    color: white;
+    background: black;
+    padding: 10px 0;
+    margin: 0 !important;
+    height: 20%;
+}
+
+.pulse {
+    background: #d6d4d4;
+    border-radius: 50%;
+    height: 14px;
+    width: 14px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -7px;
+    transform: rotateX(55deg);
+    z-index: -2;
+}
+
+.pulse:after {
+    content: "";
+    border-radius: 50%;
+    height: 60px;
+    width: 60px;
+    position: absolute;
+    margin: -21px;
+    animation: pulsate 1s ease-out;
+    animation-iteration-count: infinite;
+    opacity: 0;
+    box-shadow: 0 0 1px 2px #00cae9;
+    animation-delay: 1.1s;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(0.1, 0.1);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.2, 1.2);
+        opacity: 0;
+    }
+}
+
+@keyframes bounce {
+    0% {
+        opacity: 0;
+        transform: translateY(-2000px) rotate(-45deg);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateY(30px) rotate(-45deg);
+    }
+
+    80% {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(-45deg);
+    }
+}

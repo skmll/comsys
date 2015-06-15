@@ -1,0 +1,15 @@
+{
+  	"name": "socom-maps.view-mode",
+  	"main": [
+	    "socom-maps-viewmode.js"
+	],
+  	"dependencies": {
+    	"leaflet": "0.7.3"
+  	},
+  	"license": "MIT",
+	"ignore": [
+		"./!(socom-maps-viewmode.js)",
+    	"node_modules",
+    	"bower_components"
+	]
+}

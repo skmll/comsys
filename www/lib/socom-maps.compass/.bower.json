@@ -1,0 +1,25 @@
+{
+  "name": "socom-maps.compass",
+  "main": [
+    "socom-compass.js"
+  ],
+  "dependencies": {
+    "cordova": ">=2.3.0",
+    "leaflet": "0.7.3"
+  },
+  "license": "MIT",
+  "ignore": [
+    "./!(socom-compass.js)"
+  ],
+  "homepage": "https://github.com/oliveira0011/socom-maps.compass",
+  "version": "0.0.4",
+  "_release": "0.0.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.4",
+    "commit": "5b7da541d082fe99c67016010f451c1e20b528a5"
+  },
+  "_source": "git://github.com/oliveira0011/socom-maps.compass.git",
+  "_target": "0.0.4",
+  "_originalSource": "socom-maps.compass"
+}
