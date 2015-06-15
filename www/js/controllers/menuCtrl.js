@@ -5,6 +5,9 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 	// User Statos (0 - not logged, 1 - logged)
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
+    // Set eventID
+    $scope.eventID = ComsysInfo.getEventID();
+    
 	$scope.refreshMenu = function() {
 		// User Statos (0 - not logged, 1 - logged)
 		$scope.isLogged = ComsysInfo.getIsLogged();

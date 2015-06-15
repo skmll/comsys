@@ -80,7 +80,17 @@ app.config(function($stateProvider, $urlRouterProvider) {
           }
         }
       })
-	    
+
+      .state('app.seeEvents', {
+            url: "/seeEvents",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/comsys/seeEvents.html",
+                    controller: 'SeeEventsCtrl'
+                }
+            }
+        })
+        
 	  .state('systemhack', {
 		url: "/systemhack",
 		templateUrl: 'templates/systemHack.html',
