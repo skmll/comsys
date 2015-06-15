@@ -11,7 +11,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 var allEvents = [];
 var eventSelected = null;    
     
-
     // TODO: change this test data
     var eventID = 1;
     var factionID = 1;
