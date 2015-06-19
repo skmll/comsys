@@ -1,0 +1,10 @@
+<ion-view view-title="Events">
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="item in eventsList" ng-click="goToEvent(item)" class="item-icon-right" href="#/app/eventDetails">
+                {{item.name}}
+                <i class="icon ion-ios-arrow-right"></i>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
