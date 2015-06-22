@@ -1,29 +1,35 @@
 <ion-modal-view>
+    
     <ion-header-bar class="bar-dark">
-        <h1 class="title">Edit profile</h1>
-        <div class="buttons">
-            <button class="button button-clear" ng-click="closeEditProfileModal()">Close</button>
-        </div>
+        
+        <h1 class="title">Edit Profile</h1>
+        <a class="button button-icon icon ion-close-circled" ng-click="closeEditProfileModal()"></a>
+        
     </ion-header-bar>
+    
     <ion-content>
+        
         <ion-list>
-            <ion-item class="item-divider">
+            
+            <ion-item class="item-divider custom-item-divider">
                 Personal options
             </ion-item>
+            
             <ion-item class="item-input">
-                <span class="input-label">Nickname</span>
-                <input type="text" placeholder="This is how other players will see you" ng-model="editProfileData.nickname">
+                <span class="input-label custom-input-label">Nickname</span>
+                <input type="text" ng-model="editProfileData.nickname">
             </ion-item>
             
-            <ion-item class="item-divider">
+            <ion-item class="item-divider custom-item-divider">
                 Layout options
             </ion-item>
+            
             <ion-toggle ng-model="editProfileData.mapGrid" ng-checked="editProfileData.mapGrid">
-                Display MapGrid over Map</ion-toggle>
-            <ion-item class="item-input item-select">
-                <div class="input-label">
-                    Coordinates input format
-                </div>
+                <span class="input-label custom-input-label">Display grid over map</span>
+            </ion-toggle>
+                
+            <ion-item class="item-input item-select custom-select">
+                <span class="input-label custom-input-label">Coordinates input format</span>
                 <select ng-model="editProfileData.coordInpFormat"> 
                     <option value="0" selected>Lat/Long</option>
                     <option value="1">DMS</option>
@@ -31,11 +37,14 @@
                     <option value="3">MGRS</option>
                 </select>
             </ion-item>
+            
             <ion-item>
-                <button class="button button-block button-positive" ng-click="
-                    doEditProfile(editProfileData.nickname, editProfileData.mapGrid, editProfileData.coordInpFormat)
-                ">Save</button>
+                <button class="button button-block button-positive" 
+                        ng-click="doEditProfile(editProfileData.nickname, editProfileData.mapGrid, editProfileData.coordInpFormat)">Save</button>
             </ion-item>
+            
         </ion-list>
+        
     </ion-content>
+    
 </ion-modal-view>

@@ -1,7 +1,7 @@
 /**
  * Created by joaosilva on 26/05/15.
  */
-app.controller('MapCtrl', function ($scope, $ionicLoading) {
+app.controller('MapCtrl', function ($scope, $ionicLoading, $ionicNavBarDelegate, $ionicHistory, $rootScope, $state, ComsysInfo) {
 
     $scope.teste = false;
 
@@ -14,7 +14,20 @@ app.controller('MapCtrl', function ($scope, $ionicLoading) {
         console.log("Teste: " + $scope.teste);
     };
 
+    $scope.$on('$ionicView.afterEnter', function() {
+      $ionicHistory.clearCache();
+      $ionicHistory.clearHistory();
+      
+      
+      if(ComsysInfo.getMenuRefresh() && $scope.isLogged == 0) {
+          $state.go($state.current, {}, {reload: true});
+          ComsysInfo.setMenuRefresh(false);
+      }
+      
+    });
+
     $scope.initialize = function () {
+       
         var myLatlng = new google.maps.LatLng(43.07493, -89.381388);
 
         var mapOptions = {

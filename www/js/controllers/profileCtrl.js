@@ -1,6 +1,6 @@
 app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicModal, $timeout, $ionicPopup,
-    $ionicLoading, ComsysStubService, ComsysInfo, $location) {
-
+    $ionicLoading, ComsysStubService, ComsysInfo, $location, $ionicNavBarDelegate) {
+    
     // Set logged user ID
     $scope.userID = ComsysInfo.getUserID();
 
@@ -17,32 +17,125 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
         coordInpFormat: ComsysInfo.getCoordInpFormat(),
         mapGrid: ComsysInfo.getMapGrid()
     };
-
-    // Form data for the change password modal
-    $scope.changePasswordData = {
-        oldPassword: "",
-        newPassword: "",
-        newRepeatPassword: ""
+    
+    /*** Logout ***/
+    $scope.logout = function () {
+        
+        $ionicLoading.show({
+            content: 'Logging out...',
+            showBackdrop: false
+        });
+        
+        // Try to logout and store the result
+        ComsysStubService.logoutComsys()
+        
+		.success(function (data) {
+            
+            $ionicLoading.hide();
+			console.log(data); // DEBUG
+            
+			if ( data.response == 0 ) {
+				ComsysInfo.buildAlertPopUp('Logout error', 'Unable to logout!');
+				
+			} else {
+                // Reset app info -> Set logged in user to 0, clear cache and navigation history and send user to map
+                ComsysInfo.userLogout();
+                $ionicHistory.clearCache();
+                $ionicHistory.clearHistory();
+                $location.path('/app/map');
+				ComsysInfo.buildAlertPopUp('Logout', 'Logout successful!');
+			}
+		})
+        
+		.error(function (error) {
+			$ionicLoading.hide();
+            ComsysInfo.buildAlertPopUp('Server error', 'Unable to log out. Either the server or your internet connection is down.');
+		});
+        
     };
-
-    // Create the edit profile modal that we will use later
+    
+    /*** Edit profile ***/
+  
+    // Create the edit profile modal
     $ionicModal.fromTemplateUrl('templates/comsys/editProfile.html', {
         scope: $scope
     }).then(function (modalEditProfile) {
         $scope.modalEditProfile = modalEditProfile;
     });
-
-    // Triggered in the edit profile modal to close it
-    $scope.closeEditProfileModal = function () {
-        $scope.modalEditProfile.hide();
-    };
-
+    
     // Open the edit profile modal
     $scope.openEditProfileModal = function () {
         $scope.modalEditProfile.show();
     };
 
-    // Create the change password modal that we will use later
+    // Close the edit profile modal
+    $scope.closeEditProfileModal = function () {
+        $scope.modalEditProfile.hide();
+    };
+
+    // Send profile changes to server
+    $scope.doEditProfile = function (newNickname, mapGridChecked, newCoordInpFormat) {
+        
+        $ionicLoading.show({
+            content: 'Editing profile...',
+            showBackdrop: false
+        });
+        
+        var displayMapGrid = 0;
+                    
+        if(mapGridChecked) {
+            displayMapGrid = 1;
+        }
+        
+        ComsysStubService.updateComsysPersonalConfig(newNickname, displayMapGrid, newCoordInpFormat)
+        
+            .success(function (data) {
+                
+                $ionicLoading.hide();
+                console.log(data); // DEBUG
+                
+                if (data.response != 0) {
+                    
+                    // Update scope data
+                    $scope.profileData.nickname = newNickname;
+                    $scope.profileData.mapGrid = displayMapGrid;
+                    $scope.profileData.coordInpFormat = newCoordInpFormat;
+                    $scope.profileData.coordInpFormatText = ComsysInfo.getCoordInpFormatTextFromID(parseInt($scope.profileData.coordInpFormat));
+                    
+                    // Update service data
+                    ComsysInfo.setNickname(newNickname);
+    				ComsysInfo.setCoordInpFormat(newCoordInpFormat);
+    				ComsysInfo.setMapGrid(displayMapGrid);
+                    ComsysInfo.setCoordInpFormatText(ComsysInfo.getCoordInpFormatTextFromID(parseInt(newCoordInpFormat)));
+                    
+                    // Display message and close modal
+                    ComsysInfo.buildAlertPopUp('Edit profile', 'Your profile was successfull edited!');
+                    $scope.closeEditProfileModal();
+                 } 
+                 
+                 else {
+                     var errorMessage = ComsysInfo.getAllErrors(data.errors);
+                     ComsysInfo.buildAlertPopUp('Edit profile error', errorMessage);
+                 }
+        })
+        
+        .error(function (error) {
+            $ionicLoading.hide();
+            ComsysInfo.buildAlertPopUp('Server error', 'Unable to edit profile. Either the server or your internet connection is down.');
+        });
+        
+    };
+    
+    /*** Change Password ***/
+     
+    // Initialize change pasword data
+    $scope.changePasswordData = {
+        oldPassword: "",
+        newPassword: "",
+        newRepeatPassword: ""
+    };
+    
+    // Create the change password modal
     $ionicModal.fromTemplateUrl('templates/comsys/changePassword.html', {
         scope: $scope
     }).then(function (modalChangePassword) {
@@ -54,60 +147,22 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
         $scope.modalChangePassword.show();
     };
 
-    // Triggered in the change password modal to close it
+    // Close the change password modal
     $scope.closeChangePasswordModal = function () {
         $scope.modalChangePassword.hide();
     };
 
-    // Perform the edit profile action when the user submits the joinSquad form
+    // Perform change password
     $scope.doChangePassword = function () {
-        var loadingChangePassword = $ionicLoading.show({
-            content: 'Saving new password information',
+        
+        $ionicLoading.show({
+            content: 'Changing password...',
             showBackdrop: false
         });
 
-        ComsysInfo.changeUserPassword($scope.changePasswordData.newPassword,
-            $scope.changePasswordData.newRepeatPassword, $scope.changePasswordData.oldPassword);
-    };
-
-    // Change the variables to not logged state
-    $scope.logout = function () {
-        var loadingLogout = $ionicLoading.show({
-      content: 'Saving logout information',
-            showBackdrop: false
-        });
-        ComsysInfo.userLogout();
-        $ionicLoading.hide();
-        $location.path('/app/map');
-    };
-    
-    
-    
-    /***** The functions below this line are revised and confirmed to be necessary *****/
-     
-    // Save profile changes
-    $scope.doEditProfile = function (newNickname, newMapGrid, newCoordInpFormat) {
+        ComsysInfo.changeUserPassword($scope.changePasswordData.oldPassword, $scope.changePasswordData.newPassword,
+            $scope.changePasswordData.newRepeatPassword, $scope.closeChangePasswordModal);
         
-        $scope.profileData.nickname = newNickname;
-        $scope.profileData.mapGrid = newMapGrid;
-        $scope.profileData.coordInpFormat = newCoordInpFormat;
-        $scope.profileData.coordInpFormatText = ComsysInfo.getCoordInpFormatTextFromID(parseInt($scope.profileData.coordInpFormat));
-        $scope.updateComsysPersonalConfig();
     };
-
-    // Send profile changes to server
-    $scope.updateComsysPersonalConfig = function () {
-        var displayGrid = -1;
-        if ($scope.profileData.mapGrid) displayGrid = 1;
-        else displayGrid = 0;
-        
-        ComsysStubService.updateComsysPersonalConfig($scope.profileData.nickname, displayGrid, $scope.profileData.coordInpFormat)
-            .success(function (data) {
-            console.log(data);
-            $scope.closeEditProfileModal();
-        })
-            .error(function (error) {
-            console.log(error);
-        });
-    }
+    
 });

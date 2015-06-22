@@ -7,9 +7,22 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var nickname = undefined;
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
-    var mapGrid = 0;
-    
-
+    var mapGrid = false;
+    var refreshMenuAfterLogout = true;
+	var resetIsLoggedAfterLogoutCallback;
+	
+	factory.getMenuRefresh = function(){
+        return refreshMenuAfterLogout;
+    };
+	
+	factory.setMenuRefresh = function (newValue) {
+		refreshMenuAfterLogout = newValue;
+	};
+	
+	factory.resetIsLogged = function (func) {
+		resetIsLoggedAfterLogoutCallback = func;
+	};
+	
     // TODO: change this test data
     var eventID = 1;
     var factionID = 1;
@@ -38,39 +51,33 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 			console.log(data); // DEBUG
 
-			if (data.response == serverError) {
+			if  (data.response == serverError ) {
 				// Server couldn't get COMSYS personal configuration -> Display alert
-				// Stop loading animation 
-				$ionicLoading.hide();
-
-				// Display alert
 				factory.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
 
 			} else {
 				// Operation successful -> Fill profile variables
 				factory.setNickname(data.list.nickname);
 				factory.setCoordInpFormat(data.list.coord_format);
-				factory.setMapGrid(data.list.display_grid);
+				if(data.list.display_grid == 0) {
+					mapGrid = false;
+				}
+				else {
+					mapGrid = true;
+				}
+				factory.setMapGrid(mapGrid);
 				coordInpFormatText = factory.getCoordInpFormatTextFromID(parseInt(data.list.coord_format));
+				
 				if(coordInpFormatText == und) {
 					factory.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
 					factory.setCoordInpFormatText("Lat/Long");
 				}
-
-				// Stop loading animation and close modal view
-				$ionicLoading.hide();
-				scope.closeLoginModal();
-
-				//EventsInfo.fetchAllEvents(scope);
 			}
 		})
+		
 		.error(function (error) {
-			// Couldn't connect to server
-			// Stop loading animation
-			$ionicLoading.hide();
-
 			// Display alert
-			factory.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
+			factory.buildAlertPopUp('Server Error', 'Unable to get profile information.');
 		});
 	};
 
@@ -115,7 +122,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	// Get mapGrid
-	factory.getMapGrid = function (d) {
+	factory.getMapGrid = function () {
 		return mapGrid;
 	};
 
@@ -154,7 +161,120 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.userLogout = function() {
+		
+		refreshMenuAfterLogout = true;
 		userID = 0;
+		resetIsLoggedAfterLogoutCallback();
+		
+	};
+    
+    factory.changeUserPassword = function(oldPassword, newPassword, newPasswordRepeat, closeModalOnSuccess) {
+		
+		// Check if fields are empty
+		if ( !oldPassword || !newPassword || !newPasswordRepeat ) {
+			
+			// Stop animation and display alert
+			$ionicLoading.hide();
+			factory.buildAlertPopUp('Change Password Error', 'Error: All fields are required!');
+			return;
+		}
+		
+		// Check if new password and new password repeat are equal
+		
+		else if ( !factory.verifyRepeatPassword(newPassword, newPasswordRepeat) ) {
+			
+			// Stop animation and display alert
+			$ionicLoading.hide();
+			factory.buildAlertPopUp('Change Password Error', 'Error: "New Password" and "Repeat New Password" don\'t match!');
+			return;
+		}
+		
+		// Check if newPassword isn't the same as it was before
+        else if ( (oldPassword == newPassword) ) {
+			
+			// Stop animation and display alert
+			$ionicLoading.hide();
+			factory.buildAlertPopUp('Change Password Error', '"New Password" must be different from the current one!');
+			return;
+        }
+		
+		// Call stub service to change password
+		else {
+		
+	        ComsysStubService.changeComsysPassword(oldPassword, newPassword)
+			
+			.success(function (data) {
+	
+				console.log(data); // DEBUG
+	
+				if (data.response == serverError) {
+					// Server couldn't get COMSYS personal configuration -> Display alert
+					// Stop loading animation 
+					$ionicLoading.hide();
+	
+					var errorMessage = factory.getAllErrors(data.errors);
+					
+					// Display alert with errors
+					factory.buildAlertPopUp('Change Password Error', errorMessage);
+	
+				} else {
+					// Operation successful
+					// Stop loading animation and close modal view
+					$ionicLoading.hide();
+					factory.buildAlertPopUp('Change Password', 'Password changed successfully!');
+					closeModalOnSuccess();
+				}
+				
+			})
+			
+			.error(function (error) {
+				// Couldn't connect to server
+				// Stop loading animation
+				$ionicLoading.hide();
+	
+				// Display alert
+				factory.buildAlertPopUp('Server error', 'Unable to change password. Either the server or your internet connection is down.');
+			});
+		
+		}
+		
+	};
+	
+	factory.getAllErrors = function(errorList) {
+		
+		var errorMessage = "";
+		
+		if (errorList.username) {
+			errorMessage = errorMessage.concat("<strong>Username error:</strong> ", errorList.username[0], "<br>");
+		}
+		
+		if (errorList.password) {
+			errorMessage = errorMessage.concat("<strong>Password error:</strong> ", errorList.password[0], "<br>");
+		}
+		
+		if (errorList.nickname) {
+			errorMessage = errorMessage.concat("<strong>Nickname error:</strong> ", errorList.nickname[0], "<br>");
+		}
+		
+		if (errorList.old) {
+			errorMessage = errorMessage.concat("<strong>Old password error:</strong> ", errorList.old, "<br>");
+		}
+		
+		if (errorList.new) {
+			errorMessage = errorMessage.concat("<strong>New password error:</strong> ", errorList.new, "<br>");
+		}
+		
+		// Remove last <br> and return error message
+		return errorMessage = errorMessage.substring(0, errorMessage.length - 4);
+		
+	};
+	
+	factory.verifyRepeatPassword = function(password, repeatPassword) {
+		
+		if ( !password || !repeatPassword ) return false;
+		else if ( !(password == repeatPassword) ) return false;
+        else return true;
+		
 	};
 
 	return factory;

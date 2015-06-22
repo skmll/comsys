@@ -8,7 +8,6 @@
     height: 100%;
 }
 
-
 #notification_count
 {
     width: 15px;
@@ -81,4 +80,18 @@
     padding: 8px;
     font-size: 12px;
     border-top: 1px solid #dddddd;
+}
+
+.custom-input-label {
+    font-weight: bold;
+    width: 200px;
+}
+
+.custom-item-divider {
+    font-style: italic;
+  font-weight: lighter;
+}
+
+.custom-select {
+    min-height: 51px;
 }

@@ -1,85 +1,114 @@
-app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysInfo, $location, ComsysStubService) {
+app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $location, ComsysInfo, ComsysStubService) {
 
 	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
-	// Contain all enemies
-	var operators = [];
-
-	// User Statos (0 - not logged, 1 - logged)
+	var serverError = 0;
+	
+	// Update ID of logged user
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
+	// Refresh menu
 	$scope.refreshMenu = function() {
-		// User Statos (0 - not logged, 1 - logged)
+		// Update ID of logged user
 		$scope.isLogged = ComsysInfo.getIsLogged();
-		// Contain all enemies
-		$scope.operators = operators;
-	}
-
-	/* Login */
-
-	// Form data for the login modal
-	$scope.loginData = {
-			username:"",
-			password:""
 	};
+	
+	// Reset ID of logged user
+	ComsysInfo.resetIsLogged(function() {
+		$scope.isLogged = 0;
+	});
 
-	// Create the login modal that we will use later
+	/*** Login ***/
+	
+	// Create the login modal
 	$ionicModal.fromTemplateUrl('templates/login.html', {
 		scope: $scope
 	}).then(function (modalLogin) {
 		$scope.modalLogin = modalLogin;
 	});
-
-	// Triggered in the login modal to close it
-	$scope.closeLoginModal = function () {
-		$scope.modalLogin.hide();
-	};
-
+	
 	// Open the login modal
 	$scope.openLoginModal = function () {
 		$scope.modalLogin.show();
 	};
 
-	// Perform the login action when the user submits the login form
+	// Close the login modal
+	$scope.closeLoginModal = function () {
+		$scope.modalLogin.hide();
+	};
+
+	// Initialize sign up data
+	$scope.loginData = {
+			username:"",
+			password:""
+	};
+
+	// Perform login
 	$scope.loginComsys = function () {
-		var loadingLogin = $ionicLoading.show({
-			content: 'Saving login information',
+		
+		// Display loading animation
+		$ionicLoading.show({
+			content: 'Logging in...',
 			showBackdrop: false
 		});
-		ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
-		.success(function (data) {
-			console.log(data);
-			ComsysInfo.loginComsys(data.response);
-			//If login is successful register reference to notifications
-			if(data.response != 0){
-				var notificationsRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
-					+ ComsysInfo.getFactionID() + '/comsys_users/' + data.response + '/comsys_notifications');
-				notificationsRef.on('child_added', function(childSnapshot, prevChildName){
-					console.log(childSnapshot.val());
-					//TODO: add to list to present in view
-				});
-			}
+		
+		// Check if fields are empty
+		if ( !$scope.loginData.username || !$scope.loginData.password ) {
 			$ionicLoading.hide();
-		})
-		.error(function (error) {
-			//console.log(error);
-			ComsysInfo.buildAlertPopUp('Unable to login',
-			'Unable to login = ' /*+ error.message*/);
-		});
-		$ionicLoading.hide();
-		$scope.closeLoginModal();
+			ComsysInfo.buildAlertPopUp('Login error', 'Username and/or password empty!');
+		}
+		
+		
+		else {
+			
+			// Call stub service to login
+			ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
+			
+			.success(function (data) {
+				
+				$ionicLoading.hide();
+				console.log(data); //DEBUG
+				
+				if ( data.response != serverError ) {
+					/*
+					var notificationsRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
+						+ ComsysInfo.getFactionID() + '/comsys_users/' + data.response + '/comsys_notifications');
+					notificationsRef.on('child_added', function(childSnapshot, prevChildName){
+						console.log(childSnapshot.val());
+						//TODO: add to list to present in view
+					});
+					*/
+					
+					// Update login information on service and menu state
+					ComsysInfo.loginComsys(data.response);
+					ComsysInfo.setMenuRefresh(true);
+					
+					// Get comsys personal configuration to fill profile
+					ComsysInfo.getComsysPersonalConfig($scope);
+					
+					// Login was successfull -> Display message and close modal
+					ComsysInfo.buildAlertPopUp('Login', 'You successfully logged in as '.concat($scope.loginData.username).concat('!'));
+					$scope.closeLoginModal();
+				}
+				
+				else {
+					// Login was unsuccessfull -> Display error
+					$ionicLoading.hide();
+					ComsysInfo.buildAlertPopUp('Login error', 'Username and/or password incorrect!');
+				}
+				
+			})
+			
+			.error(function (error) {
+				ComsysInfo.buildAlertPopUp('Server error', 'Unable to log in. Either the server or your internet connection is down.');
+			});
+			
+		}
+		
 	};
 
-	/* Sign up */
-
-	$scope.signUpData = {
-			// Form data for the sign up modal
-			username:"",
-			password:"",
-			repeatPassword:"",
-			nickname:""
-	};
-
-	// Create the sign up modal that we will use later
+	/*** Sign up ***/
+	
+	// Create the sign up modal
 	$ionicModal.fromTemplateUrl('templates/signUp.html', {
 		scope: $scope
 	}).then(function (modalSignUp) {
@@ -91,109 +120,69 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 		$scope.modalSignUp.show();
 	};
 
-	// Triggered in the sign up modal to close it
+	// Close the sign up modal
 	$scope.closeSignUpModal = function () {
 		$scope.modalSignUp.hide();
 	};
 
-	// Perform the sign up action when the user submits the login form
-	$scope.createComsys = function () {
-		var loadingSignUP = $ionicLoading.show({
-			content: 'Saving sign up information',
+	// Initialize sign up data
+	$scope.signUpData = {
+		// Form data for the sign up modal
+		username:"",
+		password:"",
+		repeatPassword:"",
+		nickname:""
+	};
+	
+	// Perform sign up
+	$scope.doSignUp = function () {
+		
+		// Display loading animation
+		$ionicLoading.show({
+			content: 'Signing up...',
 			showBackdrop: false
 		});
-		ComsysInfo.createComsys();
-		$ionicLoading.hide();
-		$scope.closeSignUpModal();
-	};
-
-
-	/* System Hack */
-
-	$scope.sendSystemHack = function() {
-		var factionsId = [];
-		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
-				+ ComsysInfo.getEventID() + "/factions/");
-		ref.once("value", function(snapshot) {
-			factionsId = snapshot.val();
-			for(var id in factionsId) {
-				if(id != ComsysInfo.getFactionID()){
-					pushFirebase(id);
-				}
-			}
-		});
-
-		function pushFirebase(id) {
-			var special_actRef = new Firebase(firebaseUrl + "events_in_progress/"
-					+ ComsysInfo.getEventID() + "/factions/" + id + "/special_actions");
-			special_actRef.push({
-				action: "systemhack", 
-				timestamp: Firebase.ServerValue.TIMESTAMP
-			});
-		};
-	};
-
-	$scope.activateSystemHack = function() {
-		$location.path('/systemhack');
-	};
-
-
-	/* Get all enemies */
-
-	$scope.getFactionIds = function() {
-		operators = []; 
-		var factionsId = [];
-		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
-				+ ComsysInfo.getEventID() + "/factions/");
-		ref.once("value", function(snapshot) {
-			factionsId = snapshot.val();
-			for(var id in factionsId) {
-				if(id != ComsysInfo.getFactionID()){
-					getAllOperators(id);
-				}
-			}
-		});
-	};
-
-	function getAllOperators(factionID) {
-		var result = [];
-		var ref = new Firebase(firebaseUrl + "events_in_progress/" 
-				+ ComsysInfo.getEventID() + "/factions/" + factionID + "/operators/");
-		ref.once("value", function(snapshot) {
-			result = snapshot.val();
-			for (var op in result) {
-				operators.push(op);	
-			}				
-		});
-	};
-
-	$scope.sendNotification = function(receiver, text) {
-		// TEST DATA
-		/*
-		var receiver = {
-			id: 1,
-			name: 'Whatever',
-			type: 'comsys'
-		};
-		var text = 'aasdasd';
-		var available_responses_list = {};
-		var responses_list = {};
-		var sender = ComsysInfo.getIsLogged();
-		*/
-
-		if(receiver.type == 'comsys'){
-			ComsysStubService.sendNotificationToComsys(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, responses_list, sender, text);
-		}else if(receiver.type == 'squad'){
-			ComsysStubService.sendNotificationToSquad(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, responses_list, sender, text);
-		}else if(receiver.type == 'faction'){
-			ComsysStubService.sendNotificationToFaction(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), 
-				available_responses_list, responses_list, sender, text);
-		}else if(reciver.type == 'operator'){
-			ComsysStubService.sendNotificationToOperator(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, responses_list, sender, text);
+		
+		
+		// Check if Password and RepeatPassword are equal
+		if ( !ComsysInfo.verifyRepeatPassword( $scope.signUpData.password, $scope.signUpData.repeatPassword ) ) {
+			$ionicLoading.hide();
+			ComsysInfo.buildAlertPopUp('Signup Error', "\"Password\" and \"Repeat Password\" don't match!");
 		}
+		
+		else {
+		
+			// Call stub service to create a new Comsys
+			ComsysStubService.createComsys( $scope.signUpData.username, $scope.signUpData.password, $scope.signUpData.nickname )
+			
+			.success(function (data) {
+				
+				$ionicLoading.hide();				
+				console.log(data); // DEBUG
+				
+				if ( data.response != serverError ) {
+					// Signup was successfull -> Display message and close modals 
+					ComsysInfo.buildAlertPopUp('Signup', 'Signup successful! You can now login with the username and password you entered.');
+					$scope.closeLoginModal();
+					$scope.closeSignUpModal();
+				} 
+				
+				
+				else {
+					// Signup was unsuccessfull -> Display errors
+					var errorMessage = ComsysInfo.getAllErrors(data.errors);
+					ComsysInfo.buildAlertPopUp('Signup Error', errorMessage);
+				}
+				
+			})
+			
+			.error(function (error) {
+				$ionicLoading.hide();
+				ComsysInfo.buildAlertPopUp('Server error', 'Unable to sign up. Either the server or your internet connection is down.');
+			});
+		
+		}
+		
 	};
 
 });
