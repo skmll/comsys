@@ -7,10 +7,15 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var nickname = undefined;
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
-<<<<<<< HEAD
     var mapGrid = false;
     var refreshMenuAfterLogout = true;
 	var resetIsLoggedAfterLogoutCallback;
+	var allEvents = [];
+	var eventSelected = null; 
+	var afterLogginMapCallback;
+	//TEST DATA
+	var eventID = 1;
+    var factionID = 1;
 	
 	factory.getMenuRefresh = function(){
         return refreshMenuAfterLogout;
@@ -23,18 +28,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	factory.resetIsLogged = function (func) {
 		resetIsLoggedAfterLogoutCallback = func;
 	};
-	
-=======
-    var mapGrid = 0;
-var allEvents = [];
-var eventSelected = null;    
-    
->>>>>>> 3b437e5abda6a82fc5c57170961f958a70e78ed5
-    // TODO: change this test data
-    var eventID = 1;
-    var factionID = 1;
-
-    var afterLogginMapCallback;
 
     factory.setAfterLogginMapCallback = function(func){
         afterLogginMapCallback = func;
@@ -63,17 +56,11 @@ var eventSelected = null;
 		ComsysStubService.getComsysPersonalConfig()
 		.success(function (data) {
 			console.log(data); // DEBUG
-<<<<<<< HEAD
-
-			if  (data.response == serverError ) {
-				// Server couldn't get COMSYS personal configuration -> Display alert
-=======
 			if (data.response == serverError) {
 				// Server couldn't get COMSYS personal configuration -> Display alert
 				// Stop loading animation 
 				$ionicLoading.hide();
 				// Display alert
->>>>>>> 3b437e5abda6a82fc5c57170961f958a70e78ed5
 				factory.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
 			} else {
 				// Operation successful -> Fill profile variables
@@ -92,14 +79,10 @@ var eventSelected = null;
 					factory.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
 					factory.setCoordInpFormatText("Lat/Long");
 				}
-<<<<<<< HEAD
-=======
-
 				// Stop loading animation and close modal view
 				$ionicLoading.hide();
 				scope.closeLoginModal();
 				//EventsInfo.fetchAllEvents(scope);
->>>>>>> 3b437e5abda6a82fc5c57170961f958a70e78ed5
 			}
 		})
 		
