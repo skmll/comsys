@@ -1,0 +1,50 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-dark">
+        <h1 class="title">Answer Notification</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeAnswerNotificationsModal()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+
+        <form>
+
+            <div class="list">
+                <div class="item item-divider">
+                    Notification
+                </div>
+                <label class="item">
+                    <h2>{{notifi.sender.name}}<span> ({{notifi.time}})</span></h2>
+                    <p>{{notifi.text}}</p>
+                </label>
+
+                <div class="item item-divider">
+                    Short Answer
+                </div>
+
+                <div class="item">
+                    <button ng-repeat-start="answer in notifi.available_responses_list" ng-click="sendNotification(answer, notifi.sender)" class="button button-positive">{{answer}}</button><span ng-repeat-end> </span>
+                </div>
+
+                <div class="item item-divider">
+                    Long Answer
+                </div>
+                <div class="item item-input">
+                    <span class="input-label">Message</span>
+                    <input type="text" ng-model="longMessage" placeholder="Write your message here">
+                    <button class="button button-positive" id="sendButton" ng-click="sendNotification(longMessage, notifi.sender); longMessage=''">Send</button>
+                </div>                
+
+                <div class="item item-divider" ng-click="showItemsAnswer = !showItemsAnswer">
+                    Change available responses
+                </div>
+
+                <ion-toggle ng-repeat="item in typeNotification" ng-show="showItemsAnswer"
+                            ng-checked="item.checked" ng-click="item.checked = !item.checked">
+                    {{ item.text }}
+                </ion-toggle>
+
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

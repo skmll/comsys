@@ -1,0 +1,24 @@
+.squad {
+    background: url('images/squad_black.png') no-repeat center;
+}
+.operator {
+    background: url('images/operator_black.png') no-repeat center;
+}
+.squad, .operator, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-layers{
+    border-radius: 0 !important;
+}
+.leaflet-control-viewmode.leaflet-bar.leaflet-control{
+    margin-top: 0;
+}
+.leaflet-control-viewmode, .leaflet-control-zoom {
+    width: 32px;
+    height: 64px;
+}
+.leaflet-control-viewmode a, .leaflet-control-viewmode a:hover, .leaflet-control-zoom a, .leaflet-control-zoom a:hover{
+    width: 32px;
+    height: 32px;
+}
+.leaflet-control-viewmode .leaflet-bar, .leaflet-control-control-zoom .leaflet-bar{
+    width: 32px;
+    height: 32px;
+}

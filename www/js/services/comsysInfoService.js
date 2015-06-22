@@ -7,6 +7,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var nickname = undefined;
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
+<<<<<<< HEAD
     var mapGrid = false;
     var refreshMenuAfterLogout = true;
 	var resetIsLoggedAfterLogoutCallback;
@@ -23,9 +24,21 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		resetIsLoggedAfterLogoutCallback = func;
 	};
 	
+=======
+    var mapGrid = 0;
+var allEvents = [];
+var eventSelected = null;    
+    
+>>>>>>> 3b437e5abda6a82fc5c57170961f958a70e78ed5
     // TODO: change this test data
     var eventID = 1;
     var factionID = 1;
+
+    var afterLogginMapCallback;
+
+    factory.setAfterLogginMapCallback = function(func){
+        afterLogginMapCallback = func;
+    };
 
     factory.getEventID = function(){
         return eventID;
@@ -41,20 +54,27 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.loginComsys = function (response) {
 		userID = response;
+
+        afterLogginMapCallback();
 	};
 
 	// Login was successful -> Get COMSYS personal configuration
 	factory.getComsysPersonalConfig = function (scope) {
-
 		ComsysStubService.getComsysPersonalConfig()
 		.success(function (data) {
-
 			console.log(data); // DEBUG
+<<<<<<< HEAD
 
 			if  (data.response == serverError ) {
 				// Server couldn't get COMSYS personal configuration -> Display alert
+=======
+			if (data.response == serverError) {
+				// Server couldn't get COMSYS personal configuration -> Display alert
+				// Stop loading animation 
+				$ionicLoading.hide();
+				// Display alert
+>>>>>>> 3b437e5abda6a82fc5c57170961f958a70e78ed5
 				factory.buildAlertPopUp('Profile Error', 'Unable to get profile information.');
-
 			} else {
 				// Operation successful -> Fill profile variables
 				factory.setNickname(data.list.nickname);
@@ -72,6 +92,14 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 					factory.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
 					factory.setCoordInpFormatText("Lat/Long");
 				}
+<<<<<<< HEAD
+=======
+
+				// Stop loading animation and close modal view
+				$ionicLoading.hide();
+				scope.closeLoginModal();
+				//EventsInfo.fetchAllEvents(scope);
+>>>>>>> 3b437e5abda6a82fc5c57170961f958a70e78ed5
 			}
 		})
 		
@@ -276,6 +304,47 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
         else return true;
 		
 	};
+
+	
+	factory.fetchAllEvents = function () {
+        
+        CommonStubService.getAllEvents()
+            .success(function (data) {
+
+                console.log(data);
+
+                if (data.response == 0) {
+                    var aux = "";
+                    for (var key in data.errors) {
+                        if (data.errors.hasOwnProperty(key)) {
+                            aux = aux + data.errors[key];
+                        }
+                    }
+                    // Bad result
+                    ComsysInfo.buildAlertPopUp('Unable to get all events',
+                        'Unable to get all events: ' + aux);
+                }else{
+                    for(var i = 0; i < data.list.length; i++){
+                        events.push(data.list[i]);
+                    }
+                }
+            })
+            .error(function (error) {
+                // closes loading spin
+                //$ionicLoading.hide();
+
+                // Bad result
+                ComsysInfo.buildAlertPopUp('Unable to get all events',
+                    'Unable to get all events: ' + error);
+            })
+    };
+	factory.getAllEvents = function() {
+		return events;
+	};
+	
+	    factory.getEventSelected = function () {
+        return eventSelected;
+    };
 
 	return factory;
 

@@ -1,0 +1,20 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-dark">
+        <h1 class="title">Old Notifications</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeModalNotificationSeeAll()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+
+        <ion-list>
+            <ion-item ng-repeat="notifi in notificationsOld">
+                <h2>{{notifi.sender.name}} - {{notifi.time}}</h2>
+                <p>{{notifi.text}}</p>
+
+            </ion-item>
+        </ion-list>
+
+
+    </ion-content>
+</ion-modal-view>
