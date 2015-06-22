@@ -1,20 +1,18 @@
 <ion-modal-view>
     <ion-header-bar class="bar-dark">
         <h1 class="title">New Message</h1>
-        <div class="buttons">
-            <button class="button button-clear" ng-click="closeNotificationsModal()">Close</button>
-        </div>
+        <a class="button button-icon icon ion-close-circled" ng-click="closeNotificationsModal()"></a>
     </ion-header-bar>
     <ion-content>
 
         <form>
             <div class="list">
-                <div class="item item-divider">
+                <div class="item item-divider custom-item-divider">
                     Message
                 </div>
                 
                 <div class="item item-input item-select">
-                    <span class="input-label">
+                    <span class="input-label custom-input-label">
                         To:
                     </span>
                     <select ng-model="selectedItem" ng-options="item as item.name for item in possibleReceivers" ng-change="test()">   <option value="">-- Choose one --</option>
@@ -22,18 +20,18 @@
                 </div>
 
                 <div class="item item-input">
-                    <span class="input-label">Message</span>
+                    <span class="input-label custom-input-label">Message</span>
                     <input type="text" ng-model="longMessage" placeholder="Write your message here">
                     <button class="button button-positive" id="sendButton" ng-click="sendNotification(longMessage, selectedItem); longMessage= ''; selectedItem.name = ''">Send</button>
                 </div>
 
-                <div class="item item-divider" ng-click="showItemsCreate = !showItemsCreate">
+                <div class="item item-divider custom-item-divider" ng-click="showItemsCreate = !showItemsCreate">
                     Available Responses
                 </div>
 
                 <ion-toggle ng-repeat="item in typeNotification" ng-show="showItemsCreate"
                             ng-checked="item.checked">
-                    {{ item.text }}
+                   <span class="input-label custom-input-label"> {{ item.text }} </span>
                 </ion-toggle>
 
             </div>
