@@ -42,7 +42,7 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
                 ComsysInfo.userLogout();
                 $ionicHistory.clearCache();
                 $ionicHistory.clearHistory();
-                $location.path('/app/seeEvents');
+                $location.path('/app/map');
 				ComsysInfo.buildAlertPopUp('Logout', 'Logout successful!');
 			}
 		})

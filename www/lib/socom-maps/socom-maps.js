@@ -46,12 +46,13 @@ angular.module('socom-maps', [])
         /**
          * Constructor, with class name
          */
-        function Hostile(latitude, longitude, enemiesNumber, direction) {
+        function Hostile(latitude, longitude, enemiesNumber, direction, timestamp) {
             this.id = Math.random();
             this.latitude = latitude;
             this.longitude = longitude;
             this.enemiesNumber = enemiesNumber;
             this.direction = direction;
+            this.timestamp = timestamp;
         }
 
         return Hostile;
@@ -534,13 +535,19 @@ angular.module('socom-maps', [])
                             };
                             watchID = navigator.compass.watchHeading(onSuccess, onError, options);
                         }
-                        $timeout(function () {
-                            $scope.map.removeHostile(hostile);
-                            if (navigator.compass) {
-                                navigator.compass.clearWatch(watchID);
-                            }
-                        }, 10000);
-                        $rootScope.$broadcast('hostileAdded', hostile);
+                        var now = new Date().getTime();
+                        var time = now + 30000;
+                        if(time <= hostile.timestamp){
+                            time -= hostile.timestamp;
+                            $timeout(function () {
+                                $scope.map.removeHostile(hostile);
+                                if (navigator.compass) {
+                                    navigator.compass.clearWatch(watchID);
+                                }
+                            }, time);
+                            $rootScope.$broadcast('hostileAdded', hostile);
+                        }
+
                     }
                 };
                 var centerOnCurrentLocation = function () {
