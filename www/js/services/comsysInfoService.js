@@ -1,4 +1,4 @@
-app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService) {
+app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService, CommonStubService, MasterStubService) {
 
     var factory = {};
     var serverError = 0;
@@ -8,13 +8,14 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
     var coordInpFormat = 0;
     var coordInpFormatText = undefined;
     var mapGrid = 0;
-var allEvents = [];
-var eventSelected = null;    
     
-    // TODO: change this test data
-    var eventID = 1;
+    /* Events */
+    var events = [];
+    var eventSelected = null;
+    var pinEvent = 0;
+    var eventID = 0;
+    
     var factionID = 1;
-
     var afterLogginMapCallback;
 
     factory.setAfterLogginMapCallback = function(func){
@@ -35,8 +36,8 @@ var eventSelected = null;
 
 	factory.loginComsys = function (response) {
 		userID = response;
-
-        afterLogginMapCallback();
+// perguntar ao Rafael
+        //afterLogginMapCallback();
 	};
 
 	// Login was successful -> Get COMSYS personal configuration
@@ -160,14 +161,11 @@ var eventSelected = null;
 		userID = 0;
 	};
 
-	
+	/*
 	factory.fetchAllEvents = function () {
-        
         CommonStubService.getAllEvents()
             .success(function (data) {
-
                 console.log(data);
-
                 if (data.response == 0) {
                     var aux = "";
                     for (var key in data.errors) {
@@ -176,30 +174,60 @@ var eventSelected = null;
                         }
                     }
                     // Bad result
-                    ComsysInfo.buildAlertPopUp('Unable to get all events',
+                    buildAlertPopUp('Unable to get all events',
                         'Unable to get all events: ' + aux);
                 }else{
+                	alert(data.list.length);
                     for(var i = 0; i < data.list.length; i++){
                         events.push(data.list[i]);
                     }
                 }
             })
             .error(function (error) {
-                // closes loading spin
-                //$ionicLoading.hide();
-
                 // Bad result
-                ComsysInfo.buildAlertPopUp('Unable to get all events',
+                buildAlertPopUp('Unable to get all events',
                     'Unable to get all events: ' + error);
             })
     };
+    */
+    
 	factory.getAllEvents = function() {
 		return events;
 	};
+
+	/*
+	factory.getAllMasterEvents = function() {
+		MasterStubService.getAllMasterEvents()
+		.success(function (data) {
+		console.log(data);
+	})
+		.error(function (error) {
+		});
+	};
+	*/
 	
 	    factory.getEventSelected = function () {
         return eventSelected;
     };
+
+    factory.setEventSelected = function(newEventSelected) {
+        eventSelected = newEventSelected;
+        eventID = newEventSelected.id; 
+    };
+
+    factory.getPinEvent = function () {
+        return pinEvent;
+    };
+
+    factory.setPinEvent = function(newPinEvent) {
+        pinEvent = newPinEvent; 
+    };
+
+    factory.leaveEvent = function() {
+	eventSelected = null;
+    pinEvent = 0;
+    eventID = 0;
+};
 
 	return factory;
 

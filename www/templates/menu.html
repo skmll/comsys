@@ -28,6 +28,11 @@
             Login/Sign Up
           </i>
         </ion-item>
+        <ion-item item-icon-left nav-clear menu-close href="#/app/seeEvents" ng-if="isLogged == 1">
+          <i class="icon ion-gear-a">
+            Events
+          </i>
+        </ion-item>
         <ion-item item-icon-left nav-clear menu-close href="#/app/settings" ng-if="isLogged == 1">
           <i class="icon ion-gear-a">
             Settings

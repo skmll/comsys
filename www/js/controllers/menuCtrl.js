@@ -5,9 +5,9 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 	// User Statos (0 - not logged, 1 - logged)
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
-    // Set eventID
-    $scope.eventID = ComsysInfo.getEventID();
-    
+	// Set eventID
+	$scope.eventID = ComsysInfo.getEventID();
+
 	$scope.refreshMenu = function() {
 		// User Statos (0 - not logged, 1 - logged)
 		$scope.isLogged = ComsysInfo.getIsLogged();
@@ -54,6 +54,8 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 				console.log(data);
 				ComsysInfo.loginComsys(data.response);
 				registerFirebaseReferences();
+				// Get all events of comsys
+				$scope.getEventsOfComsys();
 			}
 			$ionicLoading.hide(); 
 		})
@@ -127,7 +129,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 				for (var id in operators) {
 					console.log(operators[id]);
 					ComsysStubService.addEnemyPing(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), 
-						operators[id].gps.lat, operators[id].gps.lng);
+							operators[id].gps.lat, operators[id].gps.lng);
 				}				
 			});
 		};
@@ -161,13 +163,13 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 
 	function registerFirebaseReferences(){
 		var notificationsRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
-			+ ComsysInfo.getFactionID() + '/comsys_users/' + ComsysInfo.getIsLogged() + '/comsys_notifications');
+				+ ComsysInfo.getFactionID() + '/comsys_users/' + ComsysInfo.getIsLogged() + '/comsys_notifications');
 		notificationsRef.on('child_added', function(childSnapshot, prevChildName){
 			console.log(childSnapshot.val());
 			//TODO: add to list to present in view
 		});
 		var specActRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
-			+ ComsysInfo.getFactionID() + '/special_actions/');
+				+ ComsysInfo.getFactionID() + '/special_actions/');
 		specActRef.on('child_added', function(childSnapshot, prevChildName){
 			console.log(childSnapshot.val());
 			var specialAction = childSnapshot.val();
@@ -188,48 +190,58 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, ComsysI
 	$scope.sendNotification = function(text, receiver) {
 		// TEST DATA
 		var receiver = {
-			id: 1,
-			type: 'comsys'
+				id: 1,
+				type: 'comsys'
 		};
 		var text = Math.random().toString(36).replace(/[^a-z]+/g, '');
 
-	    var test_availArray = [
-	        {text: "OK", checked: true},
-	        {text: "WILCO" , checked: true},
-	        {text: "ROGER", checked: true},
-	        {text: "Radio Check", checked: true},
-	        {text: "Positive", checked: true},
-	        {text: "Negative", checked: true}
-	    ];
+		var test_availArray = [
+		                       {text: "OK", checked: true},
+		                       {text: "WILCO" , checked: true},
+		                       {text: "ROGER", checked: true},
+		                       {text: "Radio Check", checked: true},
+		                       {text: "Positive", checked: true},
+		                       {text: "Negative", checked: true}
+		                       ];
 
-        var available_responses_list = [];
+		var available_responses_list = [];
 
-        for (var i = 0; i < test_availArray.length; i++) {
-            if(test_availArray[i].checked){
-                available_responses_list.push(test_availArray[i].text);
-            }
-        };
+		for (var i = 0; i < test_availArray.length; i++) {
+			if(test_availArray[i].checked){
+				available_responses_list.push(test_availArray[i].text);
+			}
+		};
 
 		var sender = {
-			id: ComsysInfo.getIsLogged(),
-			name: 'WhateverWorks',
-			type: 'comsys'
+				id: ComsysInfo.getIsLogged(),
+				name: 'WhateverWorks',
+				type: 'comsys'
 		};
-		
+
 
 		if(receiver.type == 'comsys'){
 			ComsysStubService.sendNotificationToComsys(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, sender, text);
+					available_responses_list, sender, text);
 		}else if(receiver.type == 'squad'){
 			ComsysStubService.sendNotificationToSquad(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, sender, text);
+					available_responses_list, sender, text);
 		}else if(receiver.type == 'faction'){
 			ComsysStubService.sendNotificationToFaction(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), 
-				available_responses_list, sender, text);
+					available_responses_list, sender, text);
 		}else if(reciver.type == 'operator'){
 			ComsysStubService.sendNotificationToOperator(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), receiver.id, 
-				available_responses_list, sender, text);
+					available_responses_list, sender, text);
 		}
 	};
+
+	$scope.getEventsOfComsys = function () {
+		ComsysStubService.getEventsOfComsys()
+		.success(function (data) {
+			ComsysInfo.setEventSelected(data.list[0]);
+		})
+		.error(function (error) {
+		});
+	};
+
 
 });
