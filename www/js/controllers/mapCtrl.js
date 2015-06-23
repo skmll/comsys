@@ -32,7 +32,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
         /*########################          START OF ENEMY PINGS          #############################*/
         ComsysStubService.onFactionEnemyPingAdded(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(hostile){
-            //console.log("HOSTILEEEEEE", hostile);
+            console.log("HOSTILEEEEEE", hostile);
             // this method should be replaced by a call to the firebase and should only be called when an Hostile notification from the firebase is received
             $scope.map.addHostile(new Hostile(hostile.gps_lat, hostile.gps_lng, hostile.enemies_number, hostile.direction));
             //alert("Hostile Number:" + hostile.enemiesNumber + "\nDirection: " + hostile.direction);
@@ -46,7 +46,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
         CommonStubService.getMap(ComsysInfo.getEventID())
         .success(function (data) {
-            console.log("111111111111", data);
+            //console.log("111111111111", data);
             // Converter from DMS to DD coordinates (needed by the map)
             var requestResult = data.list; //TODO: data.list ?
             var coordinates = []; //LatLng
@@ -66,11 +66,11 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
         CommonStubService.getAllCommonZones(ComsysInfo.getEventID())
         .success(function (data) {
-            console.log("222222222222222", data);
+            //console.log("222222222222222", data);
             angular.forEach(data.list, function (eventZone){ //TODO: data.list?
                 CommonStubService.getCoordCommonZoneByID(ComsysInfo.getEventID(), eventZone.id)
                 .success(function (data) {
-                    console.log("33333333333", data);
+                    //console.log("33333333333", data);
                     var zoneResult = data.list; //TODO: data.list?
                     var zoneCoordinates = []; //LatLng
 
@@ -96,11 +96,11 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
         CommonStubService.getAllFactionZones(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN())
         .success(function (data) {
-            console.log("444444444", data);
+            //console.log("444444444", data);
             angular.forEach(data.list, function (eventZone){ //TODO: data.list?
                 CommonStubService.getCoordFactionZonesByID(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN(), eventZone.id)
                 .success(function (data) {
-                    console.log("5555555555555", data);
+                    //console.log("5555555555555", data);
                     var zoneResult = data.list; //TODO: data.list?
                     var zoneCoordinates = []; //LatLng
 

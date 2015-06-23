@@ -259,7 +259,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 		var specActRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
 			+ ComsysInfo.getFactionID() + '/special_actions/');
 		specActRef.on('child_added', function(childSnapshot, prevChildName){
-			console.log(childSnapshot.val());
+			//console.log(childSnapshot.val());
 			var specialAction = childSnapshot.val();
 
 			var diffMilSec = new Date().getTime() - specialAction.timestamp;
@@ -268,10 +268,11 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 
 			if(specialAction.action == 'systemhack' && diffMilSec < actionDuration){
 				$location.path('/systemhack');
-			}else if(specialAction.action == 'enemy' && diffMilSec < actionDuration){
+			}
+			/*else if(specialAction.action == 'enemy' && diffMilSec < actionDuration){
 				//TODO: call map method to add ping visually
 				console.log('enemy', specialAction);
-			}
+			}*/
 		});
 	};
 
