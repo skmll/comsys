@@ -1,0 +1,97 @@
+<ion-view view-title="Event Details">
+    <ion-nav-bar class="bar-dark">
+        <ion-nav-back-button class="button-clear"
+                             ng-click="myGoBack()">
+            <i class="ion-arrow-left-c"></i> Back
+        </ion-nav-back-button>
+        <ion-nav-buttons side="right">
+            <button class="button button-clear" ng-click="showJoinEventPopup()" ng-if="selectedEventID == 0">Join event</button>
+            <button class="button button-clear" ng-click="liveEvent()" ng-if="selectedEventID != 0">Leave event</button>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-content>
+        <ion-list>
+            <ion-item class="item-divider">
+                Event description
+            </ion-item>
+            <ion-item>
+                <b>Name:</b> {{eventSelected.name}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Description:</b> {{eventSelected.description_briefing}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Event start:</b> {{eventSelected.event_date_start}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Registration start:</b> {{eventSelected.registration_date_start}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Event end:</b> {{eventSelected.event_date_end}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Registration end:</b> {{eventSelected.registration_date_end}}
+            </ion-item>
+
+            <ion-item class="item-divider">
+                Procedure
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                {{eventSelected.proceedment}}
+            </ion-item>
+
+            <ion-item class="item-divider">
+                Event rules
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Rules:</b> {{eventSelected.rules}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Prohibitions:</b> {{eventSelected.prohibitions}}
+            </ion-item>
+
+            <ion-item class="item-divider">
+                Event details
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Address:</b> {{eventSelected.address}}
+            </ion-item>
+            <ion-item ng-if="eventSelected.adicional_informations != null" class="item-text-wrap">
+                <b>Adicional informations:</b> {{eventSelected.adicional_informations}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Max comsys per faction:</b> {{eventSelected.max_comsys_per_faction}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Max operators per faction:</b> {{eventSelected.max_operators_per_faction}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Operator initial perks:</b> {{eventSelected.operator_inicial_perk_points}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Points per kill:</b> {{eventSelected.points_per_kill}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>Respawn delay:</b> {{eventSelected.respawn_delay}} seconds
+            </ion-item>
+            <ion-item ng-if="eventSelected.see_enemie_bases==0" class="item-text-wrap">
+                <b>See enimies bases:</b> No
+            </ion-item>
+            <ion-item ng-if="eventSelected.see_enemie_bases==1" class="item-text-wrap">
+                <b>See enimies bases:</b> Yes
+            </ion-item>
+            <ion-item ng-if="eventSelected.see_enemie_respawn==0" class="item-text-wrap">
+                <b>See enimies respawn:</b> No
+            </ion-item>
+            <ion-item ng-if="eventSelected.see_enemie_respawn==1" class="item-text-wrap">
+                <b>See enimies respawn:</b> Yes
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>GPS refresh rate min:</b> {{eventSelected.gps_refresh_rate_min}}
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <b>GPS refresh rate max:</b> {{eventSelected.gps_refresh_rate_max}}
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
