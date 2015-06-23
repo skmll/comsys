@@ -55,6 +55,9 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 
 	// Perform login
 	$scope.loginComsys = function () {
+
+		//ComsysInfo.loginComsys(1);
+		//registerFirebaseReferences();
 		
 		// Display loading animation
 		$ionicLoading.show({
@@ -107,6 +110,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 			});
 			
 		}
+		
 	};
 
 	/*** Sign up ***/

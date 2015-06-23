@@ -1,5 +1,4 @@
-
-app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHistory, $state, ComsysInfo, ComsysStubService, CoordinatesConverter, Squad, Operator, Specialization) {
+app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHistory, $state, Hostile, ComsysInfo, CommonStubService, ComsysStubService, CoordinatesConverter, Squad, Operator, Specialization) {
 
     $scope.notifications = [];
     $scope.notificationsOld = [];
@@ -29,6 +28,103 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
             + ComsysInfo.getIsLogged() + "/comsys_notifications");
         // Attach an asynchronous callback to read the data at our squads reference
         ref.on("value", callbackFirebase);
+
+
+        /*########################          START OF ENEMY PINGS          #############################*/
+        ComsysStubService.onFactionEnemyPingAdded(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(hostile){
+            //console.log("HOSTILEEEEEE", hostile);
+            // this method should be replaced by a call to the firebase and should only be called when an Hostile notification from the firebase is received
+            $scope.map.addHostile(new Hostile(hostile.gps_lat, hostile.gps_lng, hostile.enemies_number, hostile.direction));
+            //alert("Hostile Number:" + hostile.enemiesNumber + "\nDirection: " + hostile.direction);
+        });
+        /*########################          END OF ENEMY PINGS          #############################*/
+
+
+        /*########################          START OF ZONE DEFINITION          #############################*/
+
+        var converter = new CoordinatesConverter();
+
+        CommonStubService.getMap(ComsysInfo.getEventID())
+        .success(function (data) {
+            console.log("111111111111", data);
+            // Converter from DMS to DD coordinates (needed by the map)
+            var requestResult = data.list; //TODO: data.list ?
+            var coordinates = []; //LatLng
+
+            angular.forEach(requestResult, function (coordinate) {
+                converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
+                converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
+                coordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
+            });
+
+            // After processing the coordinates on the foreach, pass the coordinates to the map object !!!!!
+            $scope.map.setGameZone(coordinates);
+        })
+        .error(function (error) {
+            console.log(error);
+        });
+
+        CommonStubService.getAllCommonZones(ComsysInfo.getEventID())
+        .success(function (data) {
+            console.log("222222222222222", data);
+            angular.forEach(data.list, function (eventZone){ //TODO: data.list?
+                CommonStubService.getCoordCommonZoneByID(ComsysInfo.getEventID(), eventZone.id)
+                .success(function (data) {
+                    console.log("33333333333", data);
+                    var zoneResult = data.list; //TODO: data.list?
+                    var zoneCoordinates = []; //LatLng
+
+                    angular.forEach(zoneResult, function (coordinate) {
+                        converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
+                        converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
+                        zoneCoordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
+                    });
+
+                    // #####################################################################
+                    //add zones to the map
+                    $scope.map.addZone(eventZone.id, eventZone.name, zoneCoordinates);
+
+                })
+                .error(function (error) {
+                    console.log(error);
+                });
+            });
+        })
+        .error(function (error) {
+            console.log(error);
+        });
+
+        CommonStubService.getAllFactionZones(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN())
+        .success(function (data) {
+            console.log("444444444", data);
+            angular.forEach(data.list, function (eventZone){ //TODO: data.list?
+                CommonStubService.getCoordFactionZonesByID(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN(), eventZone.id)
+                .success(function (data) {
+                    console.log("5555555555555", data);
+                    var zoneResult = data.list; //TODO: data.list?
+                    var zoneCoordinates = []; //LatLng
+
+                    angular.forEach(zoneResult, function (coordinate) {
+                        converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
+                        converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
+                        zoneCoordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
+                    });
+
+                    // #####################################################################
+                    //add zones to the map
+                    $scope.map.addZone(eventZone.id, eventZone.name, zoneCoordinates);
+
+                })
+                .error(function (error) {
+                    console.log(error);
+                });
+            });
+        })
+        .error(function (error) {
+            console.log(error);
+        });
+
+        /*########################          END OF ZONE DEFINITION          #############################*/
     });
 
     //definition of a callback function as variable since we use it multiple times
@@ -226,22 +322,15 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
     *       Daqui para baixo SOCOM-MAPS
     *
     */
-    $scope.teste = false;
-    $scope.notifications = function () {
-        if($scope.teste == true){
-            $scope.teste = false;
-        }else {
-            $scope.teste = true;
-        }
-        console.log("Teste: " + $scope.teste);
-    };
+
     $scope.mapCreated = function (map) {
         $scope.map = map;
 
         /*
-         ############################ GAME AREA ############################
-         // ------> change this data with the request made by the STUB !!!!!!!
-         */
+        ############################ GAME AREA ############################
+        // ------> change this data with the request made by the STUB !!!!!!!
+        */
+        /*
         var requestResult = [
             {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.76},
             {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 50.08, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 33.8},
@@ -253,6 +342,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
             {lat_c: "N", lat_d: 39, lat_m: 45, lat_s: 47.75, lng_c: "W", lng_d: 8, lng_m: 46, lng_s: 7.38},
             {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.47}
         ];
+        
         var zoneResult = [
             {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.76},
             {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 50.08, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 33.8},
@@ -264,40 +354,16 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
             {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 47.75, lng_c: "W", lng_d: 8, lng_m: 46, lng_s: 7.38},
             {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.47}
         ];
-        var coordinates = []; //LatLng
-        var zoneCoordinates = []; //LatLng
-
-        // Converter from DMS to DD coordinates (needed by the map)
-        var converter = new CoordinatesConverter();
-        angular.forEach(requestResult, function (coordinate) {
-            converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
-            converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
-            coordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
-        });
-        angular.forEach(zoneResult, function (coordinate) {
-            converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
-            converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
-            zoneCoordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
-        });
+        */
 
 
-        // After processing the coordinates on the foreach, pass the coordinates to the map object !!!!!
-        $scope.map.setGameZone(coordinates);
 
-        // #####################################################################
-        //add zones to the map
-        $scope.map.addZone(1, "name", zoneCoordinates);
-
-
-        /*############################ SQUAD ############################*/
+        /*############################ SQUAD #################################*/
 
         // change the first parameter by the SquadID obtained from the stub
         $scope.map.addSquad(new Squad(1));
 
         /*####################################################################*/
-
-
-
 
 
         /*############################ OPERATORES ############################*/
@@ -312,10 +378,9 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
     //Callback from notifications on map -> make call to firebase
     $scope.$on('enemyDetected', function (event, hostile) {
-        console.log(hostile);
-        // this method should be replaced by a call to the firebase and should only be called when an Hostile notification from the firebase is received
-        $scope.map.addHostile(new Hostile(hostile.latitude, hostile.longitude, hostile.enemiesNumber, hostile.direction));
-        //alert("Hostile Number:" + hostile.enemiesNumber + "\nDirection: " + hostile.direction);
+        //console.log(hostile);
+        ComsysStubService.addEnemyPing(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), hostile.latitude, hostile.longitude,
+            hostile.enemiesNumber, hostile.direction);
     });
 
 });

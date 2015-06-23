@@ -12,10 +12,11 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	var resetIsLoggedAfterLogoutCallback;
 	var allEvents = [];
 	var eventSelected = null; 
-	var afterLogginMapCallback;
+	var afterLogginMapCallback = function(){};
 	//TEST DATA
 	var eventID = 1;
     var factionID = 1;
+    var factionPIN = 1111;
 	
 	factory.getMenuRefresh = function(){
         return refreshMenuAfterLogout;
@@ -39,6 +40,10 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.getFactionID = function(){
 		return factionID;
+	};
+
+	factory.getFactionPIN = function(){
+		return factionPIN;
 	};
 
 	factory.getIsLogged = function() {
