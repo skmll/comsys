@@ -5,7 +5,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 
 	$scope.game_state = ComsysInfo.getGameState();
 
-	// Update ID of logged user
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
 	// Set eventID

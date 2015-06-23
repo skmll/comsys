@@ -1,5 +1,7 @@
 app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService) {
 
+	$scope.isLogged = ComsysInfo.getIsLogged();
+
 	$scope.getAllEvents = CommonStubService.getAllEvents()
 	.success(function (data) {
 		if (data.response == 0) {
@@ -7,7 +9,7 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 			for (var key in data.errors) {
 				if (data.errors.hasOwnProperty(key)) {
 					aux = aux + data.errors[key];
-				}
+				}	
 			}
 			// Bad result
 			ComsysInfo.buildAlertPopUp('Unable to get all events',
@@ -18,8 +20,8 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 	})
 	.error(function (error) {
 		// Bad result
-		ComsysInfo.buildAlertPopUp('Unable to get all events',
-				'Unable to get all events: ' + error);
+		ComsysInfo.buildAlertPopUp('Error',
+		'Unable to get all events, please login first.');
 	});
 
 	$scope.eventID = ComsysInfo.getEventID();

@@ -1,5 +1,7 @@
 app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicPopup, ComsysInfo) {
-    
+
+	$scope.isLogged = ComsysInfo.getIsLogged();
+	
 	var loadingSquads = $ionicLoading.show({
             content: 'Loading Squads',
             showBackdrop: false

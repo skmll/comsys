@@ -1,9 +1,10 @@
 <ion-view view-title="Squad">
     <ion-nav-buttons side="right">
-      <a class="button button-icon icon ion-plus-round" ng-click="openSquadNameDialog()"></a>
+      <a class="button button-icon icon ion-plus-round" ng-click="openSquadNameDialog()" ng-if="isLogged > 0"></a>
     </ion-nav-buttons>
     <ion-content>
-
+<h1 ng-if="isLogged == 0">This content is only available to logged users.</h1>
+    <div ng-if="isLogged > 0">
         <ion-list>
             <div ng-repeat="squad in squads">
                 <ion-item class="item-stable" ng-click="toggleSquad(squad)" ng-class="{active: isSquadShown(squad)}">
@@ -19,7 +20,7 @@
                 </ion-item>
             </div>
         </ion-list>
-
+</div>
     </ion-content>
 
 </ion-view>
