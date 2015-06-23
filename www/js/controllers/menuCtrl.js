@@ -349,4 +349,11 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 		});
 	};
 
+	$scope.checkGameState = function(eventId) {
+		ComsysStubService.checkGameState(eventId, function(data) {
+			ComsysInfo.game_state = data;
+		});
+	};
+	
+	
 });

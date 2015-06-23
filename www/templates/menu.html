@@ -49,22 +49,23 @@
             Profile
           </i>
         </ion-item>
-        <ion-item item-icon-left nav-clear menu-close ng-click="sendSystemHack()">
+        <ion-item ng-if="isLogged == 1000" item-icon-left nav-clear menu-close ng-click="sendSystemHack()">
           <i class="icon ion-ios-people">
             sendSystemHack
           </i>
         </ion-item>
-        <ion-item item-icon-left nav-clear menu-close ng-click="useUAV()">
+        <ion-item ng-if="isLogged == 1000" item-icon-left nav-clear menu-close ng-click="useUAV()">
           <i class="icon ion-ios-people">
             useUAV
           </i>
         </ion-item>
-        <ion-item item-icon-left nav-clear menu-close ng-click="sendNotification()">
+        <ion-item ng-if="isLogged == 1000" item-icon-left nav-clear menu-close ng-click="sendNotification()">
           <i class="icon ion-ios-people">
             sendNotification
           </i>
         </ion-item>
+		  {{ checkGameState(eventID) }}
       </ion-list>
-    </ion-content>
+	</ion-content>
   </ion-side-menu>
 </ion-side-menus>

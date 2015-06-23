@@ -1,5 +1,6 @@
 app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService) {
 
+var game_state = '';
     var factory = {};
     var serverError = 0;
     var userID = 0;
