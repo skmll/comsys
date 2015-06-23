@@ -3,6 +3,8 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 	var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/";
 	var serverError = 0;
 
+	$scope.game_state = ComsysInfo.getGameState();
+
 	// Update ID of logged user
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
