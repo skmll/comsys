@@ -1,34 +1,46 @@
 <ion-view view-title="Profile">
+    
     <ion-nav-buttons side="right">
+        
         <button class="button button-clear" ng-click="logout()">Logout</button>
+    
     </ion-nav-buttons>
+    
     <ion-content>
+        
         <ion-list>
-            <div class="item item-divider">
+            
+            <div class="item item-divider custom-item-divider">
                 Personal options
             </div>
+            
             <ion-item style="text-align: left">
-                <h2>Nickname</h2>
+                <span class="custom-input-label">Nickname</span>
                 <p>{{profileData.nickname}}</p>
             </ion-item>
-            <div class="item item-divider">
+            
+            <div class="item item-divider custom-item-divider">
                 Layout options
             </div>
+            
             <ion-item class="item-icon-right">
-                Display MapGrid over Map
-                <i class="icon ion-ios-checkmark-outline" ng-if="profileData.mapGrid==1"></i>
-                <i class="icon ion-ios-circle-outline" ng-if="profileData.mapGrid==0"></i>
+                <span class="custom-input-label">Display grid over map:</span>
+                <i class="icon ion-ios-checkmark-outline" ng-if="profileData.mapGrid == 1"></i>
+                <i class="icon ion-ios-circle-outline" ng-if="profileData.mapGrid == 0"></i>
             </ion-item>
+            
             <ion-item class="item-avatar-right">
-                <h2>Coordinates input format:</h2>
+                <span class="custom-input-label">Coordinates input format:</span>
                 <p>{{profileData.coordInpFormatText}}</p>
             </ion-item>
-            <ion-item>
-                <button class="button button-block button-positive" ng-click="openEditProfileModal()">Edit</button>
-            </ion-item>
-            <ion-item>
-                <button class="button button-block button-positive" ng-click="openChangePasswordModal()">Change password</button>
-            </ion-item>
+            
+            <div class="item">
+                <button class="button button-block button-positive" ng-click="openEditProfileModal()">Edit Profile</button>
+                <button class="button button-block button-positive" ng-click="openChangePasswordModal()">Change Password</button>
+            </div>
+            
         </ion-list>
+        
     </ion-content>
+    
 </ion-view>
