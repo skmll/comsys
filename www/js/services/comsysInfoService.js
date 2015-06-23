@@ -1,7 +1,8 @@
 app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService, CommonStubService, MasterStubService) {
 
-	var game_state = '';
+	
 	var factory = {};
+	var game_state = null;
 	var serverError = 0;
 	var userID = 0;
 	var und = "undefined";
@@ -17,8 +18,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	var afterLogginMapCallback = function(){};
 	//TEST DATA
 	var eventID = 0;
-	var factionID = 1;
-	var factionPIN = 1111;
+	var factionID = 0;
+	var factionPIN = 0;
 	var pinEvent = 0;
 
 	factory.getMenuRefresh = function(){
@@ -365,6 +366,14 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		eventID = 0;
 	};
 
+	factory.getGameState = function() {
+		return game_state;
+	};
+	
+	factory.setGameState = function(newState) {
+		game_state = newState;
+	};
+	
 	return factory;
 
 });
