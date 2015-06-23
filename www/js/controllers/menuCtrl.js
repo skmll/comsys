@@ -322,42 +322,11 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 		}
 		
 	};
-	
-	function registerFirebaseReferences(){
-		var notificationsRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
-			+ ComsysInfo.getFactionID() + '/comsys_users/' + ComsysInfo.getIsLogged() + '/comsys_notifications');
-		notificationsRef.on('child_added', function(childSnapshot, prevChildName){
-			console.log(childSnapshot.val());
-			//TODO: add to list to present in view
-		});
-		var specActRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
-			+ ComsysInfo.getFactionID() + '/special_actions/');
-		specActRef.on('child_added', function(childSnapshot, prevChildName){
-			console.log(childSnapshot.val());
-			var specialAction = childSnapshot.val();
-
-			var diffMilSec = new Date().getTime() - specialAction.timestamp;
-			//TODO: change this actionDuration to the one specific to the action
-			var actionDuration = 600000;
-
-			if(specialAction.action == 'systemhack' && diffMilSec < actionDuration){
-				$location.path('/systemhack');
-			}else if(specialAction.action == 'enemy' && diffMilSec < actionDuration){
-				//TODO: call map method to add ping visually
-				console.log('enemy', specialAction);
-			}
-		});
-	};
 
 	$scope.checkGameState = function(eventId) {
 		ComsysStubService.checkGameState(eventId, function(data) {
-<<<<<<< HEAD
 			ComsysInfo.game_state = data;
 		});
-=======
-			ComsysInfo.game_state = data;
-		});
->>>>>>> 1df46296559549f990c8aaf2e91cf70d1b3a1f76
 	};
 	
 	
