@@ -113,6 +113,6 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 		.error(function (error) {
 		});
 		$location.path('app/seeEvents');
-		a    };
+		    };
 
 });

@@ -53,60 +53,53 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 
 	// Perform login
 	$scope.loginComsys = function () {
-
-		//ComsysInfo.loginComsys(1);
-		//registerFirebaseReferences();
-
+		
+	
 		// Display loading animation
 		$ionicLoading.show({
 			content: 'Logging in...',
 			showBackdrop: false
 		});
+		
+		// Check if fields are empty
+		if ( !$scope.loginData.username || !$scope.loginData.password ) {
+			$ionicLoading.hide();
+			ComsysInfo.buildAlertPopUp('Login error', 'Username and/or password empty!');
+		}
+		else {
+			// Call stub service to login
 		ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
 		.success(function (data) {
 			if(data.response != 0){
-				//If login is successful register firebase references
-				console.log(data);
+				
+				$ionicLoading.hide();
+				console.log(data); //DEBUG
+				
+				// Update login information on service and menu state
 				ComsysInfo.loginComsys(data.response);
-				registerFirebaseReferences();
-				// Get all events of comsys
 				$scope.getEventsOfComsys();
+				registerFirebaseReferences();
+				ComsysInfo.setMenuRefresh(true);
+				// Get comsys personal configuration to fill profile
+				ComsysInfo.getComsysPersonalConfig($scope);
+				// Login was successfull -> Display message and close modal
+				ComsysInfo.buildAlertPopUp('Login', 'You successfully logged in as '.concat($scope.loginData.username).concat('!'));
+				$scope.closeLoginModal();
+			} else {
+				// Login was unsuccessfull -> Display error
+				$ionicLoading.hide();
+				ComsysInfo.buildAlertPopUp('Login error', 'Username and/or password incorrect!');
 			}
-			$ionicLoading.hide(); 
+			
 		})
 		.error(function (error) {
-			// Check if fields are empty
-			if ( !$scope.loginData.username || !$scope.loginData.password ) {
-				$ionicLoading.hide();
-				ComsysInfo.buildAlertPopUp('Login error', 'Username and/or password empty!');
-			}
-			else {
-				// Call stub service to login
-				ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
-				.success(function (data) {
-					$ionicLoading.hide();
-					console.log(data); //DEBUG
-					if ( data.response != serverError ) {
-						// Update login information on service and menu state
-						ComsysInfo.loginComsys(data.response);
-						registerFirebaseReferences();
-						ComsysInfo.setMenuRefresh(true);
-						// Get comsys personal configuration to fill profile
-						ComsysInfo.getComsysPersonalConfig($scope);
-						// Login was successfull -> Display message and close modal
-						ComsysInfo.buildAlertPopUp('Login', 'You successfully logged in as '.concat($scope.loginData.username).concat('!'));
-						$scope.closeLoginModal();
-					} else {
-						// Login was unsuccessfull -> Display error
-						$ionicLoading.hide();
-						ComsysInfo.buildAlertPopUp('Login error', 'Username and/or password incorrect!');
-					}
-				})
-				.error(function (error) {
 					ComsysInfo.buildAlertPopUp('Server error', 'Unable to log in. Either the server or your internet connection is down.');
 				});
-			}
+		
+		}
 		};
+		
+		
 
 		/* Sign up */
 

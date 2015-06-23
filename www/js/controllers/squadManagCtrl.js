@@ -1,5 +1,6 @@
 app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicPopup, ComsysInfo) {
-    var loadingSquads = $ionicLoading.show({
+    
+	var loadingSquads = $ionicLoading.show({
             content: 'Loading Squads',
             showBackdrop: false
         });
@@ -47,6 +48,7 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
         }
     }
     */
+    
     $scope.openSquadSelectionDialog = function(operator, squadIndex){
         console.log("operator: ", operator);
         console.log("squad idx: ", squadIndex);

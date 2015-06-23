@@ -1,56 +1,45 @@
 app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService, CommonStubService, MasterStubService) {
 
-var game_state = '';
-    var factory = {};
-    var serverError = 0;
-    var userID = 0;
-    var und = "undefined";
-    var nickname = undefined;
-    var coordInpFormat = 0;
-    var coordInpFormatText = undefined;
-<<<<<<< HEAD
-    var mapGrid = 0;
-    
-    /* Events */
-    var events = [];
-    var eventSelected = null;
-    var pinEvent = 0;
-    var eventID = 0;
-    
-    var factionID = 1;
-    var afterLogginMapCallback;
-=======
-    var mapGrid = false;
-    var refreshMenuAfterLogout = true;
+	var game_state = '';
+	var factory = {};
+	var serverError = 0;
+	var userID = 0;
+	var und = "undefined";
+	var nickname = undefined;
+	var coordInpFormat = 0;
+	var coordInpFormatText = undefined;
+	var events = [];
+	var mapGrid = false;
+	var refreshMenuAfterLogout = true;
 	var resetIsLoggedAfterLogoutCallback;
 	var allEvents = [];
 	var eventSelected = null; 
 	var afterLogginMapCallback = function(){};
 	//TEST DATA
-	var eventID = 1;
-    var factionID = 1;
-    var factionPIN = 1111;
-	
+	var eventID = 0;
+	var factionID = 1;
+	var factionPIN = 1111;
+	var pinEvent = 0;
+
 	factory.getMenuRefresh = function(){
-        return refreshMenuAfterLogout;
-    };
-	
+		return refreshMenuAfterLogout;
+	};
+
 	factory.setMenuRefresh = function (newValue) {
 		refreshMenuAfterLogout = newValue;
 	};
-	
+
 	factory.resetIsLogged = function (func) {
 		resetIsLoggedAfterLogoutCallback = func;
 	};
->>>>>>> 82484392d4b76b7aa6b048f33e24d1251735e37f
 
-    factory.setAfterLogginMapCallback = function(func){
-        afterLogginMapCallback = func;
-    };
+	factory.setAfterLogginMapCallback = function(func){
+		afterLogginMapCallback = func;
+	};
 
-    factory.getEventID = function(){
-        return eventID;
-    };
+	factory.getEventID = function(){
+		return eventID;
+	};
 
 	factory.getFactionID = function(){
 		return factionID;
@@ -66,8 +55,8 @@ var game_state = '';
 
 	factory.loginComsys = function (response) {
 		userID = response;
-// perguntar ao Rafael
-        //afterLogginMapCallback();
+//		perguntar ao Rafael
+//afterLogginMapCallback();
 	};
 
 	// Login was successful -> Get COMSYS personal configuration
@@ -93,7 +82,7 @@ var game_state = '';
 				}
 				factory.setMapGrid(mapGrid);
 				coordInpFormatText = factory.getCoordInpFormatTextFromID(parseInt(data.list.coord_format));
-				
+
 				if(coordInpFormatText == und) {
 					factory.buildAlertPopUp('GPS Coordinates Error', 'Unknown GPS coordinate format, defaulting to LAT/LONG.');
 					factory.setCoordInpFormatText("Lat/Long");
@@ -104,7 +93,7 @@ var game_state = '';
 				//EventsInfo.fetchAllEvents(scope);
 			}
 		})
-		
+
 		.error(function (error) {
 			// Display alert
 			factory.buildAlertPopUp('Server Error', 'Unable to get profile information.');
@@ -191,62 +180,62 @@ var game_state = '';
 	};
 
 	factory.userLogout = function() {
-		
+
 		refreshMenuAfterLogout = true;
 		userID = 0;
 		resetIsLoggedAfterLogoutCallback();
-		
+
 	};
-    
-    factory.changeUserPassword = function(oldPassword, newPassword, newPasswordRepeat, closeModalOnSuccess) {
-		
+
+	factory.changeUserPassword = function(oldPassword, newPassword, newPasswordRepeat, closeModalOnSuccess) {
+
 		// Check if fields are empty
 		if ( !oldPassword || !newPassword || !newPasswordRepeat ) {
-			
+
 			// Stop animation and display alert
 			$ionicLoading.hide();
 			factory.buildAlertPopUp('Change Password Error', 'Error: All fields are required!');
 			return;
 		}
-		
+
 		// Check if new password and new password repeat are equal
-		
+
 		else if ( !factory.verifyRepeatPassword(newPassword, newPasswordRepeat) ) {
-			
+
 			// Stop animation and display alert
 			$ionicLoading.hide();
 			factory.buildAlertPopUp('Change Password Error', 'Error: "New Password" and "Repeat New Password" don\'t match!');
 			return;
 		}
-		
+
 		// Check if newPassword isn't the same as it was before
-        else if ( (oldPassword == newPassword) ) {
-			
+		else if ( (oldPassword == newPassword) ) {
+
 			// Stop animation and display alert
 			$ionicLoading.hide();
 			factory.buildAlertPopUp('Change Password Error', '"New Password" must be different from the current one!');
 			return;
-        }
-		
+		}
+
 		// Call stub service to change password
 		else {
-		
-	        ComsysStubService.changeComsysPassword(oldPassword, newPassword)
-			
+
+			ComsysStubService.changeComsysPassword(oldPassword, newPassword)
+
 			.success(function (data) {
-	
+
 				console.log(data); // DEBUG
-	
+
 				if (data.response == serverError) {
 					// Server couldn't get COMSYS personal configuration -> Display alert
 					// Stop loading animation 
 					$ionicLoading.hide();
-	
+
 					var errorMessage = factory.getAllErrors(data.errors);
-					
+
 					// Display alert with errors
 					factory.buildAlertPopUp('Change Password Error', errorMessage);
-	
+
 				} else {
 					// Operation successful
 					// Stop loading animation and close modal view
@@ -254,57 +243,57 @@ var game_state = '';
 					factory.buildAlertPopUp('Change Password', 'Password changed successfully!');
 					closeModalOnSuccess();
 				}
-				
+
 			})
-			
+
 			.error(function (error) {
 				// Couldn't connect to server
 				// Stop loading animation
 				$ionicLoading.hide();
-	
+
 				// Display alert
 				factory.buildAlertPopUp('Server error', 'Unable to change password. Either the server or your internet connection is down.');
 			});
-		
+
 		}
-		
+
 	};
-	
+
 	factory.getAllErrors = function(errorList) {
-		
+
 		var errorMessage = "";
-		
+
 		if (errorList.username) {
 			errorMessage = errorMessage.concat("<strong>Username error:</strong> ", errorList.username[0], "<br>");
 		}
-		
+
 		if (errorList.password) {
 			errorMessage = errorMessage.concat("<strong>Password error:</strong> ", errorList.password[0], "<br>");
 		}
-		
+
 		if (errorList.nickname) {
 			errorMessage = errorMessage.concat("<strong>Nickname error:</strong> ", errorList.nickname[0], "<br>");
 		}
-		
+
 		if (errorList.old) {
 			errorMessage = errorMessage.concat("<strong>Old password error:</strong> ", errorList.old, "<br>");
 		}
-		
+
 		if (errorList.new) {
 			errorMessage = errorMessage.concat("<strong>New password error:</strong> ", errorList.new, "<br>");
 		}
-		
+
 		// Remove last <br> and return error message
 		return errorMessage = errorMessage.substring(0, errorMessage.length - 4);
-		
+
 	};
-	
+
 	factory.verifyRepeatPassword = function(password, repeatPassword) {
-		
+
 		if ( !password || !repeatPassword ) return false;
 		else if ( !(password == repeatPassword) ) return false;
-        else return true;
-		
+		else return true;
+
 	};
 
 	/*
@@ -335,8 +324,8 @@ var game_state = '';
                     'Unable to get all events: ' + error);
             })
     };
-    */
-    
+	 */
+
 	factory.getAllEvents = function() {
 		return events;
 	};
@@ -350,30 +339,31 @@ var game_state = '';
 		.error(function (error) {
 		});
 	};
-	*/
-	
-	    factory.getEventSelected = function () {
-        return eventSelected;
-    };
+	 */
 
-    factory.setEventSelected = function(newEventSelected) {
-        eventSelected = newEventSelected;
-        eventID = newEventSelected.id; 
-    };
+	factory.getEventSelected = function () {
+		return eventSelected;
+	};
 
-    factory.getPinEvent = function () {
-        return pinEvent;
-    };
+	factory.setEventSelected = function(newEventSelected) {
+		eventSelected = newEventSelected;
+		eventID = newEventSelected.id;
+		factionID = newEventSelected.faction_id; 
+	};
 
-    factory.setPinEvent = function(newPinEvent) {
-        pinEvent = newPinEvent; 
-    };
+	factory.getPinEvent = function () {
+		return pinEvent;
+	};
 
-    factory.leaveEvent = function() {
-	eventSelected = null;
-    pinEvent = 0;
-    eventID = 0;
-};
+	factory.setPinEvent = function(newPinEvent) {
+		pinEvent = newPinEvent; 
+	};
+
+	factory.leaveEvent = function() {
+		eventSelected = null;
+		pinEvent = 0;
+		eventID = 0;
+	};
 
 	return factory;
 
