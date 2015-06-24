@@ -1,6 +1,5 @@
 app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService, CommonStubService, MasterStubService) {
 
-	
 	var factory = {};
 	var game_state = null;
 	var serverError = 0;
