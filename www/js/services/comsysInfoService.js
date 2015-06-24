@@ -15,7 +15,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	var resetIsLoggedAfterLogoutCallback;
 	var allEvents = [];
 	var eventSelected = null; 
-	var afterLogginMapCallback = function(){};
+	var afterLogginWEventsMapCallback = function(){};
 	//TEST DATA
 	var eventID = 0;
 	var factionID = 0;
@@ -34,8 +34,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		resetIsLoggedAfterLogoutCallback = func;
 	};
 
-	factory.setAfterLogginMapCallback = function(func){
-		afterLogginMapCallback = func;
+	factory.setAfterLogginWEventsMapCallback = function(func){
+		afterLogginWEventsMapCallback = func;
 	};
 
 	factory.getEventID = function(){
@@ -56,8 +56,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.loginComsys = function (response) {
 		userID = response;
-//		perguntar ao Rafael
-//afterLogginMapCallback();
+		//afterLogginWEventsMapCallback();
 	};
 
 	// Login was successful -> Get COMSYS personal configuration
@@ -348,8 +347,9 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.setEventSelected = function(newEventSelected) {
 		eventSelected = newEventSelected;
-		eventID = newEventSelected.id;
-		factionID = newEventSelected.faction_id; 
+		eventID = 1;//newEventSelected.id;
+		factionID = 1;//newEventSelected.faction_id;
+		afterLogginWEventsMapCallback(); 
 	};
 
 	factory.getPinEvent = function () {

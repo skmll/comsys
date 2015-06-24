@@ -23,18 +23,20 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
     var ref;
 
     // register a callback with the service that gets called after log in
-    ComsysInfo.setAfterLogginMapCallback(function(){
+    ComsysInfo.setAfterLogginWEventsMapCallback(function(){
+        /*########################          START OF NOTIFICATIONS      #############################*/
         ref = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/comsys_users/"
             + ComsysInfo.getIsLogged() + "/comsys_notifications");
         // Attach an asynchronous callback to read the data at our squads reference
         ref.on("value", callbackFirebase);
+        /*########################          END OF NOTIFICATIONS        #############################*/
 
 
         /*########################          START OF ENEMY PINGS          #############################*/
         ComsysStubService.onFactionEnemyPingAdded(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(hostile){
             console.log("HOSTILEEEEEE", hostile);
             // this method should be replaced by a call to the firebase and should only be called when an Hostile notification from the firebase is received
-            $scope.map.addHostile(new Hostile(hostile.gps_lat, hostile.gps_lng, hostile.enemies_number, hostile.direction));
+            $scope.map.addHostile(new Hostile(hostile.gps_lat, hostile.gps_lng, hostile.enemies_number, hostile.direction, hostile.timestamp));
             //alert("Hostile Number:" + hostile.enemiesNumber + "\nDirection: " + hostile.direction);
         });
         /*########################          END OF ENEMY PINGS          #############################*/
@@ -48,7 +50,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         .success(function (data) {
             //console.log("111111111111", data);
             // Converter from DMS to DD coordinates (needed by the map)
-            var requestResult = data.list; //TODO: data.list ?
+            var requestResult = data.list;
             var coordinates = []; //LatLng
 
             angular.forEach(requestResult, function (coordinate) {
@@ -67,11 +69,11 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         CommonStubService.getAllCommonZones(ComsysInfo.getEventID())
         .success(function (data) {
             //console.log("222222222222222", data);
-            angular.forEach(data.list, function (eventZone){ //TODO: data.list?
+            angular.forEach(data.list, function (eventZone){ 
                 CommonStubService.getCoordCommonZoneByID(ComsysInfo.getEventID(), eventZone.id)
                 .success(function (data) {
                     //console.log("33333333333", data);
-                    var zoneResult = data.list; //TODO: data.list?
+                    var zoneResult = data.list;
                     var zoneCoordinates = []; //LatLng
 
                     angular.forEach(zoneResult, function (coordinate) {
@@ -97,11 +99,11 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         CommonStubService.getAllFactionZones(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN())
         .success(function (data) {
             //console.log("444444444", data);
-            angular.forEach(data.list, function (eventZone){ //TODO: data.list?
+            angular.forEach(data.list, function (eventZone){ 
                 CommonStubService.getCoordFactionZonesByID(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN(), eventZone.id)
                 .success(function (data) {
                     //console.log("5555555555555", data);
-                    var zoneResult = data.list; //TODO: data.list?
+                    var zoneResult = data.list;
                     var zoneCoordinates = []; //LatLng
 
                     angular.forEach(zoneResult, function (coordinate) {
@@ -218,10 +220,9 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
             }
         };
 
-        //TODO: change name to real nickname from service
         var sender = {
             id: ComsysInfo.getIsLogged(),
-            name: 'Comsys01',
+            name: ComsysInfo.getNickname(),
             type: 'comsys'
         };
         
