@@ -252,7 +252,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 	function getEventsOfComsys() {
 		ComsysStubService.getEventsOfComsys()
 		.success(function (data) {
-			ComsysInfo.setEventSelected(data.list[0]);
+			ComsysInfo.setComsysActualEvent(data.list[0]);
 		})
 		.error(function (error) {
 		});
