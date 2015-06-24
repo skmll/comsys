@@ -13,7 +13,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	var refreshMenuAfterLogout = true;
 	var resetIsLoggedAfterLogoutCallback;
 	var allEvents = [];
-	var eventSelected = null; 
+	var eventSelected = null;
+	var comsysActualEvent = null;
 	var afterLogginWEventsMapCallback = function(){};
 	//TEST DATA
 	var eventID = 0;
@@ -55,7 +56,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.loginComsys = function (response) {
 		userID = response;
-		//afterLogginWEventsMapCallback();
 	};
 
 	// Login was successful -> Get COMSYS personal configuration
@@ -346,10 +346,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.setEventSelected = function(newEventSelected) {
 		eventSelected = newEventSelected;
-		eventID = 1;//newEventSelected.id;
-		factionID = 1;//newEventSelected.faction_id;
-		afterLogginWEventsMapCallback(); 
-	};
+		};
 
 	factory.getPinEvent = function () {
 		return pinEvent;
@@ -371,6 +368,17 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	
 	factory.setGameState = function(newState) {
 		game_state = newState;
+	};
+
+	factory.setComsysActualEvent = function(newComsysActualEvent) {
+		comsysActualEvent = newComsysActualEvent;
+		eventID = 1;//newComsysActualEvent.id;
+		factionID = 1;//newComsysActualEvent.faction_id;
+		afterLogginWEventsMapCallback(); 
+	};
+	
+	factory.getComsysActualEvent = function(newComsysActualEvent) {
+		return comsysActualEvent;
 	};
 	
 	return factory;
