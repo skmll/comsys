@@ -16,6 +16,7 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 					'Unable to get all events: ' + aux);
 		}else{
 			$scope.eventsList = data.list;
+			ComsysInfo.setEvents($scope.eventsList);
 		}
 	})
 	.error(function (error) {

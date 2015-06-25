@@ -8,20 +8,21 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	var nickname = undefined;
 	var coordInpFormat = 0;
 	var coordInpFormatText = undefined;
-	var events = [];
 	var mapGrid = false;
 	var refreshMenuAfterLogout = true;
 	var resetIsLoggedAfterLogoutCallback;
+	
+	var events = []; // Stores all existing events
 	var allEvents = [];
-	var eventSelected = null;
-	var comsysActualEvent = null;
+	var eventSelected = null; // Stores the actual displayed event
+	var comsysActualEvents = null; // Store all joined comsys events
+	var comsysActualEventID = 0; // stores if selected event id = joined event id; 
 	var afterLogginWEventsMapCallback = function(){};
-	//TEST DATA
 	var eventID = 0;
 	var factionID = 0;
 	var factionPIN = 0;
 	var pinEvent = 0;
-
+	
 	factory.getMenuRefresh = function(){
 		return refreshMenuAfterLogout;
 	};
@@ -297,17 +298,29 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 
 
-	factory.getAllEvents = function() {
+	/*factory.getAllEvents = function() {
+		return events;
+	};*/
+
+
+	factory.getEvents = function() {
 		return events;
 	};
 
-
+	factory.setEvents = function(allEvents) {
+		events = allEvents;
+	};
+	
 	factory.getEventSelected = function () {
 		return eventSelected;
 	};
 
 	factory.setEventSelected = function(newEventSelected) {
 		eventSelected = newEventSelected;
+		eventID = newEventSelected.id;
+		console.log('eventID: ' + eventID);
+		// Check if comsys is registed in the actual selected event
+		factory.checkEventStatos(newEventSelected);
 		};
 
 	factory.getPinEvent = function () {
@@ -319,9 +332,9 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.leaveEvent = function() {
-		eventSelected = null;
 		pinEvent = 0;
 		eventID = 0;
+		comsysActualEventID = 0;
 	};
 
 	factory.getGameState = function() {
@@ -333,16 +346,34 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.setComsysActualEvent = function(newComsysActualEvent) {
-		console.log('eventoooo', newComsysActualEvent);
-		comsysActualEvent = newComsysActualEvent;
-		eventID = 1;//newComsysActualEvent.id;
-		factionID = 1;//newComsysActualEvent.faction_id;
-		factionPIN = 1111; //newComsysActualEvent.faction_pin;
-		afterLogginWEventsMapCallback(); 
+		comsysActualEvents = newComsysActualEvent;
+		// passar aqui com o rafael
+		//eventID = newComsysActualEvent.event_id;
+		//factionID = newComsysActualEvent.faction_id;
+		//factionPIN = newComsysActualEvent.faction_pin;
+		//afterLogginWEventsMapCallback(); 
 	};
 	
-	factory.getComsysActualEvent = function(newComsysActualEvent) {
-		return comsysActualEvent;
+	factory.getComsysActualEvent = function() {
+		return comsysActualEvents;
+	};
+	
+	factory.getComsysActualEventID = function() {
+		return comsysActualEventID;
+	};
+
+	factory.checkEventStatos = function(selectedEvent) {
+		for(var i in events) {
+		//console.log(events[i]);
+			for(var j in comsysActualEvents) {
+			if(events[i].id == comsysActualEvents[j].event_id) {					
+				comsysActualEventID = 1;
+				return;
+			}
+			}
+		}
+		comsysActualEventID = 0;
+		return;
 	};
 	
 	return factory;

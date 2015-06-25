@@ -5,13 +5,12 @@
             <i class="ion-arrow-left-c"></i> Back
         </ion-nav-back-button>
         <ion-nav-buttons side="right">
-            <button class="button button-clear" ng-click="showJoinEventPopup()" ng-if="isLogged > 0 && selectedEventID == 0">Join event</button>
-            <button class="button button-clear" ng-click="liveEvent()" ng-if="selectedEventID != 0">Leave event</button>
+            <button class="button button-clear" ng-click="showJoinEventPopup()" ng-if="isLogged > 0 && checkSameId == 0">Join event</button>
+            <button class="button button-clear" ng-click="liveEvent()" ng-if="isLogged > 0 && checkSameId == 1">Leave event</button<
         </ion-nav-buttons>
     </ion-nav-bar>
     <ion-content>
-    <h1 ng-if="isLogged == 0">This content is only available to logged users.</h1>
-    <div ng-if="isLogged > 0">
+    <h1 ng-if="isLogged < 0">This content is only available to logged users.</h1>
         <ion-list>
             <ion-item class="item-divider">
                 Event description
@@ -95,6 +94,5 @@
                 <b>GPS refresh rate max:</b> {{eventSelected.gps_refresh_rate_max}}
             </ion-item>
         </ion-list>
-        </div>
     </ion-content>
 </ion-view>
