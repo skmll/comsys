@@ -1,6 +1,6 @@
 <ion-view view-title="Events">
     <ion-content>
-<h1 ng-if="isLogged == 0">This content is only available to logged users.</h1>    
+<h1 ng-if="isLogged == 0">This content is only available to logged users.</h1>
         <ion-list>
             <ion-item ng-repeat="item in eventsList" ng-click="goToEvent(item)" class="item-icon-right" href="#/app/eventDetails">
                 {{item.name}}

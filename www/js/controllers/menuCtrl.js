@@ -7,8 +7,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
-	// Set eventID
-	//$scope.eventID = ComsysInfo.getEventID();
+	$scope.eventID = ComsysInfo.getEventID();
 
 	// Refresh menu
 	$scope.refreshMenu = function() {
@@ -54,8 +53,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 
 	// Perform login
 	$scope.loginComsys = function () {
-		
-	
 		// Display loading animation
 		$ionicLoading.show({
 			content: 'Logging in...',
@@ -72,9 +69,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 		ComsysStubService.loginComsys($scope.loginData.username, $scope.loginData.password)
 		.success(function (data) {
 			if(data.response != 0){
-				
 				$ionicLoading.hide();
-				console.log(data); //DEBUG
 				
 				// Update login information on service and menu state
 				ComsysInfo.loginComsys(data.response);
@@ -252,7 +247,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 	function getEventsOfComsys() {
 		ComsysStubService.getEventsOfComsys()
 		.success(function (data) {
-			ComsysInfo.setComsysActualEvent(data.list[0]);
+			ComsysInfo.setComsysActualEvent(data.list);
 		})
 		.error(function (error) {
 		});
