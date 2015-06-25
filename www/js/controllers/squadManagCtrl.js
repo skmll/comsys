@@ -21,21 +21,21 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
     var ref = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/squads");
     // Attach an asynchronous callback to read the data at our squads reference
     ref.on("value", function(snapshot) {
-        console.log(snapshot.val());
+        //console.log(snapshot.val());
         lastSquads = snapshot.val();
         convertToSquadArray();
     }, function (errorObject) {
-        console.log("The read failed: " + errorObject.code);
+        //console.log("The read failed: " + errorObject.code);
     });
 
     var ref2 = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/operators");
     // Attach an asynchronous callback to read the data at our operators reference
     ref2.on("value", function(snapshot) {
-        console.log(snapshot.val());
+        //console.log(snapshot.val());
         lastOperators = snapshot.val();
         convertToSquadArray();
     }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
+      //console.log("The read failed: " + errorObject.code);
     });
 
     // TEST DATA
@@ -52,8 +52,8 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
     */
     
     $scope.openSquadSelectionDialog = function(operator, squadIndex){
-        console.log("operator: ", operator);
-        console.log("squad idx: ", squadIndex);
+        //console.log("operator: ", operator);
+        //console.log("squad idx: ", squadIndex);
 
         selectedOperator = operator;
         selectedSquadIndex = squadIndex;
@@ -85,7 +85,7 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
             $scope.shownSquad = null;
         } else {
             $scope.shownSquad = squad;
-            console.log("Squad: "+squad.name);
+            //console.log("Squad: "+squad.name);
         }
     };
     $scope.isSquadShown = function(squad) {
@@ -164,7 +164,7 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
 
     function convertToSquadArray() {
         if(lastOperators === undefined || lastSquads === undefined){
-            console.log("undefined");
+            //console.log("undefined");
             return;
         }
 
@@ -182,7 +182,7 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
               lastSquads[operator.squad_id].operators.push(operator);
            }
         }
-        console.log("after convert:", lastSquads);
+        //console.log("after convert:", lastSquads);
 
         var i = 0;
         for (var key in lastSquads) {
@@ -208,7 +208,7 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
         }
 
         $ionicLoading.hide();
-        console.log("final array", $scope.squads);
+        //console.log("final array", $scope.squads);
     };
 
 });

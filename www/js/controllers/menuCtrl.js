@@ -14,6 +14,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 	$scope.refreshMenu = function() {
 		// Update ID of logged user
 		$scope.isLogged = ComsysInfo.getIsLogged();
+		$scope.game_state = ComsysInfo.getGameState();
 	};
 
 	/* Login */
@@ -55,7 +56,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 	// Perform login
 	$scope.loginComsys = function () {
 		
-	
+
 		// Display loading animation
 		$ionicLoading.show({
 			content: 'Logging in...',

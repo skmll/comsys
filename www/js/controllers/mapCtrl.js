@@ -28,18 +28,29 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         ref = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/comsys_users/"
             + ComsysInfo.getIsLogged() + "/comsys_notifications");
         // Attach an asynchronous callback to read the data at our squads reference
-        ref.on("value", callbackFirebase);
+        ref.on("value", callbackNotifFirebase);
         /*########################          END OF NOTIFICATIONS        #############################*/
 
 
         /*########################          START OF ENEMY PINGS          #############################*/
         ComsysStubService.onFactionEnemyPingAdded(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(hostile){
-            console.log("HOSTILEEEEEE", hostile);
-            // this method should be replaced by a call to the firebase and should only be called when an Hostile notification from the firebase is received
+            //console.log("HOSTILEEEEEE", hostile);
+
             $scope.map.addHostile(new Hostile(hostile.gps_lat, hostile.gps_lng, hostile.enemies_number, hostile.direction, hostile.timestamp));
-            //alert("Hostile Number:" + hostile.enemiesNumber + "\nDirection: " + hostile.direction);
         });
         /*########################          END OF ENEMY PINGS          #############################*/
+
+        /*########################          START OF MAP SQUADS         #############################*/
+        ComsysStubService.onSquadsIdsChanged(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(squadId, status){
+            if(status == 'added'){
+                console.log('++++++++++++++++++++++++++++++++++++++++++++++++Squad added', squadId);
+                $scope.map.addSquad(new Squad(squadId));
+            }else if(status == 'removed') {
+                console.log('------------------------------------------------Squad removed', squadId);
+                $scope.map.removeSquad($scope.map.getSquad(squadId));
+            }
+        });
+        /*########################          END OF MAP SQUADS          #############################*/
 
 
         /*########################          START OF ZONE DEFINITION          #############################*/
@@ -48,7 +59,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
         CommonStubService.getMap(ComsysInfo.getEventID())
         .success(function (data) {
-            //console.log("111111111111", data);
+            console.log("getMap", data);
             // Converter from DMS to DD coordinates (needed by the map)
             var requestResult = data.list;
             var coordinates = []; //LatLng
@@ -68,11 +79,11 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
         CommonStubService.getAllCommonZones(ComsysInfo.getEventID())
         .success(function (data) {
-            //console.log("222222222222222", data);
+            console.log("getAllCommonZones", data);
             angular.forEach(data.list, function (eventZone){ 
                 CommonStubService.getCoordCommonZoneByID(ComsysInfo.getEventID(), eventZone.id)
                 .success(function (data) {
-                    //console.log("33333333333", data);
+                    console.log("commonZone id: " + eventZone.id, data);
                     var zoneResult = data.list;
                     var zoneCoordinates = []; //LatLng
 
@@ -98,11 +109,11 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
         CommonStubService.getAllFactionZones(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN())
         .success(function (data) {
-            //console.log("444444444", data);
+            console.log('getAllFactionZones', data);
             angular.forEach(data.list, function (eventZone){ 
                 CommonStubService.getCoordFactionZonesByID(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN(), eventZone.id)
                 .success(function (data) {
-                    //console.log("5555555555555", data);
+                    console.log("factionZone id: " + eventZone.id, data);
                     var zoneResult = data.list;
                     var zoneCoordinates = []; //LatLng
 
@@ -130,7 +141,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
     });
 
     //definition of a callback function as variable since we use it multiple times
-    var callbackFirebase = function(snapshot) {
+    var callbackNotifFirebase = function(snapshot) {
         $scope.notifications = [];
         $scope.notificationsOld = [];
         console.log('notificationRef', snapshot.val());
@@ -181,7 +192,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
                 seen: 'false',
             });
         };
-        ref.on('value', callbackFirebase);
+        ref.on('value', callbackNotifFirebase);
         $scope.notificationsOld = [];
     };
 
@@ -198,7 +209,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
                 seen: 'true',
             });
         };
-        ref.on('value', callbackFirebase);
+        ref.on('value', callbackNotifFirebase);
         $scope.notifications = [];
     };
 
@@ -327,51 +338,11 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
     $scope.mapCreated = function (map) {
         $scope.map = map;
 
-        /*
-        ############################ GAME AREA ############################
-        // ------> change this data with the request made by the STUB !!!!!!!
-        */
-        /*
-        var requestResult = [
-            {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.76},
-            {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 50.08, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 33.8},
-            {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 6.28, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 57.31},
-            {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 30.24, lng_c: "W", lng_d: 8, lng_m: 47, lng_s: 19.96},
-            {lat_c: "N", lat_d: 39, lat_m: 42, lat_s: 15.13, lng_c: "W", lng_d: 8, lng_m: 44, lng_s: 42.23},
-            {lat_c: "N", lat_d: 39, lat_m: 42, lat_s: 17.7, lng_c: "W", lng_d: 8, lng_m: 42, lng_s: 42.34},
-            {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 49.28, lng_c: "W", lng_d: 8, lng_m: 41, lng_s: 53.72},
-            {lat_c: "N", lat_d: 39, lat_m: 45, lat_s: 47.75, lng_c: "W", lng_d: 8, lng_m: 46, lng_s: 7.38},
-            {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.47}
-        ];
-        
-        var zoneResult = [
-            {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.76},
-            {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 50.08, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 33.8},
-            {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 6.28, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 57.31},
-            {lat_c: "N", lat_d: 39, lat_m: 42, lat_s: 30.24, lng_c: "W", lng_d: 8, lng_m: 47, lng_s: 19.96},
-            {lat_c: "N", lat_d: 39, lat_m: 41, lat_s: 15.13, lng_c: "W", lng_d: 8, lng_m: 44, lng_s: 42.23},
-            {lat_c: "N", lat_d: 39, lat_m: 41, lat_s: 17.7, lng_c: "W", lng_d: 8, lng_m: 42, lng_s: 42.34},
-            {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 49.28, lng_c: "W", lng_d: 8, lng_m: 41, lng_s: 53.72},
-            {lat_c: "N", lat_d: 39, lat_m: 44, lat_s: 47.75, lng_c: "W", lng_d: 8, lng_m: 46, lng_s: 7.38},
-            {lat_c: "N", lat_d: 39, lat_m: 43, lat_s: 58.57, lng_c: "W", lng_d: 8, lng_m: 48, lng_s: 42.47}
-        ];
-        */
-
-
-
-        /*############################ SQUAD #################################*/
-
-        // change the first parameter by the SquadID obtained from the stub
-        $scope.map.addSquad(new Squad(1));
-
-        /*####################################################################*/
-
-
         /*############################ OPERATORES ############################*/
 
         // change the first parameter by the SquadID and construct the second parameter from the stub data
-        $scope.map.addOperator(1, new Operator(1, 1, 39.73669629664551, -8.727478981018065, Specialization.TRANSPORTATION));
-        $scope.map.addOperator(1, new Operator(1, 12, 39.74669629664551, -8.727478981018065, Specialization.MEDIC));
+        //$scope.map.addOperator(1, new Operator(1, 1, 39.73669629664551, -8.727478981018065, Specialization.TRANSPORTATION));
+        //$scope.map.addOperator(1, new Operator(1, 12, 39.74669629664551, -8.727478981018065, Specialization.MEDIC));
 
         /*####################################################################*/
     };

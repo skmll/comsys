@@ -1,4 +1,4 @@
-app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService, CommonStubService, MasterStubService) {
+app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService, CommonStubService) {
 
 	var factory = {};
 	var game_state = null;
@@ -295,50 +295,12 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	};
 
-	/*
-	factory.fetchAllEvents = function () {
-        CommonStubService.getAllEvents()
-            .success(function (data) {
-                console.log(data);
-                if (data.response == 0) {
-                    var aux = "";
-                    for (var key in data.errors) {
-                        if (data.errors.hasOwnProperty(key)) {
-                            aux = aux + data.errors[key];
-                        }
-                    }
-                    // Bad result
-                    buildAlertPopUp('Unable to get all events',
-                        'Unable to get all events: ' + aux);
-                }else{
-                	alert(data.list.length);
-                    for(var i = 0; i < data.list.length; i++){
-                        events.push(data.list[i]);
-                    }
-                }
-            })
-            .error(function (error) {
-                // Bad result
-                buildAlertPopUp('Unable to get all events',
-                    'Unable to get all events: ' + error);
-            })
-    };
-	 */
+
 
 	factory.getAllEvents = function() {
 		return events;
 	};
 
-	/*
-	factory.getAllMasterEvents = function() {
-		MasterStubService.getAllMasterEvents()
-		.success(function (data) {
-		console.log(data);
-	})
-		.error(function (error) {
-		});
-	};
-	 */
 
 	factory.getEventSelected = function () {
 		return eventSelected;
@@ -371,9 +333,11 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.setComsysActualEvent = function(newComsysActualEvent) {
+		console.log('eventoooo', newComsysActualEvent);
 		comsysActualEvent = newComsysActualEvent;
 		eventID = 1;//newComsysActualEvent.id;
 		factionID = 1;//newComsysActualEvent.faction_id;
+		factionPIN = 1111; //newComsysActualEvent.faction_pin;
 		afterLogginWEventsMapCallback(); 
 	};
 	
@@ -383,4 +347,44 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	
 	return factory;
 
+	/*
+	factory.fetchAllEvents = function () {
+        CommonStubService.getAllEvents()
+            .success(function (data) {
+                console.log(data);
+                if (data.response == 0) {
+                    var aux = "";
+                    for (var key in data.errors) {
+                        if (data.errors.hasOwnProperty(key)) {
+                            aux = aux + data.errors[key];
+                        }
+                    }
+                    // Bad result
+                    buildAlertPopUp('Unable to get all events',
+                        'Unable to get all events: ' + aux);
+                }else{
+                	alert(data.list.length);
+                    for(var i = 0; i < data.list.length; i++){
+                        events.push(data.list[i]);
+                    }
+                }
+            })
+            .error(function (error) {
+                // Bad result
+                buildAlertPopUp('Unable to get all events',
+                    'Unable to get all events: ' + error);
+            })
+    };
+	 */
+
+	/*
+	factory.getAllMasterEvents = function() {
+		MasterStubService.getAllMasterEvents()
+		.success(function (data) {
+		console.log(data);
+	})
+		.error(function (error) {
+		});
+	};
+	 */
 });
