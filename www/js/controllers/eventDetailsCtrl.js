@@ -1,4 +1,4 @@
-app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, $ionicPopup, $ionicLoading, MasterStubService, $location) {
+app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, $ionicPopup, $ionicLoading, ComsysStubService, $location) {
 
 	$scope.pinEvent = 1111;
 
@@ -8,9 +8,9 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 
 	$scope.getComsysActualEvent = ComsysInfo.getComsysActualEvent();
 	
-	$scope.checkSameId = ComsysInfo.getComsysActualEventID();
+	$scope.isComsysRegistered = ComsysInfo.isComsysRegistered();
 	
-	$scope.isEventLive = ComsysInfo.isEventLive();
+	$scope.isEventLive = ComsysInfo.isSelectedEventLive();
 
 	$scope.myGoBack = function() {
 		$ionicHistory.goBack();
@@ -61,7 +61,7 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 		if (aux != null) {
 			if ($scope.pinEvent > 999 && $scope.pinEvent < 10000) {
 //				Join to an event
-				MasterStubService.joinFactionComsys($scope.selectedEventID, $scope.pinEvent)
+				ComsysStubService.joinFactionComsys($scope.selectedEventID, $scope.pinEvent)
 				.success(function (data) {
 					console.log(data.response);
 					if (data.response == 0) {
@@ -103,7 +103,7 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 
 	$scope.leaveEvent = function () {
 		alert('id: ' + $scope.selectedEventID + ' ' + 'pin ' + $scope.pinEvent);
-		MasterStubService.leaveFactionComsys($scope.selectedEventID, $scope.pinEvent)
+		ComsysStubService.leaveFactionComsys($scope.selectedEventID, $scope.pinEvent)
 		.success(function (data) {
 			if (data.response == 0) {
 				var aux = "";

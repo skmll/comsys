@@ -25,8 +25,6 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 		'Unable to get all events, please login first.');
 	});
 
-	$scope.eventID = ComsysInfo.getEventID();
-
 	$scope.goToEvent = function(event) {
 		ComsysInfo.setEventSelected(event);
 	};

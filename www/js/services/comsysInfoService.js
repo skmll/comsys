@@ -13,16 +13,25 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	var resetIsLoggedAfterLogoutCallback;
 	
 	var events = []; // Stores all existing events
-	var allEvents = [];
+	//var allEvents = [];
 	var liveEvent = null;
 	var eventSelected = null; // Stores the actual displayed event
 	var comsysActualEvents = null; // Store all joined comsys events
-	var comsysActualEventID = 0; // stores if selected event id = joined event id; 
+	var isComsysRegistered; // stores if the comsys is registered or not in the selected event 
 	var afterLogginWEventsMapCallback = function(){};
 	var eventID = 0;
 	var factionID = 0;
 	var factionPIN = 0;
 	var pinEvent = 0;
+	
+	/*
+		event status no firebase:
+			0 = register;
+			1 = prestarted;
+			2 = started;
+			3 = paused;
+			4 = ended;
+	 */
 	
 	factory.getMenuRefresh = function(){
 		return refreshMenuAfterLogout;
@@ -303,7 +312,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		return events;
 	};*/
 
-	factory.isEventLive = function() {
+	factory.isSelectedEventLive = function() {
 		return eventSelected.status == 0;
 	};
 	
@@ -318,7 +327,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	factory.getEvents = function() {
 		return events;
 	};
-
+	
 	factory.setEvents = function(allEvents) {
 		events = allEvents;
 	};
@@ -332,8 +341,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		eventID = newEventSelected.id;
 		console.log('eventID: ' + eventID);
 		// Check if comsys is registed in the actual selected event
-		factory.checkEventStatos(newEventSelected);
-		};
+		factory.checkEventStatus(newEventSelected);
+	};
 
 	factory.getPinEvent = function () {
 		return pinEvent;
@@ -348,9 +357,16 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		factionPIN = 0;
 		pinEvent = 0;
 		eventID = 0;
-		comsysActualEventID = 0;
+		isComsysRegistered = 0;
+		for (var index = 0; index < comsysActualEvents.length; index++) {
+			var event = comsysActualEvents[index];
+			if(event.id == eventSelected.id){
+				comsysActualEvents.splice(index, 1);
+			}
+		}
 	};
 
+	
 	factory.getGameState = function() {
 		return game_state;
 	};
@@ -358,7 +374,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	factory.setGameState = function(newState) {
 		game_state = newState;
 	};
-
+	
 	factory.setComsysActualEvent = function(newComsysActualEvent) {
 		comsysActualEvents = newComsysActualEvent;
 	};
@@ -367,18 +383,18 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		return comsysActualEvents;
 	};
 	
-	factory.getComsysActualEventID = function() {
-		return comsysActualEventID;
+	factory.isComsysRegistered = function() {
+		return isComsysRegistered;
 	};
 
-	factory.checkEventStatos = function(selectedEvent) {
-			for(var j in comsysActualEvents) {
+	factory.checkEventStatus = function(selectedEvent) {
+		for(var j in comsysActualEvents) {
 			if(eventSelected.id == comsysActualEvents[j].event_id) {					
-				comsysActualEventID = 1;
+				isComsysRegistered = true;
 				return;
 			}
 		}
-		comsysActualEventID = 0;
+		isComsysRegistered = false;
 		return;
 	};
 	
