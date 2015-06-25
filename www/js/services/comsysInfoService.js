@@ -372,13 +372,10 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.checkEventStatos = function(selectedEvent) {
-		for(var i in events) {
-		//console.log(events[i]);
 			for(var j in comsysActualEvents) {
-			if(events[i].id == comsysActualEvents[j].event_id) {					
+			if(eventSelected.id == comsysActualEvents[j].event_id) {					
 				comsysActualEventID = 1;
 				return;
-			}
 			}
 		}
 		comsysActualEventID = 0;
