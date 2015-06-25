@@ -14,6 +14,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	
 	var events = []; // Stores all existing events
 	var allEvents = [];
+	var liveEvent = null;
 	var eventSelected = null; // Stores the actual displayed event
 	var comsysActualEvents = null; // Store all joined comsys events
 	var comsysActualEventID = 0; // stores if selected event id = joined event id; 
@@ -302,6 +303,17 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		return events;
 	};*/
 
+	factory.isEventLive = function() {
+		return eventSelected.status == 0;
+	};
+	
+	factory.goLive = function() {
+		liveEvent = eventSelected;
+		eventID = 1;//liveEvent.event_id;
+		factionID = 1;//liveEvent.faction_id;
+		factionPIN = 1111;//liveEvent.faction_pin;
+		afterLogginWEventsMapCallback(); 
+	};
 
 	factory.getEvents = function() {
 		return events;
@@ -332,6 +344,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.leaveEvent = function() {
+		liveEvent = null;
+		factionPIN = 0;
 		pinEvent = 0;
 		eventID = 0;
 		comsysActualEventID = 0;
@@ -347,11 +361,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.setComsysActualEvent = function(newComsysActualEvent) {
 		comsysActualEvents = newComsysActualEvent;
-		// passar aqui com o rafael
-		//eventID = newComsysActualEvent.event_id;
-		//factionID = newComsysActualEvent.faction_id;
-		//factionPIN = newComsysActualEvent.faction_pin;
-		//afterLogginWEventsMapCallback(); 
 	};
 	
 	factory.getComsysActualEvent = function() {

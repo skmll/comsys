@@ -8,7 +8,9 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 
 	$scope.getComsysActualEvent = ComsysInfo.getComsysActualEvent();
 	
-$scope.checkSameId = ComsysInfo.getComsysActualEventID();
+	$scope.checkSameId = ComsysInfo.getComsysActualEventID();
+	
+	$scope.isEventLive = ComsysInfo.isEventLive();
 
 	$scope.myGoBack = function() {
 		$ionicHistory.goBack();
@@ -94,7 +96,12 @@ $scope.checkSameId = ComsysInfo.getComsysActualEventID();
 		$ionicLoading.hide();
 	};
 
-	$scope.liveEvent = function () {
+
+	$scope.goLiveEvent = function(){
+		ComsysInfo.goLive();	
+	};
+
+	$scope.leaveEvent = function () {
 		alert('id: ' + $scope.selectedEventID + ' ' + 'pin ' + $scope.pinEvent);
 		MasterStubService.leaveFactionComsys($scope.selectedEventID, $scope.pinEvent)
 		.success(function (data) {
