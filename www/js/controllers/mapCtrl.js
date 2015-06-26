@@ -52,6 +52,18 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         });
         /*########################          END OF MAP SQUADS          #############################*/
 
+        /*########################          START OF OPERATORS         #############################*/
+        ComsysStubService.onOperatorValuesChanged(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(ops){
+            angular.forEach(ops, function (operator) {
+                //TODO: ask steven and ivo (username?, remove?, check if squad exists in map?)
+                //$scope.map.addOperator(operator.squad_id, new Operator(operator.nickname, operator.nickname,
+                //     operator.gps_lat, operator.gps_lng, Specialization.TRANSPORTATION));
+            });
+        });
+
+
+        /*########################          END OF OPERATORS          #############################*/
+
 
         /*########################          START OF ZONE DEFINITION          #############################*/
 

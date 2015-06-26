@@ -7,7 +7,7 @@
         <ion-nav-buttons side="right">
             <button class="button button-clear" ng-click="showJoinEventPopup()" ng-if="isLogged > 0 && !eventSelected.registered">Join event</button>
             <button class="button button-clear" ng-click="leaveEvent()" ng-if="isLogged > 0 && eventSelected.registered">Leave event</button>
-            <button class="button button-clear" ng-click="goLiveEvent()" ng-if="isLogged > 0 && eventSelected.registered && hasEventStarted && !isEventLife">Go live</button>
+            <button class="button button-clear" ng-click="goLiveEvent()" ng-if="isLogged > 0 && eventSelected.registered && hasEventStarted && !isEventLive">Go live</button>
         </ion-nav-buttons>
     </ion-nav-bar>
     <ion-content>

@@ -112,6 +112,7 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 
 	$scope.goLiveEvent = function(){
 		ComsysInfo.goLive();
+		$scope.isEventLive = ComsysInfo.isSelectedEventLive();
 		//$location.path('app/map');
 	};
 

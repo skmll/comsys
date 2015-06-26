@@ -311,7 +311,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.hasSelectedEventStarted = function() {
 		//console.log('Started?', eventSelected);
-		return eventSelected.status == 2;
+		return eventSelected.status == 0;//TODO: change
 	};
 	
 	factory.goLive = function() {
