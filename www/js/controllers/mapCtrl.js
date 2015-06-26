@@ -1,5 +1,5 @@
 app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHistory, $state, Hostile, ComsysInfo, CommonStubService, ComsysStubService, CoordinatesConverter, Squad, Operator, Specialization) {
-
+    //TODO: TEST -> $ionicNavBarDelegate.showBackButton(false);
     $scope.notifications = [];
     $scope.notificationsOld = [];
 

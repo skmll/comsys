@@ -72,6 +72,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 	})
 
 	.state('app.seeEvents', {
+		cache: false,
 		url: "/seeEvents",
 		views: {
 			'menuContent': {

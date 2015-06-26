@@ -116,7 +116,7 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 	};
 
 	$scope.leaveEvent = function () {
-		console.log('Leaving event:', $scope.eventSelected);
+		//console.log('Leaving event:', $scope.eventSelected);
 		ComsysStubService.leaveFactionComsys($scope.eventSelected.id, $scope.eventSelected.factionPIN)
 		.success(function (data) {
 			if (data.response == 0) {

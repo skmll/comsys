@@ -110,7 +110,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 				// Stop loading animation and close modal view
 				$ionicLoading.hide();
 				scope.closeLoginModal();
-				//EventsInfo.fetchAllEvents(scope);
 			}
 		})
 
@@ -311,6 +310,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	}; 
 
 	factory.hasSelectedEventStarted = function() {
+		//console.log('Started?', eventSelected);
 		return eventSelected.status == 2;
 	};
 	
@@ -327,7 +327,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		eventID = 0;
 		factionID = 0;
 		factionPIN = 0;
-		//TODO: afterLeaveLifeMapCallback?
+		//TODO: afterLeaveLifeMapCallback? //TODO
 	};
 
 	
@@ -347,17 +347,11 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.setEventSelected = function(newEventSelected) {
 		eventSelected = newEventSelected;
-		/*
-		eventID = newEventSelected.id;
-		console.log('eventID: ' + eventID);
-		// Check if comsys is registed in the actual selected event
-		factory.isComsysRegisteredInSelectedEvent();
-		*/
 	};
 
 	factory.joinEvent = function() {
 		eventSelected.registered = true;
-		var eventRegistered = ComsysInfo.getEventIdsOfRegisteredEvent(eventSelected.id);
+		var eventRegistered = factory.getEventIdsOfRegisteredEvent(eventSelected.id);
 
 		eventSelected.factionPIN = eventRegistered.faction_pin;
 		eventSelected.factionID = eventRegistered.faction_id;
@@ -366,13 +360,18 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	};
 
 	factory.leaveEvent = function() {
+		if(factory.isSelectedEventLive){
+			factory.leaveLive(); //TODO: this right?
+		}
 		eventSelected.registered = false;
-		eventSelected.factionPIN = undefined; //TODO: is this how its done?
-		eventSelected.factionID = undefined;
+		delete eventSelected.factionPIN;
+		delete eventSelected.factionID;
+		//console.log('afterLeaving', eventSelected);
 
 		for (var index = 0; index < eventsIdsComsysRegistered.length; index++) {
 			var event = eventsIdsComsysRegistered[index];
-			if(event.id == eventSelected.id){//TODO: event_id or id?
+			//console.log("########################", eventSelected);
+			if(event.event_id == eventSelected.id){
 				eventsIdsComsysRegistered.splice(index, 1);
 			}
 		}

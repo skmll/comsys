@@ -2,6 +2,9 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
+	$scope.registeredEvents = [];
+	$scope.notRegisteredEvents =[];
+	
 	CommonStubService.getAllEvents()
 	.success(function (data) {
 		if (data.response == 0) {
