@@ -55,6 +55,10 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 	// Perform login
 	$scope.loginComsys = function () {
 
+		//ComsysInfo.loginComsys(1);
+		//getEventsOfComsys();
+		//registerFirebaseReferences();
+
 		// Display loading animation
 		$ionicLoading.show({
 			content: 'Logging in...',
@@ -249,7 +253,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 	function getEventsOfComsys() {
 		ComsysStubService.getEventsOfComsys()
 		.success(function (data) {
-			ComsysInfo.setComsysActualEvent(data.list);
+			ComsysInfo.setEventsIdsComsysRegistered(data.list);
 		})
 		.error(function (error) {
 		});

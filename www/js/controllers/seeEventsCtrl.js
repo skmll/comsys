@@ -2,7 +2,7 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
-	$scope.getAllEvents = CommonStubService.getAllEvents()
+	CommonStubService.getAllEvents()
 	.success(function (data) {
 		if (data.response == 0) {
 			var aux = "";
@@ -15,8 +15,18 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 			ComsysInfo.buildAlertPopUp('Unable to get all events',
 					'Unable to get all events: ' + aux);
 		}else{
-			$scope.eventsList = data.list;
-			ComsysInfo.setEvents($scope.eventsList);
+			var allEvents = data.list;
+			for (var i = 0; i < allEvents.length; i++) {
+
+				if(ComsysInfo.isComsysRegisteredInEvent(allEvents[i].id)){
+					$scope.registeredEvents.push(allEvents[i]);
+				}else{
+					$scope.notRegisteredEvents.push(allEvents[i]);
+				}
+
+			};
+			//$scope.allEvents = allEvents;
+			//ComsysInfo.setEvents($scope.allEvents);
 		}
 	})
 	.error(function (error) {
@@ -25,7 +35,16 @@ app.controller('SeeEventsCtrl', function ($scope, ComsysInfo, CommonStubService)
 		'Unable to get all events, please login first.');
 	});
 
-	$scope.goToEvent = function(event) {
+	$scope.goToRegisteredEvent = function(event) {
+		event.registered = true;
+		var eventRegistered = ComsysInfo.getEventIdsOfRegisteredEvent(event.id);
+		event.factionID = eventRegistered.faction_id;
+		event.factionPIN = eventRegistered.faction_pin;
+		ComsysInfo.setEventSelected(event);
+	};
+
+	$scope.goToNotRegisteredEvent = function(event) {
+		event.registered = false;
 		ComsysInfo.setEventSelected(event);
 	};
 

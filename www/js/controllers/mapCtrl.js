@@ -23,7 +23,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
     var ref;
 
     // register a callback with the service that gets called after log in
-    ComsysInfo.setAfterLogginWEventsMapCallback(function(){
+    ComsysInfo.setAfterGoLiveMapCallback(function(){
         /*########################          START OF NOTIFICATIONS      #############################*/
         ref = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/comsys_users/"
             + ComsysInfo.getIsLogged() + "/comsys_notifications");

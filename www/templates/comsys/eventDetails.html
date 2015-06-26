@@ -5,13 +5,13 @@
             <i class="ion-arrow-left-c"></i> Back
         </ion-nav-back-button>
         <ion-nav-buttons side="right">
-            <button class="button button-clear" ng-click="showJoinEventPopup()" ng-if="isLogged > 0 && !isComsysRegistered">Join event</button>
-            <button class="button button-clear" ng-click="leaveEvent()" ng-if="isLogged > 0 && isComsysRegistered">Leave event</button>
-            <button class="button button-clear" ng-click="goLiveEvent()" ng-if="isLogged > 0 && isComsysRegistered && isEventLive">Go live</button>
+            <button class="button button-clear" ng-click="showJoinEventPopup()" ng-if="isLogged > 0 && !eventSelected.registered">Join event</button>
+            <button class="button button-clear" ng-click="leaveEvent()" ng-if="isLogged > 0 && eventSelected.registered">Leave event</button>
+            <button class="button button-clear" ng-click="goLiveEvent()" ng-if="isLogged > 0 && eventSelected.registered && hasEventStarted && !isEventLife">Go live</button>
         </ion-nav-buttons>
     </ion-nav-bar>
     <ion-content>
-    <h1 ng-if="isLogged < 0">This content is only available to logged users.</h1>
+    <h1 ng-if="isLogged == 0">This content is only available to logged users.</h1>
         <ion-list>
             <ion-item class="item-divider">
                 Event description

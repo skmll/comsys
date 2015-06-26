@@ -1,37 +1,47 @@
 app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubService, CommonStubService) {
 
+	/*########## AUX VARIABLES #############*/
 	var factory = {};
-	var game_state = null;
-	var serverError = 0;
-	var userID = 0;
 	var und = "undefined";
+	var serverError = 0;
+	var afterGoLiveMapCallback = function(){};
+	var refreshMenuAfterLogout = true;
+	var resetIsLoggedAfterLogoutCallback;
+	/*######################################*/
+
+
+	/*########## USER VARIABLES #############*/
+	var userID = 0;
 	var nickname = undefined;
 	var coordInpFormat = 0;
 	var coordInpFormatText = undefined;
 	var mapGrid = false;
-	var refreshMenuAfterLogout = true;
-	var resetIsLoggedAfterLogoutCallback;
-	
-	var events = []; // Stores all existing events
-	//var allEvents = [];
+	/*#######################################*/
+
+
+	/*########## LIVE EVENT #############*/
 	var liveEvent = null;
-	var eventSelected = null; // Stores the actual displayed event
-	var comsysActualEvents = null; // Store all joined comsys events
-	var isComsysRegistered; // stores if the comsys is registered or not in the selected event 
-	var afterLogginWEventsMapCallback = function(){};
-	var eventID = 0;
-	var factionID = 0;
-	var factionPIN = 0;
-	var pinEvent = 0;
+	var eventID = 0; //Live Event ID
+	var factionID = 0; //Live Event Faction ID
+	var factionPIN = 0; // Live Event Faction PIN
+	var game_state = null; //Live Event Game State
+	/*###################################*/
+
+
+	/*########## NOT LIVE EVENTS #############*/
+	//var events = []; // Stores all existing events
+	var eventSelected = null; // Stores the actual event details displayed
+	var eventsIdsComsysRegistered = null; // Store all events in which comsys is registered
+	/*########################################*/
 	
-	/*
-		event status no firebase:
-			0 = register;
-			1 = prestarted;
-			2 = started;
-			3 = paused;
-			4 = ended;
-	 */
+	/*############### INFO ################
+	*	event status: [SERVER = FIREBASE]:
+	*		0 = register; (nunca vai ter ao firebase)
+	*		1 = prestarted;
+	*		2 = started;
+	*		3 = paused;
+	*		4 = ended;
+	*###################################### */
 	
 	factory.getMenuRefresh = function(){
 		return refreshMenuAfterLogout;
@@ -45,8 +55,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		resetIsLoggedAfterLogoutCallback = func;
 	};
 
-	factory.setAfterLogginWEventsMapCallback = function(func){
-		afterLogginWEventsMapCallback = func;
+	factory.setAfterGoLiveMapCallback = function(func){
+		afterGoLiveMapCallback = func;
 	};
 
 	factory.getEventID = function(){
@@ -108,16 +118,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 			// Display alert
 			factory.buildAlertPopUp('Server Error', 'Unable to get profile information.');
 		});
-	};
-
-	// Get userID
-	factory.getUserID = function () {
-		return userID;
-	};
-
-	// Set userID
-	factory.setUserID = function (newUserID) {
-		userID = newUserID;
 	};
 
 	// Get nickname
@@ -306,64 +306,78 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	};
 
+	factory.isSelectedEventLive = function(){
+		return eventSelected.id == eventID;
+	}; 
 
-
-	/*factory.getAllEvents = function() {
-		return events;
-	};*/
-
-	factory.isSelectedEventLive = function() {
-		return eventSelected.status == 0;
+	factory.hasSelectedEventStarted = function() {
+		return eventSelected.status == 2;
 	};
 	
 	factory.goLive = function() {
 		liveEvent = eventSelected;
-		eventID = 1;//liveEvent.event_id;
-		factionID = 1;//liveEvent.faction_id;
-		factionPIN = 1111;//liveEvent.faction_pin;
-		afterLogginWEventsMapCallback(); 
+		eventID = 1;//liveEvent.id; //TODO: id right?
+		factionID = 1;//liveEvent.factionID; //TODO
+		factionPIN = 1111;//liveEvent.factionPIN; //TODO
+		afterGoLiveMapCallback(); 
 	};
 
-	factory.getEvents = function() {
-		return events;
+	factory.leaveLive = function(){
+		liveEvent = null;
+		eventID = 0;
+		factionID = 0;
+		factionPIN = 0;
+		//TODO: afterLeaveLifeMapCallback?
 	};
-	
-	factory.setEvents = function(allEvents) {
-		events = allEvents;
-	};
+
 	
 	factory.getEventSelected = function () {
 		return eventSelected;
 	};
 
+	factory.getEventIdsOfRegisteredEvent = function (eventId) {
+		for (var index = 0; index < eventsIdsComsysRegistered.length; index++) {
+			var event = eventsIdsComsysRegistered[index];
+			if(eventId == event.event_id){
+				return event;
+			}
+		}
+		return null;
+	};
+
 	factory.setEventSelected = function(newEventSelected) {
 		eventSelected = newEventSelected;
+		/*
 		eventID = newEventSelected.id;
 		console.log('eventID: ' + eventID);
 		// Check if comsys is registed in the actual selected event
-		factory.checkEventStatus(newEventSelected);
+		factory.isComsysRegisteredInSelectedEvent();
+		*/
 	};
 
-	factory.getPinEvent = function () {
-		return pinEvent;
-	};
+	factory.joinEvent = function() {
+		eventSelected.registered = true;
+		var eventRegistered = ComsysInfo.getEventIdsOfRegisteredEvent(eventSelected.id);
 
-	factory.setPinEvent = function(newPinEvent) {
-		pinEvent = newPinEvent; 
+		eventSelected.factionPIN = eventRegistered.faction_pin;
+		eventSelected.factionID = eventRegistered.faction_id;
+
+		return eventSelected;
 	};
 
 	factory.leaveEvent = function() {
-		liveEvent = null;
-		factionPIN = 0;
-		pinEvent = 0;
-		eventID = 0;
-		isComsysRegistered = 0;
-		for (var index = 0; index < comsysActualEvents.length; index++) {
-			var event = comsysActualEvents[index];
-			if(event.id == eventSelected.id){
-				comsysActualEvents.splice(index, 1);
+		eventSelected.registered = false;
+		eventSelected.factionPIN = undefined; //TODO: is this how its done?
+		eventSelected.factionID = undefined;
+
+		for (var index = 0; index < eventsIdsComsysRegistered.length; index++) {
+			var event = eventsIdsComsysRegistered[index];
+			if(event.id == eventSelected.id){//TODO: event_id or id?
+				eventsIdsComsysRegistered.splice(index, 1);
 			}
 		}
+
+		return eventSelected;
 	};
 
 	
@@ -375,69 +389,68 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		game_state = newState;
 	};
 	
-	factory.setComsysActualEvent = function(newComsysActualEvent) {
-		comsysActualEvents = newComsysActualEvent;
+	factory.setEventsIdsComsysRegistered = function(newEventsIdsComsysRegistered) {
+		eventsIdsComsysRegistered = newEventsIdsComsysRegistered;
 	};
 	
-	factory.getComsysActualEvent = function() {
-		return comsysActualEvents;
+	factory.getEventsIdsComsysRegistered = function() {
+		return eventsIdsComsysRegistered;
 	};
 	
-	factory.isComsysRegistered = function() {
-		return isComsysRegistered;
-	};
 
-	factory.checkEventStatus = function(selectedEvent) {
-		for(var j in comsysActualEvents) {
-			if(eventSelected.id == comsysActualEvents[j].event_id) {					
-				isComsysRegistered = true;
-				return;
+	factory.isComsysRegisteredInEvent = function(eventId) {
+		for(var j in eventsIdsComsysRegistered) {
+			if(eventId == eventsIdsComsysRegistered[j].event_id) {
+				return true;
 			}
 		}
-		isComsysRegistered = false;
-		return;
+		return false;
 	};
 	
 	return factory;
 
-	/*
-	factory.fetchAllEvents = function () {
-        CommonStubService.getAllEvents()
-            .success(function (data) {
-                console.log(data);
-                if (data.response == 0) {
-                    var aux = "";
-                    for (var key in data.errors) {
-                        if (data.errors.hasOwnProperty(key)) {
-                            aux = aux + data.errors[key];
-                        }
-                    }
-                    // Bad result
-                    buildAlertPopUp('Unable to get all events',
-                        'Unable to get all events: ' + aux);
-                }else{
-                	alert(data.list.length);
-                    for(var i = 0; i < data.list.length; i++){
-                        events.push(data.list[i]);
-                    }
-                }
-            })
-            .error(function (error) {
-                // Bad result
-                buildAlertPopUp('Unable to get all events',
-                    'Unable to get all events: ' + error);
-            })
-    };
-	 */
-
-	/*
-	factory.getAllMasterEvents = function() {
-		MasterStubService.getAllMasterEvents()
-		.success(function (data) {
-		console.log(data);
-	})
-		.error(function (error) {
-		});
+	 /*
+	// Get userID
+	factory.getUserID = function () {
+		return userID;
 	};
-	 */
+
+	// Set userID
+	factory.setUserID = function (newUserID) {
+		userID = newUserID;
+	};
+*/
+
+/*
+	factory.isComsysRegisteredInSelectedEvent = function() {
+		for(var j in eventsIdsComsysRegistered) {
+			if(eventSelected.id == eventsIdsComsysRegistered[j].event_id) {
+				return true;
+			}
+		}
+		return false;
+	};
+*/
+
+/*	
+	factory.getSelectedEventIds = function () {
+		for (var index = 0; index < eventsIdsComsysRegistered.length; index++) {
+			var event = eventsIdsComsysRegistered[index];
+			if(eventSelected.id == event.event_id){
+				return event;
+			}
+		}
+		return null;
+	};
+*/
+
+/*
+	factory.getEvents = function() {
+		return events;
+	};
+	
+	factory.setEvents = function(allEvents) {
+		events = allEvents;
+	};
+*/
 });

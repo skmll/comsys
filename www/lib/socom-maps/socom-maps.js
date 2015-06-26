@@ -129,12 +129,12 @@ angular.module('socom-maps', [])
                 }
             }
         };
-        Map.prototype.addZone = function (id, name, playableareapoints) {
+        Map.prototype.addZone = function (id, name, playableareapoints, color) {
             if (!(playableareapoints instanceof Array)) {
                 console.log('Trying to add an non Array object!!');
             } else {
                 //console.log(this.playablearea);
-                this.areas[id] = new Zone(id, name);
+                this.areas[id] = new Zone(id, name, [], color);
                 var success = this.areas[id].setPoints(playableareapoints);
                 if (success && this.zoneCallback) {
                     this.zoneCallback(this.areas[id]);
@@ -192,10 +192,11 @@ angular.module('socom-maps', [])
         /**
          * Constructor, with class name
          */
-        function Zone(id, name, points) {
+        function Zone(id, name, points, color) {
             this.id = id;
             this.name = name;
             this.points = points == undefined ? [] : points;
+            this.color = color;
         }
 
         Zone.prototype.setPoints = function (zonepoints) {
@@ -487,7 +488,18 @@ angular.module('socom-maps', [])
                     //console.log(hostileMarkers);
                     //$scope.map.removeOperator(1, $scope.map.getOperator(1, 6));
                 };
+
                 var addHostileMarker = function (hostile) {
+
+                    var now = new Date().getTime();
+                    var time = hostile.timestamp + 20000;
+                    var diff = time - now;
+                    //console.log('HOSTILEMARKER', now, time, diff);
+                    console.log(hostile.timestamp);
+                    if (diff <= 0) {
+                        return;
+                    }
+
                     var coordinates = new L.LatLng(hostile.latitude, hostile.longitude);
                     if (insidePlayableArea($scope.map, coordinates)) {
                         var icon = 'pin-hostile-direction-' + hostile.direction.identifier;
@@ -535,18 +547,15 @@ angular.module('socom-maps', [])
                             };
                             watchID = navigator.compass.watchHeading(onSuccess, onError, options);
                         }
-                        var now = new Date().getTime();
-                        var time = now + 30000;
-                        if(time <= hostile.timestamp){
-                            time -= hostile.timestamp;
-                            $timeout(function () {
-                                $scope.map.removeHostile(hostile);
-                                if (navigator.compass) {
-                                    navigator.compass.clearWatch(watchID);
-                                }
-                            }, time);
-                            $rootScope.$broadcast('hostileAdded', hostile);
-                        }
+
+                        $timeout(function () {
+                            $scope.map.removeHostile(hostile);
+                            if (navigator.compass) {
+                                navigator.compass.clearWatch(watchID);
+                            }
+                        }, diff);
+                        $rootScope.$broadcast('hostileAdded', hostile);
+
 
                     }
                 };
@@ -607,11 +616,12 @@ angular.module('socom-maps', [])
                     }
                 };
                 var drawLines = function (points) {
-                    var gameArea = new L.Polygon(points, {color: 'red'}).addTo($scope.map.map);
+                    var gameArea = new L.Polygon(points, {color: '#FFF'}).addTo($scope.map.map);
                     $scope.control.addOverlay(gameArea, "Game Area");
                 };
                 var drawZone = function (zone) {
-                    var zoneArea = new L.Polygon(zone.points, {color: 'red'}).addTo($scope.map.map);
+                    console.log(zone.color);
+                    var zoneArea = new L.Polygon(zone.points, {color: zone.color === undefined ? 'red' : zone.color}).addTo($scope.map.map);
                     zonesMarkers[zone.id] = zoneArea;
                     $scope.control.addOverlay(zoneArea, zone.name);
                 };
@@ -639,9 +649,9 @@ angular.module('socom-maps', [])
                                     title: 'Sighted Enemies Direction',
                                     btns: [[
                                         {
-                                            label: 'NE',
-                                            value: Direction.NORTH_EAST,
-                                            className: 'btn-direction-ne',
+                                            label: 'NW',
+                                            value: Direction.NORTH_WEST,
+                                            className: 'btn-direction-nw',
                                             hideLabel: true
                                         },
                                         {
@@ -651,18 +661,20 @@ angular.module('socom-maps', [])
                                             hideLabel: true
                                         },
                                         {
-                                            label: 'NW',
-                                            value: Direction.NORTH_WEST,
-                                            className: 'btn-direction-nw',
-                                            hideLabel: true
-                                        }
-                                    ], [
-                                        {
-                                            label: 'E',
-                                            value: Direction.EAST,
-                                            className: 'btn-direction-e',
+                                            label: 'NE',
+                                            value: Direction.NORTH_EAST,
+                                            className: 'btn-direction-ne',
                                             hideLabel: true
                                         },
+                                    ], [
+
+                                        {
+                                            label: 'W',
+                                            value: Direction.WEST,
+                                            className: 'btn-direction-w',
+                                            hideLabel: true
+                                        },
+
                                         {
                                             label: 'C',
                                             value: Direction.CAMPER,
@@ -670,16 +682,16 @@ angular.module('socom-maps', [])
                                             hideLabel: true
                                         },
                                         {
-                                            label: 'W',
-                                            value: Direction.WEST,
-                                            className: 'btn-direction-w',
+                                            label: 'E',
+                                            value: Direction.EAST,
+                                            className: 'btn-direction-e',
                                             hideLabel: true
                                         },
                                     ], [
                                         {
-                                            label: 'SE',
-                                            value: Direction.SOUTH_EAST,
-                                            className: 'btn-direction-se',
+                                            label: 'SW',
+                                            value: Direction.SOUTH_WEST,
+                                            className: 'btn-direction-sw',
                                             hideLabel: true
                                         },
                                         {
@@ -689,11 +701,11 @@ angular.module('socom-maps', [])
                                             hideLabel: true
                                         },
                                         {
-                                            label: 'SW',
-                                            value: Direction.SOUTH_WEST,
-                                            className: 'btn-direction-sw',
+                                            label: 'SE',
+                                            value: Direction.SOUTH_EAST,
+                                            className: 'btn-direction-se',
                                             hideLabel: true
-                                        },
+                                        }
                                     ], [
                                         {
                                             label: 'Cancel',
@@ -706,7 +718,8 @@ angular.module('socom-maps', [])
                                                 latitude: $scope.latLng.lat,
                                                 longitude: $scope.latLng.lng,
                                                 enemiesNumber: $scope.enemiesNumber,
-                                                direction: value
+                                                direction: value,
+                                                timestamp: new Date().getTime(),
                                             })
                                         }
                                         modal.hide();

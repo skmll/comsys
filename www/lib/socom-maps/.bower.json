@@ -22,12 +22,12 @@
     "angular": "1.3.15"
   },
   "homepage": "https://github.com/oliveira0011/socom-maps",
-  "version": "0.0.43",
-  "_release": "0.0.43",
+  "version": "0.0.44",
+  "_release": "0.0.44",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.43",
-    "commit": "05c9aa321e5b083cbe47b12c2a6db6972a4cc5bd"
+    "tag": "v0.0.44",
+    "commit": "8c085edc3c7c8bb1b6406a48cade471a00a1368f"
   },
   "_source": "git://github.com/oliveira0011/socom-maps.git",
   "_target": "~0.0.40",

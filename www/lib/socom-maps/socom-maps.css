@@ -121,56 +121,65 @@ map {
     display: block;
     margin-top: 45px;
 }
+
 .pin-hostile:after {
     margin: 11px 0;
     border-color: transparent #f00 #f00 transparent;
 }
 
-.pin-hostile-direction{
+.pin-hostile-direction {
     background: url("img/hostile/direction_n.png") no-repeat top transparent;
     background-size: 60px;
     width: 70px;
     height: 60px;
     margin-top: -97px;
 }
+
 .pin-hostile-direction-c {
     background: url("img/shield.png") no-repeat top #F00;
     background-size: 60px;
 }
+
 .pin-hostile-direction-ne {
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-}
-.pin-hostile-direction-nw {
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
     -ms-transform: rotate(45deg);
 }
-.pin-hostile-direction-e {
-    -webkit-transform: rotate(-90deg);
-    transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
+
+.pin-hostile-direction-nw {
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
 }
-.pin-hostile-direction-w {
+
+.pin-hostile-direction-e {
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
     -ms-transform: rotate(90deg);
 }
-.pin-hostile-direction-se {
-    -webkit-transform: rotate(-135deg);
-    transform: rotate(-135deg);
-    -ms-transform: rotate(-135deg);
+
+.pin-hostile-direction-w {
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
 }
+
+.pin-hostile-direction-se {
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+    -ms-transform: rotate(135deg);
+}
+
 .pin-hostile-direction-s {
     -webkit-transform: rotate(-180deg);
     transform: rotate(-180deg);
     -ms-transform: rotate(-180deg);
 }
+
 .pin-hostile-direction-sw {
-    -webkit-transform: rotate(135deg);
-    transform: rotate(135deg);
-    -ms-transform: rotate(135deg);
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+    -ms-transform: rotate(-135deg);
 }
 
 .custom-popup .leaflet-popup {
@@ -266,45 +275,73 @@ map {
 }
 
 .directions .btn-direction-ne:after {
-    -ms-transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
+    background: url("img/arrow_ne.png") no-repeat top transparent;
+    background-size: 64px;
+}
+
+.directions .btn-direction-ne:active:after {
+    background: url("img/arrow_hover_ne.png") no-repeat top transparent;
+    background-size: 64px;
 }
 
 .directions .btn-direction-e:after {
-    -ms-transform: rotate(-90deg);
-    -webkit-transform: rotate(-90deg);
-    transform: rotate(-90deg);
+    background: url("img/arrow_e.png") no-repeat top transparent;
+    background-size: 64px;
+}
+
+.directions .btn-direction-e:active:after {
+    background: url("img/arrow_hover_e.png") no-repeat top transparent;
+    background-size: 64px;
 }
 
 .directions .btn-direction-se:after {
-    -ms-transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    transform: rotate(-135deg);
+    background: url("img/arrow_se.png") no-repeat top transparent;
+    background-size: 64px;
 }
 
-.directions .btn-direction-sw:after {
-    -ms-transform: rotate(135deg);
-    -webkit-transform: rotate(135deg);
-    transform: rotate(135deg);
+.directions .btn-direction-se:active:after {
+    background: url("img/arrow_hover_se.png") no-repeat top transparent;
+    background-size: 64px;
 }
 
 .directions .btn-direction-s:after {
-    -ms-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    transform: rotate(180deg);
+    background: url("img/arrow_s.png") no-repeat top transparent;
+    background-size: 64px;
 }
 
-.directions .btn-direction-nw:after {
-    -ms-transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
+.directions .btn-direction-s:active:after {
+    background: url("img/arrow_hover_s.png") no-repeat top transparent;
+    background-size: 64px;
+}
+
+.directions .btn-direction-sw:after {
+    background: url("img/arrow_sw.png") no-repeat top transparent;
+    background-size: 64px;
+}
+
+.directions .btn-direction-sw:active:after {
+    background: url("img/arrow_hover_sw.png") no-repeat top transparent;
+    background-size: 64px;
 }
 
 .directions .btn-direction-w:after {
-    -ms-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
+    background: url("img/arrow_w.png") no-repeat top transparent;
+    background-size: 64px;
+}
+
+.directions .btn-direction-w:active:after {
+    background: url("img/arrow_hover_w.png") no-repeat top transparent;
+    background-size: 64px;
+}
+
+.directions .btn-direction-nw:after {
+    background: url("img/arrow_nw.png") no-repeat top transparent;
+    background-size: 64px;
+}
+
+.directions .btn-direction-nw:active:after {
+    background: url("img/arrow_hover_nw.png") no-repeat top transparent;
+    background-size: 64px;
 }
 
 .directions .btn-cancel {

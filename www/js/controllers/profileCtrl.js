@@ -2,7 +2,7 @@ app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicMod
     $ionicLoading, ComsysStubService, ComsysInfo, $location, $ionicNavBarDelegate) {
     
     // Set logged user ID
-    $scope.userID = ComsysInfo.getUserID();
+    $scope.userID = ComsysInfo.getIsLogged();
 
     // Get data to fill profile
     $scope.profileData = {

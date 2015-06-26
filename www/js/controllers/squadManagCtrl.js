@@ -72,8 +72,8 @@ app.controller('SquadManagCtrl', function ($scope, $ionicModal, $ionicLoading, $
             controller: 'SquadManagCtrl',
             template: '<button class="button button-block button-positive" ng-repeat="squad1 in otherSquads" ng-click="moveOperatorToSquad(squad1)">{{squad1.name}}</button>'
             + '<button class="button button-block button-assertive" ng-click="closeSquadSelectionDialog()">Cancel</button>',
-            title: 'Choose message',
-            subTitle: 'Please choose one of the displayed messages.',
+            title: 'Move Operator',
+            subTitle: 'Please choose one of the displayed squads to move the operator to.',
             scope: $scope
         });
 
