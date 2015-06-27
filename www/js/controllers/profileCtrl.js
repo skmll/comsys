@@ -1,6 +1,7 @@
 app.controller('ProfileCtrl', function ($scope, $state, $ionicHistory, $ionicModal, $timeout, $ionicPopup,
     $ionicLoading, ComsysStubService, ComsysInfo, $location, $ionicNavBarDelegate) {
     
+    //console.log(ComsysInfo.getIsLogged());
     // Set logged user ID
     $scope.userID = ComsysInfo.getIsLogged();
 

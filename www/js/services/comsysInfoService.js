@@ -5,12 +5,15 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	var und = "undefined";
 	var serverError = 0;
 	var afterGoLiveMapCallback = function(){};
+	var afterLogInOutMapCallback = function(){};
 	var refreshMenuAfterLogout = true;
 	var resetIsLoggedAfterLogoutCallback;
+	var openLoginModalCallback;
 	/*######################################*/
 
 
 	/*########## USER VARIABLES #############*/
+	var username = '';
 	var userID = 0;
 	var nickname = undefined;
 	var coordInpFormat = 0;
@@ -59,6 +62,19 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		afterGoLiveMapCallback = func;
 	};
 
+	factory.setAfterLogInOutMapCallback = function(func){
+		afterLogInOutMapCallback = func;
+	};
+
+	factory.setOpenLoginModal = function(func){
+		openLoginModalCallback = func;
+	};
+
+
+	factory.openLoginModal = function(){
+		openLoginModalCallback();
+	};
+
 	factory.getEventID = function(){
 		return eventID;
 	};
@@ -77,6 +93,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.loginComsys = function (response) {
 		userID = response;
+		afterLogInOutMapCallback();
 	};
 
 	// Login was successful -> Get COMSYS personal configuration
@@ -127,6 +144,16 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	// Set nickname
 	factory.setNickname = function (newNickname) {
 		nickname = newNickname;
+	};
+
+	// Get username
+	factory.getUsername = function () {
+		return username;
+	};
+
+	// Set username
+	factory.setUsername = function (newUsername) {
+		username = newUsername;
 	};
 
 	// Get coordInpFormat
@@ -192,6 +219,8 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 		refreshMenuAfterLogout = true;
 		userID = 0;
+		username = '';
+		afterLogInOutMapCallback();
 		resetIsLoggedAfterLogoutCallback();
 
 	};
@@ -310,15 +339,14 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	}; 
 
 	factory.hasSelectedEventStarted = function() {
-		//console.log('Started?', eventSelected);
-		return eventSelected.status == 0;//TODO: change
+		return eventSelected.status == 2;//TEST: if there is no events started change to 0 to simulate it
 	};
 	
 	factory.goLive = function() {
 		liveEvent = eventSelected;
-		eventID = 1;//liveEvent.id; //TODO: id right?
-		factionID = 1;//liveEvent.factionID; //TODO
-		factionPIN = 1111;//liveEvent.factionPIN; //TODO
+		eventID = liveEvent.id;				//TEST: id right? could not test it properly yet :(
+		factionID = liveEvent.factionID;	//TEST
+		factionPIN = liveEvent.factionPIN; 	//TEST
 		afterGoLiveMapCallback(); 
 	};
 
@@ -327,7 +355,6 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 		eventID = 0;
 		factionID = 0;
 		factionPIN = 0;
-		//TODO: afterLeaveLifeMapCallback? //TODO
 	};
 
 	
@@ -361,7 +388,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 
 	factory.leaveEvent = function() {
 		if(factory.isSelectedEventLive){
-			factory.leaveLive(); //TODO: this right?
+			factory.leaveLive();
 		}
 		eventSelected.registered = false;
 		delete eventSelected.factionPIN;
@@ -408,7 +435,7 @@ app.factory('ComsysInfo', function ($ionicLoading, $ionicPopup, ComsysStubServic
 	
 	return factory;
 
-	 /*
+/*
 	// Get userID
 	factory.getUserID = function () {
 		return userID;

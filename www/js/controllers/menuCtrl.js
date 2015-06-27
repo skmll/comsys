@@ -14,6 +14,7 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 		// Update ID of logged user
 		$scope.isLogged = ComsysInfo.getIsLogged();
 		$scope.game_state = ComsysInfo.getGameState();
+		//console.log(ComsysInfo.getGameState());
 	};
 
 	/* Login */
@@ -46,6 +47,8 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 		$scope.modalLogin.hide();
 	};
 
+	ComsysInfo.setOpenLoginModal($scope.openLoginModal);
+
 	// Initialize sign up data
 	$scope.loginData = {
 			username:"",
@@ -57,7 +60,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 
 		//ComsysInfo.loginComsys(1);
 		//getEventsOfComsys();
-		//registerFirebaseReferences();
 
 		// Display loading animation
 		$ionicLoading.show({
@@ -78,9 +80,11 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 				$ionicLoading.hide();
 				
 				// Update login information on service and menu state
+				ComsysInfo.setUsername($scope.loginData.username);
 				ComsysInfo.loginComsys(data.response);
+				$scope.isLogged = data.response;
+				//console.log("$$$$$$$$$$$$$$$$$$$$", $scope.isLogged);
 				getEventsOfComsys();
-				registerFirebaseReferences();
 				ComsysInfo.setMenuRefresh(true);
 				// Get comsys personal configuration to fill profile
 				ComsysInfo.getComsysPersonalConfig($scope);
@@ -225,29 +229,6 @@ app.controller('MenuCtrl', function ($scope, $ionicModal, $ionicLoading, $locati
 				timestamp: Firebase.ServerValue.TIMESTAMP
 			});
 		};
-	};
-
-
-	function registerFirebaseReferences(){
-		ComsysStubService.checkGameState(ComsysInfo.getEventID(), function(data) {
-			ComsysInfo.setGameState(data);
-			$scope.game_state = data;
-		});
-
-		var specActRef = new Firebase(firebaseUrl + 'events_in_progress/' + ComsysInfo.getEventID() + '/factions/'
-				+ ComsysInfo.getFactionID() + '/special_actions/');
-		specActRef.on('child_added', function(childSnapshot, prevChildName){
-			console.log(childSnapshot.val());
-			var specialAction = childSnapshot.val();
-
-			var diffMilSec = new Date().getTime() - specialAction.timestamp;
-			//TODO: change this actionDuration to the one specific to the action
-			var actionDuration = 600000;
-
-			if(specialAction.action == 'systemhack' && diffMilSec < actionDuration){
-				$location.path('/systemhack');
-			}
-		});
 	};
 
 	function getEventsOfComsys() {

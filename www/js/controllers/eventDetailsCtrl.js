@@ -1,14 +1,10 @@
-app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, $ionicPopup, $ionicLoading, ComsysStubService, $location) {
+app.controller('EventDetailsCtrl', function ($scope, $state, ComsysInfo, $ionicHistory, $ionicPopup, $ionicLoading, ComsysStubService, $location) {
 	
 	$scope.factionPIN;
 
 	$scope.isLogged = ComsysInfo.getIsLogged();
 
 	$scope.eventSelected = ComsysInfo.getEventSelected();
-	
-	//$scope.isComsysRegistered = ComsysInfo.isComsysRegistered();
-	
-	//var selectedEventIds = ComsysInfo.getSelectedEventIds();
 	
 	$scope.hasEventStarted = ComsysInfo.hasSelectedEventStarted();
 
@@ -113,7 +109,10 @@ app.controller('EventDetailsCtrl', function ($scope, ComsysInfo, $ionicHistory, 
 	$scope.goLiveEvent = function(){
 		ComsysInfo.goLive();
 		$scope.isEventLive = ComsysInfo.isSelectedEventLive();
-		//$location.path('app/map');
+		$ionicHistory.nextViewOptions({
+		  disableBack: true
+		});
+		$state.go('app.map');
 	};
 
 	$scope.leaveEvent = function () {

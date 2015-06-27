@@ -1,5 +1,5 @@
-app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHistory, $state, Hostile, ComsysInfo, CommonStubService, ComsysStubService, CoordinatesConverter, Squad, Operator, Specialization) {
-    //TODO: TEST -> $ionicNavBarDelegate.showBackButton(false);
+app.controller('MapCtrl', function ($scope, $ionicModal, $ionicNavBarDelegate , $ionicLoading, $ionicHistory, $state, Hostile, ComsysInfo, CommonStubService, ComsysStubService, CoordinatesConverter, Squad, Operator, Specialization) {
+
     $scope.notifications = [];
     $scope.notificationsOld = [];
 
@@ -16,14 +16,47 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         {text: "Negative", checked: true}
     ];
 
+    $scope.username = "";
 
+    var operatorsToAdd = [];
+    var converter = new CoordinatesConverter();
     var firebaseUrl = "https://socom-bo-estg-2015.firebaseio.com/events_in_progress/";
     
     // DO NOT DELETE, i need global access to this ref
     var ref;
 
-    // register a callback with the service that gets called after log in
+    ComsysInfo.setAfterLogInOutMapCallback(function(){
+        $scope.username = ComsysInfo.getUsername();
+    });
+
+
+    // register a callback with the service that gets called after go live
     ComsysInfo.setAfterGoLiveMapCallback(function(){
+        /*########################          START OF SPECIAL ACTIONS      #############################*/
+        var specActRef = new Firebase(firebaseUrl + ComsysInfo.getEventID() + '/factions/'
+                + ComsysInfo.getFactionID() + '/special_actions/');
+        specActRef.on('child_added', function(childSnapshot, prevChildName){
+            console.log(childSnapshot.val());
+            var specialAction = childSnapshot.val();
+
+            var diffMilSec = new Date().getTime() - specialAction.timestamp;
+            //change this actionDuration to the one specific to the action
+            var actionDuration = 600000;
+
+            if(specialAction.action == 'systemhack' && diffMilSec < actionDuration){
+                $location.path('/systemhack');
+            }
+        });
+        /*########################          END OF SPECIAL ACTIONS      #############################*/
+
+
+        /*########################          START OF GAME STATE      #############################*/
+        ComsysStubService.checkGameState(ComsysInfo.getEventID(), function(data) {
+            ComsysInfo.setGameState(data);
+        });
+        /*########################          END OF GAME STATE      #############################*/
+
+
         /*########################          START OF NOTIFICATIONS      #############################*/
         ref = new Firebase(firebaseUrl + ComsysInfo.getEventID() + "/factions/" + ComsysInfo.getFactionID() + "/comsys_users/"
             + ComsysInfo.getIsLogged() + "/comsys_notifications");
@@ -32,43 +65,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         /*########################          END OF NOTIFICATIONS        #############################*/
 
 
-        /*########################          START OF ENEMY PINGS          #############################*/
-        ComsysStubService.onFactionEnemyPingAdded(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(hostile){
-            //console.log("HOSTILEEEEEE", hostile);
-
-            $scope.map.addHostile(new Hostile(hostile.gps_lat, hostile.gps_lng, hostile.enemies_number, hostile.direction, hostile.timestamp));
-        });
-        /*########################          END OF ENEMY PINGS          #############################*/
-
-        /*########################          START OF MAP SQUADS         #############################*/
-        ComsysStubService.onSquadsIdsChanged(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(squadId, status){
-            if(status == 'added'){
-                console.log('++++++++++++++++++++++++++++++++++++++++++++++++Squad added', squadId);
-                $scope.map.addSquad(new Squad(squadId));
-            }else if(status == 'removed') {
-                console.log('------------------------------------------------Squad removed', squadId);
-                $scope.map.removeSquad($scope.map.getSquad(squadId));
-            }
-        });
-        /*########################          END OF MAP SQUADS          #############################*/
-
-        /*########################          START OF OPERATORS         #############################*/
-        ComsysStubService.onOperatorValuesChanged(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(ops){
-            angular.forEach(ops, function (operator) {
-                //TODO: ask steven and ivo (username?, remove?, check if squad exists in map?)
-                //$scope.map.addOperator(operator.squad_id, new Operator(operator.nickname, operator.nickname,
-                //     operator.gps_lat, operator.gps_lng, Specialization.TRANSPORTATION));
-            });
-        });
-
-
-        /*########################          END OF OPERATORS          #############################*/
-
-
-        /*########################          START OF ZONE DEFINITION          #############################*/
-
-        var converter = new CoordinatesConverter();
-
+        /*########################          START OF MAP DEFINITION      #############################*/
         CommonStubService.getMap(ComsysInfo.getEventID())
         .success(function (data) {
             console.log("getMap", data);
@@ -84,72 +81,126 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
             // After processing the coordinates on the foreach, pass the coordinates to the map object !!!!!
             $scope.map.setGameZone(coordinates);
-        })
-        .error(function (error) {
-            console.log(error);
-        });
 
-        CommonStubService.getAllCommonZones(ComsysInfo.getEventID())
-        .success(function (data) {
-            console.log("getAllCommonZones", data);
-            angular.forEach(data.list, function (eventZone){ 
-                CommonStubService.getCoordCommonZoneByID(ComsysInfo.getEventID(), eventZone.id)
-                .success(function (data) {
-                    console.log("commonZone id: " + eventZone.id, data);
-                    var zoneResult = data.list;
-                    var zoneCoordinates = []; //LatLng
+            /*########################          START OF ENEMY PINGS          #############################*/
+            ComsysStubService.onFactionEnemyPingAdded(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(hostile){
+                //console.log("HOSTILEEEEEE", hostile);
 
-                    angular.forEach(zoneResult, function (coordinate) {
-                        converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
-                        converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
-                        zoneCoordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
+                $scope.map.addHostile(new Hostile(hostile.gps_lat, hostile.gps_lng, hostile.enemies_number, hostile.direction, hostile.timestamp));
+            });
+            /*########################          END OF ENEMY PINGS          #############################*/
+
+
+            /*########################          START OF MAP SQUADS         #############################*/
+            ComsysStubService.onSquadsIdsChanged(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(squadId, status){
+                if(status == 'added'){
+                    console.log('++++++++++++++++++++++++++++++++++++++++++++++++Squad added', squadId);
+                    $scope.map.addSquad(new Squad(squadId));
+                    if(operatorsToAdd[squadId] === undefined){
+                        return;
+                    }
+                    angular.forEach(operatorsToAdd[squadId], function (operator) {
+                        $scope.map.addOperator(squadId, operator);
                     });
+                    operatorsToAdd[squadId] = [];
+                }else if(status == 'removed') {
+                    console.log('------------------------------------------------Squad removed', squadId);
+                    $scope.map.removeSquad($scope.map.getSquad(squadId));
+                }
+            });
+            /*########################          END OF MAP SQUADS          #############################*/
 
-                    // #####################################################################
-                    //add zones to the map
-                    $scope.map.addZone(eventZone.id, eventZone.name, zoneCoordinates);
 
-                })
-                .error(function (error) {
-                    console.log(error);
+            /*########################          START OF OPERATORS         #############################*/
+            ComsysStubService.onOperatorValuesChanged(ComsysInfo.getEventID(), ComsysInfo.getFactionID(), function(ops){
+                angular.forEach(ops, function (operator) {
+                    if($scope.map.getSquad(operator.squad_id) === undefined){
+                        if(operatorsToAdd[operator.squad_id] === undefined){
+                            operatorsToAdd[operator.squad_id] = [];
+                        }
+                        operatorsToAdd[operator.squad_id].push(new Operator(operator.nickname, operator.nickname,
+                         operator.gps_lat, operator.gps_lng, Specialization.get('INFANTRY')));
+                    }else{
+                        $scope.map.addOperator(operator.squad_id, new Operator(operator.nickname, operator.nickname,
+                         operator.gps_lat, operator.gps_lng, Specialization.get('INFANTRY')));//TODO: map operator.specialization firebase
+                    }
                 });
             });
-        })
-        .error(function (error) {
-            console.log(error);
-        });
 
-        CommonStubService.getAllFactionZones(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN())
-        .success(function (data) {
-            console.log('getAllFactionZones', data);
-            angular.forEach(data.list, function (eventZone){ 
-                CommonStubService.getCoordFactionZonesByID(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN(), eventZone.id)
-                .success(function (data) {
-                    console.log("factionZone id: " + eventZone.id, data);
-                    var zoneResult = data.list;
-                    var zoneCoordinates = []; //LatLng
 
-                    angular.forEach(zoneResult, function (coordinate) {
-                        converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
-                        converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
-                        zoneCoordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
+            /*########################          END OF OPERATORS          #############################*/
+
+
+            /*########################          START OF ZONE DEFINITION          #############################*/
+
+            CommonStubService.getAllCommonZones(ComsysInfo.getEventID())
+            .success(function (data) {
+                console.log("getAllCommonZones", data);
+                angular.forEach(data.list, function (eventZone){ 
+                    CommonStubService.getCoordCommonZoneByID(ComsysInfo.getEventID(), eventZone.id)
+                    .success(function (data) {
+                        console.log("commonZone id: " + eventZone.id, data);
+                        var zoneResult = data.list;
+                        var zoneCoordinates = []; //LatLng
+
+                        angular.forEach(zoneResult, function (coordinate) {
+                            converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
+                            converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
+                            zoneCoordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
+                        });
+
+                        // #####################################################################
+                        //add zones to the map
+                        $scope.map.addZone(eventZone.id, eventZone.name, zoneCoordinates, eventZone.color);
+
+                    })
+                    .error(function (error) {
+                        console.log(error);
                     });
-
-                    // #####################################################################
-                    //add zones to the map
-                    $scope.map.addZone(eventZone.id, eventZone.name, zoneCoordinates);
-
-                })
-                .error(function (error) {
-                    console.log(error);
                 });
+            })
+            .error(function (error) {
+                console.log(error);
             });
+
+            CommonStubService.getAllFactionZones(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN())
+            .success(function (data) {
+                console.log('getAllFactionZones', data);
+                angular.forEach(data.list, function (eventZone){ 
+                    CommonStubService.getCoordFactionZonesByID(ComsysInfo.getEventID(), ComsysInfo.getFactionPIN(), eventZone.id)
+                    .success(function (data) {
+                        console.log("factionZone id: " + eventZone.id, data);
+                        var zoneResult = data.list;
+                        var zoneCoordinates = []; //LatLng
+
+                        angular.forEach(zoneResult, function (coordinate) {
+                            converter.latitude.setDMS(coordinate.lat_d, coordinate.lat_m, coordinate.lat_s, coordinate.lat_c);
+                            converter.longitude.setDMS(coordinate.lng_d, coordinate.lng_m, coordinate.lng_s, coordinate.lng_c);
+                            zoneCoordinates.push(new L.LatLng(converter.getLatitude(), converter.getLongitude()));
+                        });
+
+                        // #####################################################################
+                        //add zones to the map
+                        $scope.map.addZone(eventZone.id, eventZone.name, zoneCoordinates, eventZone.color);
+
+                    })
+                    .error(function (error) {
+                        console.log(error);
+                    });
+                });
+            })
+            .error(function (error) {
+                console.log(error);
+            });
+
+            /*########################          END OF ZONE DEFINITION          #############################*/
+
+
         })
         .error(function (error) {
             console.log(error);
         });
-
-        /*########################          END OF ZONE DEFINITION          #############################*/
+        /*########################          END OF MAP DEFINITION      #############################*/
     });
 
     //definition of a callback function as variable since we use it multiple times
@@ -190,7 +241,7 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
       
     });
         
-    //TODO: delete this function after test
+    //delete this function after test
     $scope.unDismissAll = function(){
         if($scope.notificationsOld.length == 0 || ref == undefined){
             return;
@@ -340,6 +391,18 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
         $scope.modalNotificationsSeeAll.show();
     };
 
+    $scope.goToProfileOrOpenLoginModal = function(){
+        //console.log("asdasdasdas", $scope.username);
+        if($scope.username == ''){
+            ComsysInfo.openLoginModal();
+        }else{
+            $ionicHistory.nextViewOptions({
+              disableBack: true
+            });
+            $state.go('app.profile');
+        }
+    };
+
 
     /*
     *
@@ -349,14 +412,6 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicLoading, $ionicHi
 
     $scope.mapCreated = function (map) {
         $scope.map = map;
-
-        /*############################ OPERATORES ############################*/
-
-        // change the first parameter by the SquadID and construct the second parameter from the stub data
-        //$scope.map.addOperator(1, new Operator(1, 1, 39.73669629664551, -8.727478981018065, Specialization.TRANSPORTATION));
-        //$scope.map.addOperator(1, new Operator(1, 12, 39.74669629664551, -8.727478981018065, Specialization.MEDIC));
-
-        /*####################################################################*/
     };
 
 

@@ -8,6 +8,7 @@
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left" ng-click="refreshMenu()">
         </button>
       </ion-nav-buttons>
+
     </ion-nav-bar>
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
@@ -39,7 +40,7 @@
           </i>
         </ion-item>
         <!-- COMSYS -->
-        <ion-item item-icon-left nav-clear menu-close href="#app/squadManag" ng-if="isEventLive">
+        <ion-item item-icon-left nav-clear menu-close href="#app/squadManag" ng-if="game_state == 'started'">
           <i class="icon ion-ios-people">
             Squad Management
           </i>

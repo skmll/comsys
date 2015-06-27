@@ -118,14 +118,15 @@ angular.module('socom-maps', [])
         Map.prototype.getSquad = function (squadId) {
             return this.squads[squadId];
         };
-        Map.prototype.setGameZone = function (gamezonepoints) {
+        Map.prototype.setGameZone = function (gamezonepoints, color) {
             if (!(gamezonepoints instanceof Array)) {
                 console.log('Trying to add an non Array object!!');
             } else {
                 //console.log(this.playablearea);
-                var success = this.gameZone.setPoints(gamezonepoints);
+                color = color === undefined ? "#ffffff" : color;
+                var success = this.gameZone.setPoints(gamezonepoints, color);
                 if (success && this.gameZoneCallBack) {
-                    this.gameZoneCallBack(gamezonepoints);
+                    this.gameZoneCallBack(gamezonepoints, color);
                 }
             }
         };
@@ -199,8 +200,9 @@ angular.module('socom-maps', [])
             this.color = color;
         }
 
-        Zone.prototype.setPoints = function (zonepoints) {
+        Zone.prototype.setPoints = function (zonepoints, color) {
             var pointsAux = [];
+            this.color = color === undefined ? "#ffffff" : color;
             for (var i = 0; i < zonepoints.length; i++) {
                 var point = zonepoints[i];
                 if (!(point instanceof L.LatLng)) {
@@ -615,8 +617,9 @@ angular.module('socom-maps', [])
                         });
                     }
                 };
-                var drawLines = function (points) {
-                    var gameArea = new L.Polygon(points, {color: '#FFF'}).addTo($scope.map.map);
+                var drawLines = function (points, color) {
+                    console.log(color);
+                    var gameArea = new L.Polygon(points, {color: color}).addTo($scope.map.map);
                     $scope.control.addOverlay(gameArea, "Game Area");
                 };
                 var drawZone = function (zone) {
