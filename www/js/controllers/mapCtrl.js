@@ -119,14 +119,13 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicNavBarDelegate , 
                             operatorsToAdd[operator.squad_id] = [];
                         }
                         operatorsToAdd[operator.squad_id].push(new Operator(operator.nickname, operator.nickname,
-                         operator.gps_lat, operator.gps_lng, Specialization.get('INFANTRY')));
+                         operator.gps_lat, operator.gps_lng, Specialization.get( getSpecializationFromSpecId(operator.specialization) )));
                     }else{
                         $scope.map.addOperator(operator.squad_id, new Operator(operator.nickname, operator.nickname,
-                         operator.gps_lat, operator.gps_lng, Specialization.get('INFANTRY')));//TODO: map operator.specialization firebase
+                         operator.gps_lat, operator.gps_lng, Specialization.get( getSpecializationFromSpecId(operator.specialization) )));
                     }
                 });
             });
-
 
             /*########################          END OF OPERATORS          #############################*/
 
@@ -403,12 +402,28 @@ app.controller('MapCtrl', function ($scope, $ionicModal, $ionicNavBarDelegate , 
         }
     };
 
-
-    /*
-    *
-    *       Daqui para baixo SOCOM-MAPS
-    *
-    */
+    function getSpecializationFromSpecId(specId){
+        switch (specId) {
+        case 1: return "ANTI_TANK"; break;
+        case 2: return "ARMOUR"; break;
+        case 3: return "ARTELLERY"; break;
+        case 4: return "BRIDGING"; break;
+        case 5: return "ENGINEER"; break;
+        case 6: return "INFANTRY"; break;
+        case 7: return "INFANTRY"; break;
+        case 8: return "INFANTRY"; break;
+        case 9: return "MAINTENANCE"; break;
+        case 10: return "MEDIC"; break;
+        case 11: return "MORTAR"; break;
+        case 12: return "RADAR"; break;
+        case 13: return "RECON"; break;
+        case 14: return "NO_SPEC"; break; //TODO: Should be "SPECIAL_FORCE", but map isnt prepared to receive that. if that comes in future socom-maps releases, change this
+        case 15: return "SIGNALS"; break;
+        case 16: return "SOF"; break;
+        case 17: return "TRANSPORTATION"; break;
+        default: return "NO_SPEC";
+        }
+    }; 
 
     $scope.mapCreated = function (map) {
         $scope.map = map;
